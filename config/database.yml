@@ -37,7 +37,7 @@ production:
   adapter: postgresql
   host: localhost
   encoding: unicode
-  database: leadcruiser
+  database: leadcruiser_prod
   pool: 5
   username: postgres
   password: '123456'
