@@ -30,7 +30,7 @@ describe 'API::V1::VisitorsController', type: :request  do
     end
 
     it 'does not create visitor without session_hash' do
-      api_post 'visitors', visitor: { os: 'Linux', visitor_ip: '127.0.0.1'}
+      api_post 'visitors', visitor: wrong_data
 
       expect(Visitor.count).to eq(0)
     end
