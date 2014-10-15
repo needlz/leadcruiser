@@ -4,9 +4,9 @@ class API::V1::VisitorsController < ApplicationController
       visitor = Visitor.new(visitor_params)
 
       if visitor.save
-        render json: visitor, status: :created
+        render json: { message: 'Visitor was created successfully' }, status: :created
       else
-        render json: visitor.errors, status: :unprocessable_entity
+        render json: { errors: visitor.error_messages }, status: :unprocessable_entity
       end
   end
 

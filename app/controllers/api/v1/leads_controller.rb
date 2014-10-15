@@ -1,13 +1,13 @@
 class API::V1::LeadsController < ApplicationController
-  before_filter :checking_visitor
 
   def create
-    lead = current_visitor.leads.new(lead_params)
+    lead = Lead.new(lead_params)
+    pet = lead.details_pets.build(pet_params)
 
     if lead.save
-      render json: lead, status: :created
+      render json: { message: 'Lead was created successfully' }, status: :created
     else
-      render json: lead.errors, status: :unprocessable_entity
+      render json: { errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
     end
   end
 
@@ -20,18 +20,9 @@ class API::V1::LeadsController < ApplicationController
   end
 
   def pet_params
-    params.require(:pet).permit(:species, :spayed_or_neutered, :pet_name, :breed, :birth_day, :birth_month,
+    params.require(:pet).permit(:species, :sprayed_or_neutered, :pet_name, :breed, :birth_day, :birth_month,
                                 :birth_year, :gender, :conditions)
   end
 
-  def current_visitor
-    @visitor ||= Visitor.find_by_session_hash(lead_params[:session_hash])
-  end
-
-  def checking_visitor
-    unless current_visitor
-      respond_with_error("There are no visitor connected with this lead by session_hash", :unprocessable_entity)
-    end
-  end
 end
 

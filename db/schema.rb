@@ -11,18 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141014124300) do
+ActiveRecord::Schema.define(version: 20141015074900) do
 
   create_table "details_pets", force: true do |t|
     t.string   "species"
     t.boolean  "sprayed_or_neutered"
-    t.string   "pat_name"
+    t.string   "pet_name"
     t.string   "breed"
-    t.integer  "birth_day"
+    t.integer  "birth_day",           default: 1
     t.integer  "birth_month"
     t.integer  "birth_year"
     t.string   "gender"
     t.boolean  "conditions"
+    t.string   "list_of_conditions"
+    t.integer  "lead_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -30,7 +32,7 @@ ActiveRecord::Schema.define(version: 20141014124300) do
   create_table "leads", force: true do |t|
     t.string   "session_hash"
     t.integer  "site_id"
-    t.integer  "form_id"
+    t.integer  "form_id",           default: 1
     t.string   "vertical_id"
     t.string   "integer"
     t.integer  "leads_details_id"
@@ -52,6 +54,14 @@ ActiveRecord::Schema.define(version: 20141014124300) do
     t.integer  "times_sold"
     t.float    "total_sale_amount"
     t.integer  "visitor_id"
+  end
+
+  create_table "leads_details_verticals", force: true do |t|
+    t.integer  "lead_id"
+    t.integer  "detail_id"
+    t.integer  "vertical_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "visitors", force: true do |t|

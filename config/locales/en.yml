@@ -20,4 +20,47 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  activerecord:
+    errors:
+      models:
+        lead:
+          attributes:
+            site_id:
+              blank: "Site cannot be blank"
+            vertical_id:
+              blank: "Vertical ID cannot be blank"
+            first_name:
+              blank: "Firstname cannot be blank"
+            last_name:
+              blank: "Lastname cannot be blank"
+            zip:
+              blank: "ZIP cannot be blank"
+            day_phone:
+              blank: "Day phone cannot be blank"
+            email:
+              blank: "Email cannot be blank"
+
+        details_pet:
+          attributes:
+            species:
+              blank: "Species cannot be blank"
+            sprayed_or_neutered:
+              inclusion: "Sprayed/neutered cannot be blank"
+            pet_name:
+              blank: "Pet name cannot be blank"
+            breed:
+              blank: "Breed cannot be blank"
+            birth_month:
+              blank: "Birth month cannot be blank"
+            birth_year:
+              blank: "Birth year cannot be blank"
+            gender:
+              blank: "Gender cannot be blank"
+            conditions:
+              inclusion: "Conditions cannot be blank"
+
+        visitor:
+          attributes:
+            session_hash:
+              blank: "Session hash cannot be blank"
+
