@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141015074900) do
+ActiveRecord::Schema.define(version: 20141016060324) do
 
   create_table "details_pets", force: true do |t|
     t.string   "species"
@@ -33,9 +33,6 @@ ActiveRecord::Schema.define(version: 20141015074900) do
     t.string   "session_hash"
     t.integer  "site_id"
     t.integer  "form_id",           default: 1
-    t.string   "vertical_id"
-    t.string   "integer"
-    t.integer  "leads_details_id"
     t.string   "first_name"
     t.string   "last_name"
     t.string   "address_1"
@@ -53,7 +50,7 @@ ActiveRecord::Schema.define(version: 20141015074900) do
     t.datetime "updated_at"
     t.integer  "times_sold"
     t.float    "total_sale_amount"
-    t.integer  "visitor_id"
+    t.integer  "vertical_id"
   end
 
   create_table "leads_details_verticals", force: true do |t|
