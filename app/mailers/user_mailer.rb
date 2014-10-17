@@ -26,7 +26,7 @@ class UserMailer
      species: lead.details_pets.first.species,
      breed: lead.details_pets.first.breed,
      spayed_or_neutered:  lead.details_pets.first.spayed_or_neutered.to_s,
-     birth_month: lead.details_pets.first.birth_month,
+     birth_month: Date::MONTHNAMES[lead.details_pets.first.birth_month],
      birth_year: lead.details_pets.first.birth_year,
      gender: lead.details_pets.first.gender,
      conditions: lead.details_pets.first.conditions.to_s,
