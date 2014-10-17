@@ -20,7 +20,7 @@ class API::V1::LeadsController < ApplicationController
   end
 
   def pet_params
-    params.fetch(:pet, {}).permit(:species, :sprayed_or_neutered, :pet_name, :breed, :birth_day, :birth_month,
+    params.fetch(:pet, {}).permit(:species, :spayed_or_neutered, :pet_name, :breed, :birth_day, :birth_month,
                                 :birth_year, :gender, :conditions)
   end
 
