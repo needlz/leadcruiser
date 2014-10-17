@@ -1,7 +1,8 @@
+require 'httparty'
 class Lead < ActiveRecord::Base
   include ErrorMessages
-
-  after_create :send_email
+  include HTTParty
+  # after_create :send_email
 
   validates :site_id, :vertical_id, :first_name, :last_name, :zip, :day_phone, :email, presence: true
 

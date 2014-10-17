@@ -44,8 +44,8 @@ en:
           attributes:
             species:
               blank: "Species cannot be blank"
-            sprayed_or_neutered:
-              inclusion: "Sprayed/neutered cannot be blank"
+            spayed_or_neutered:
+              inclusion: "Spayed/neutered cannot be blank"
             pet_name:
               blank: "Pet name cannot be blank"
             breed:

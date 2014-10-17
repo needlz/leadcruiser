@@ -1,3 +1,4 @@
+require 'xml_generator'
 class API::V1::LeadsController < ApplicationController
 
   def create
@@ -6,6 +7,16 @@ class API::V1::LeadsController < ApplicationController
 
     if lead.save
       render json: { message: 'Lead was created successfully' }, status: :created
+      my_response = XmlGenerator.new(lead).generate
+      puts "============================"
+      w = HTTParty.post 'http://hart.staging.petpremium.com/lxpHart?', :body => my_response, :headers => {'Content-type' => 'application/xml'}
+
+      puts "--"*26
+
+      puts my_response.inspect
+      puts "*"*500
+      puts w.parsed_response.inspect
+
     else
       render json: { errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
     end
@@ -20,7 +31,7 @@ class API::V1::LeadsController < ApplicationController
   end
 
   def pet_params
-    params.fetch(:pet, {}).permit(:species, :sprayed_or_neutered, :pet_name, :breed, :birth_day, :birth_month,
+    params.fetch(:pet, {}).permit(:species, :spayed_or_neutered, :pet_name, :breed, :birth_day, :birth_month,
                                 :birth_year, :gender, :conditions)
   end
 
