@@ -63,7 +63,7 @@ ActiveRecord::Schema.define(version: 20141017110531) do
     t.integer  "times_sold"
     t.float    "total_sale_amount"
     t.integer  "vertical_id"
-    t.string   "visitor_ip"
+    t.string   "visitor_ip",         default: "127.1.1.1"
   end
 
   create_table "leads_details_verticals", force: true do |t|
