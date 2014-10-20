@@ -75,12 +75,12 @@ ActiveRecord::Schema.define(version: 20141017110531) do
   end
 
   create_table "responses", force: true do |t|
-    t.string   "response"
+    t.text     "response"
     t.string   "client_times_sold"
     t.string   "client_offer_amount"
     t.boolean  "client_offer_accept"
-    t.string   "error_reasons"
-    t.string   "rejection_reasons"
+    t.text     "error_reasons"
+    t.text     "rejection_reasons"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

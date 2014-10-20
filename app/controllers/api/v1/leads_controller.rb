@@ -15,7 +15,9 @@ class API::V1::LeadsController < ApplicationController
 
       puts my_response.inspect
       puts "*"*500
-      puts w.parsed_response.inspect
+      response_from_client = w.parsed_response['Response'].to_s
+      Response.create(response: response_from_client)
+      puts w.parsed_response['Response'].inspect
 
     else
       render json: { errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
@@ -27,7 +29,7 @@ class API::V1::LeadsController < ApplicationController
     params.fetch(:lead, {}).permit(:session_hash, :site_id, :form_id, :vertical_id, :leads_details_id,
                                  :first_name, :last_name, :address_1, :address_2, :city, :state, :zip,
                                  :day_phone, :evening_phone, :email, :best_time_to_call, :birth_date,
-                                 :gender)
+                                 :gender, :visitor_ip)
   end
 
   def pet_params
