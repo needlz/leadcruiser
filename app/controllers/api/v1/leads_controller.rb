@@ -1,4 +1,5 @@
-require 'xml_generator'
+require 'data_generators/pet_premium_generator'
+require 'data_generator_provider'
 class API::V1::LeadsController < ApplicationController
 
   def create
@@ -7,17 +8,11 @@ class API::V1::LeadsController < ApplicationController
 
     if lead.save
       render json: { message: 'Lead was created successfully' }, status: :created
-      my_response = XmlGenerator.new(lead).generate
-      puts "============================"
-      w = HTTParty.post 'http://hart.staging.petpremium.com/lxpHart?', :body => my_response, :headers => {'Content-type' => 'application/xml'}
-
-      puts "--"*26
-
-      puts my_response.inspect
-      puts "*"*500
-      response_from_client = w.parsed_response['Response'].to_s
-      Response.create(response: response_from_client)
-      puts w.parsed_response['Response'].inspect
+      client_vertical = ClientsVertical.find_by_vertical_id(lead.vertical_id)
+      if client_vertical.try(:active)
+        response = DataGeneratorProvider.new(lead).send_data
+        Response.create(response: response.to_s)
+      end
 
     else
       render json: { errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
