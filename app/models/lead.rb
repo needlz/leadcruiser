@@ -1,8 +1,9 @@
 require 'httparty'
+require 'workers/send_email_worker.rb'
 class Lead < ActiveRecord::Base
   include ErrorMessages
   include HTTParty
-  # after_create :send_email
+  after_commit :send_email, on: :create
 
   validates :site_id, :vertical_id, :first_name, :last_name, :zip, :day_phone, :email, presence: true
 
@@ -13,6 +14,6 @@ class Lead < ActiveRecord::Base
 
 
   def send_email
-    UserMailer.new.lead_creating(self)
+    SendEmailWorker.perform_async(self.id)
   end
 end

@@ -1,5 +1,6 @@
 require 'data_generators/pet_premium_generator'
 require 'data_generator_provider'
+require 'workers/send_data_worker.rb'
 class API::V1::LeadsController < ApplicationController
 
   def create
@@ -9,11 +10,7 @@ class API::V1::LeadsController < ApplicationController
     if lead.save
       render json: { message: 'Lead was created successfully' }, status: :created
       client_vertical = ClientsVertical.find_by_vertical_id(lead.vertical_id)
-      if client_vertical.try(:active)
-        response = DataGeneratorProvider.new(lead).send_data
-        Response.create(response: response.to_s)
-      end
-
+      SendDataWorker.perform_async(lead.id)  if client_vertical.try(:active)
     else
       render json: { errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
     end

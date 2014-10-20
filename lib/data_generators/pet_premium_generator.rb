@@ -37,7 +37,7 @@ class PetPremiumGenerator
       xml.send(:ZIPCode, lead.zip)
       xml.send(:EmailAddress, lead.email)
       xml.send(:PhoneNumber, lead.day_phone)
-      xml.send(:IPAddress, '255.255.255.255')
+      xml.send(:IPAddress, '127.1.1.1')
       xml.send(:FirstName, lead.first_name)
       xml.send(:LastName, lead.last_name)
       xml.send(:BirthDate, lead.birth_date)
