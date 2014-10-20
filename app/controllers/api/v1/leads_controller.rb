@@ -10,7 +10,7 @@ class API::V1::LeadsController < ApplicationController
     if lead.save
       render json: { message: 'Lead was created successfully' }, status: :created
       client_vertical = ClientsVertical.find_by_vertical_id(lead.vertical_id)
-      SendDataWorker.perform_async(lead.id)  if client_vertical.try(:active)
+      SendDataWorker.perform_async(lead.id) if client_vertical.try(:active)
     else
       render json: { errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
     end
