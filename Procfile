@@ -1,2 +1,1 @@
-web: bundle exec thin start -p $PORT
-worker: bundle exec sidekiq -c 5
+worker:  bundle exec sidekiq -q high, 10 default
