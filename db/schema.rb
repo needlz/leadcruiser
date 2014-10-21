@@ -11,7 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141020083744) do
+ActiveRecord::Schema.define(version: 20141021122252) do
+
+  create_table "cat_breeds", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "client_cat_breed_mappings", force: true do |t|
+    t.integer  "breed_id"
+    t.string   "integration_name"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "client_dog_breed_mappings", force: true do |t|
+    t.integer  "breed_id"
+    t.string   "integration_name"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "clients_verticals", force: true do |t|
     t.integer  "vertical_id"
@@ -39,6 +61,12 @@ ActiveRecord::Schema.define(version: 20141020083744) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "visitor_ip",         default: "127.1.1.1"
+  end
+
+  create_table "dog_breeds", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "leads", force: true do |t|
