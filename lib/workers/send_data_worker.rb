@@ -1,6 +1,5 @@
 class SendDataWorker
   include Sidekiq::Worker
-  sidekiq_options queue: "high"
 
   def perform(lead_id)
     lead = Lead.find(lead_id)

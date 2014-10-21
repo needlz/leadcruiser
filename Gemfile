@@ -30,6 +30,10 @@ gem 'mandrill-api'
 gem 'httparty'
 gem 'nokogiri'
 gem 'sidekiq'
+gem 'thin'
+gem 'redis'
+gem "redis-store"
+gem 'redis-rails'
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
