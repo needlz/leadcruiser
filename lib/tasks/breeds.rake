@@ -20,8 +20,8 @@ namespace :breeds do
   task :load_mapping => :environment do
     require 'csv'
     CSV.foreach( "var/breeds.csv", :headers => true ) do |row|
-      ClientDogBreedMapping.create(breed_id: DogBreed.find_by_name(row['dog_breed']).id, integration_name: 'pet_premium', name: row['dog_map']) if row['dog_map']
-      ClientCatBreedMapping.create(breed_id: CatBreed.find_by_name(row['cat_breed']).id, integration_name: 'pet_premium', name: row['cat_map']) if row['cat_map']
+      ClientDogBreedMapping.create(breed_id: DogBreed.find_by_name(row['dog_breed']).id, integration_name: 'pet_premium', name: row['dog_map'].gsub("\u00A0", '')) if row['dog_map']
+      ClientCatBreedMapping.create(breed_id: CatBreed.find_by_name(row['cat_breed']).id, integration_name: 'pet_premium', name: row['cat_map'].gsub("\u00A0", '')) if row['cat_map']
     end
   end
 

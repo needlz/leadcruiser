@@ -32,7 +32,7 @@ class PetPremiumGenerator
       xml.send(:FirstName, lead.first_name)
       xml.send(:LastName, lead.last_name)
       xml.send(:Address, lead.address_1 || 'No address was provided')
-      xml.send(:City, lead.zip_code.primary_city || 'No city was provided')
+      xml.send(:City, lead.try(:zip_code).try(:primary_city) || 'No city was provided')
       xml.send(:State, lead.zip_code.state || 'No state was provided')
       xml.send(:ZIPCode, lead.zip)
       xml.send(:EmailAddress, lead.email)
@@ -67,7 +67,7 @@ class PetPremiumGenerator
           xml.send("#{pet_type}BirthMonth",  Date::ABBR_MONTHNAMES[pet.birth_month])
           xml.send("#{pet_type}BirthDay", pet.birth_day)
           xml.send("#{pet_type}BirthYear", pet.birth_year)
-          xml.send("#{pet_type}Breed", pet.breed)
+          xml.send("#{pet_type}Breed", pet.breed_to_send)
           xml.send("#{pet_type}Gender", pet.gender)
           xml.send("#{pet_type}Conditions", pet.conditions?)
         end

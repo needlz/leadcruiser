@@ -14,4 +14,15 @@ class DetailsPet < ActiveRecord::Base
     return 'Yes' if conditions
     'No'
   end
+
+  def breed_to_send
+    pet_type = species.capitalize
+    breed_id = "#{pet_type}Breed".constantize.find_by_name(breed).try(:id)
+    integration_name = lead.try(:clients_vertical).try(:integration_name)
+    mapping_breed = "Client#{pet_type}BreedMapping".constantize.where(integration_name: integration_name,
+                                                                      breed_id: breed_id)
+                                                                      .try(:first)
+                                                                      .try(:name)
+    mapping_breed || breed
+  end
 end
