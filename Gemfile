@@ -25,6 +25,8 @@ gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'rails-api'
 gem 'fakeweb'
 gem 'timecop'
+gem 'mandrill-rails'
+gem 'mandrill-api'
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
 

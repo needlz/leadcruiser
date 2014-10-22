@@ -16,11 +16,11 @@ class API::V1::LeadsController < ApplicationController
     params.fetch(:lead, {}).permit(:session_hash, :site_id, :form_id, :vertical_id, :leads_details_id,
                                  :first_name, :last_name, :address_1, :address_2, :city, :state, :zip,
                                  :day_phone, :evening_phone, :email, :best_time_to_call, :birth_date,
-                                 :gender)
+                                 :gender, :visitor_ip)
   end
 
   def pet_params
-    params.fetch(:pet, {}).permit(:species, :sprayed_or_neutered, :pet_name, :breed, :birth_day, :birth_month,
+    params.fetch(:pet, {}).permit(:species, :spayed_or_neutered, :pet_name, :breed, :birth_day, :birth_month,
                                 :birth_year, :gender, :conditions)
   end
 

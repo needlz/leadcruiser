@@ -5,7 +5,7 @@ require 'api_helper'
 describe 'API::V1::LeadsController', type: :request do
   let (:session_hash) { '#234-22' }
   let (:correct_data) { { first_name: 'John', last_name: 'Doe', session_hash: session_hash, vertical_id: 1, site_id: 1, city: 'NY', zip: 10004, day_phone: '2-12-22', email: 'test@example.com' } }
-  let (:pet_data) { { species: 'cat', sprayed_or_neutered: 'false', pet_name: 'kitty', breed: 'sphinx', birth_month: 12, birth_year: 1998, gender: 'male', conditions: false } }
+  let (:pet_data) { { species: 'cat', spayed_or_neutered: 'false', pet_name: 'kitty', breed: 'sphinx', birth_month: 12, birth_year: 1998, gender: 'male', conditions: false } }
   let (:wrong_data) { correct_data.except(:vertical_id) }
 
   describe '#create with visitor' do
