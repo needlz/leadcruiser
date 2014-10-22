@@ -1,9 +1,9 @@
 class CreateLeads < ActiveRecord::Migration
-  def change
+  def up
     create_table :leads do |t|
       t.string :session_hash
       t.integer :site_id
-      t.integer :form_id
+      t.integer :form_id, default: 1
       t.string :vertical_id
       t.string :integer
       t.integer :leads_details_id
@@ -23,5 +23,9 @@ class CreateLeads < ActiveRecord::Migration
 
       t.timestamps
     end
+  end
+
+  def down
+    drop_table :leads
   end
 end

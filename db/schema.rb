@@ -11,15 +11,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141013121945) do
+ActiveRecord::Schema.define(version: 20141016060324) do
+
+  create_table "details_pets", force: true do |t|
+    t.string   "species"
+    t.boolean  "sprayed_or_neutered"
+    t.string   "pet_name"
+    t.string   "breed"
+    t.integer  "birth_day",           default: 1
+    t.integer  "birth_month"
+    t.integer  "birth_year"
+    t.string   "gender"
+    t.boolean  "conditions"
+    t.string   "list_of_conditions"
+    t.integer  "lead_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "leads", force: true do |t|
     t.string   "session_hash"
     t.integer  "site_id"
-    t.integer  "form_id"
-    t.string   "vertical_id"
-    t.string   "integer"
-    t.integer  "leads_details_id"
+    t.integer  "form_id",           default: 1
     t.string   "first_name"
     t.string   "last_name"
     t.string   "address_1"
@@ -33,6 +46,17 @@ ActiveRecord::Schema.define(version: 20141013121945) do
     t.string   "best_time_to_call"
     t.datetime "birth_date"
     t.string   "gender"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "times_sold"
+    t.float    "total_sale_amount"
+    t.integer  "vertical_id"
+  end
+
+  create_table "leads_details_verticals", force: true do |t|
+    t.integer  "lead_id"
+    t.integer  "detail_id"
+    t.integer  "vertical_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

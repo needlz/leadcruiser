@@ -1,5 +1,5 @@
 class CreateVisitors < ActiveRecord::Migration
-  def change
+  def up
     create_table :visitors do |t|
       t.string :session_hash
       t.integer :site_id
@@ -19,5 +19,9 @@ class CreateVisitors < ActiveRecord::Migration
 
       t.timestamps
     end
+  end
+
+  def down
+    drop_table :visitors
   end
 end
