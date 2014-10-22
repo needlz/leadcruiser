@@ -4,16 +4,16 @@ namespace :breeds do
     require 'csv'
 
     CSV.foreach( "var/breeds.csv", :headers => true ) do |row|
-      DogBreed.create(name: row['dog_breed']) if row['dog_breed']
-      CatBreed.create(name: row['cat_breed']) if row['cat_breed']
+      DogBreed.create(name: row['dog_breed'].gsub("\u00A0", '')) if row['dog_breed']
+      CatBreed.create(name: row['cat_breed'].gsub("\u00A0", '')) if row['cat_breed']
     end
   end
 
   task :load_pet_premium => :environment do
     require 'csv'
     CSV.foreach( "var/pet_premium_breeds.csv", :headers => true ) do |row|
-      DogBreed.create(name: row['dog_breed']) if row['dog_action'] == 'add'
-      CatBreed.create(name: row['cat_breed']) if row['cat_action'] == 'add'
+      DogBreed.create(name: row['dog_breed'].gsub("\u00A0", '')) if row['dog_action'] == 'add'
+      CatBreed.create(name: row['cat_breed'].gsub("\u00A0", '')) if row['cat_action'] == 'add'
     end
   end
 
