@@ -2,7 +2,7 @@ require 'nokogiri'
 
 class PetPremiumGenerator
 
-  LINK = 'http://hart.staging.petpremium.com/lxpHart?'
+  LINK = ENV["PET_PREMIUM_LINK"]
 
   attr_accessor :lead
 
