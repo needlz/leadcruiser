@@ -65,7 +65,7 @@ class PetPremiumGenerator
           xml.send("#{pet_type}BirthMonth", Date::ABBR_MONTHNAMES[pet.birth_month])
           xml.send("#{pet_type}BirthDay", pet.birth_day)
           xml.send("#{pet_type}BirthYear", pet.birth_year)
-          xml.send("#{pet_type}Breed", pet.breed_to_send)
+          xml.send("#{pet_type}Breed", pet.breed_to_send('pet_premium'))
           xml.send("#{pet_type}Gender", pet.gender)
           xml.send("#{pet_type}Conditions", pet.conditions?)
         end

@@ -3,10 +3,13 @@ require 'api_helper'
 
 
 describe 'API::V1::LeadsController', type: :request do
+
   let (:session_hash) { '#234-22' }
-  let (:correct_data) { { first_name: 'John', last_name: 'Doe', session_hash: session_hash, vertical_id: 1, site_id: 1, city: 'NY', zip: 10004, day_phone: '2-12-22', email: 'test@example.com' } }
+  let! (:vertical) { create(:vertical) }
+  let! (:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
+  let (:correct_data) { { first_name: 'John', last_name: 'Doe', session_hash: session_hash, vertical_id: vertical.id, site_id: 1, city: 'NY', zip: 10004, day_phone: '2-12-22', email: 'test@example.com' } }
   let (:pet_data) { { species: 'cat', spayed_or_neutered: 'false', pet_name: 'kitty', breed: 'sphinx', birth_month: 12, birth_year: 1998, gender: 'male', conditions: false } }
-  let (:wrong_data) { correct_data.except(:vertical_id) }
+  let (:wrong_data) { correct_data.except(:first_name) }
 
   describe '#create with visitor' do
     let! (:visitor) { Visitor.create(session_hash: session_hash) }
@@ -34,7 +37,7 @@ describe 'API::V1::LeadsController', type: :request do
       api_post 'leads', lead: wrong_data, pet: pet_data
       result = JSON.parse response.body
 
-      expect(result['errors']).to eq(["Vertical ID cannot be blank"])
+      expect(result['errors']).to eq(["Firstname cannot be blank"])
     end
 
     it 'returns all errors for mandatory fields' do
@@ -80,6 +83,47 @@ describe 'API::V1::LeadsController', type: :request do
       api_post 'leads', lead: correct_data, pet: sensitive_case_pet_data
 
       expect(DetailsPet.all.map(&:pet_name)).to eq(['kitty', 'Mediolan'])
+    end
+  end
+
+  describe 'sending leads to different clients' do
+    let (:clients_vertical_2) { create(:clients_vertical, vertical_id: vertical.id, integration_name: 'pet_casual', weight: 14) }
+    let (:clients_vertical_3) { create(:clients_vertical, vertical_id: vertical.id, integration_name: 'pet_indigo', weight: 5) }
+    let (:clients_vertical_4) { create(:clients_vertical, vertical_id: vertical.id, integration_name: 'cat_insurance', weight: 1) }
+
+    it 'sends to client without weight (if it`s only one)' do
+      api_post 'leads', lead: correct_data, pet: pet_data
+      lead = Lead.where(session_hash: session_hash).first
+      expect(lead.vertical.next_client).to eq('pet_premium')
+    end
+
+    it 'sends to client with weight and skip client without' do
+      clients_vertical_2
+      api_post 'leads', lead: correct_data, pet: pet_data
+      lead = Lead.where(session_hash: session_hash).first
+      expect(lead.vertical.next_client).to eq('pet_casual')
+    end
+
+    it 'sends leads to client with round-robin algorithm' do
+      clients_vertical_2
+      clients_vertical_4
+      clients_vertical_3
+
+      api_post 'leads', lead: correct_data, pet: pet_data
+      lead = Lead.where(session_hash: session_hash).last
+      expect(lead.vertical.next_client).to eq('cat_insurance')
+
+      api_post 'leads', lead: correct_data, pet: pet_data
+      lead = Lead.where(session_hash: session_hash).last
+      expect(lead.vertical.next_client).to eq('pet_indigo')
+
+      api_post 'leads', lead: correct_data, pet: pet_data
+      lead = Lead.where(session_hash: session_hash).last
+      expect(lead.vertical.next_client).to eq('pet_casual')
+
+      api_post 'leads', lead: correct_data, pet: pet_data
+      lead = Lead.where(session_hash: session_hash).last
+      expect(lead.vertical.next_client).to eq('cat_insurance')
     end
   end
 

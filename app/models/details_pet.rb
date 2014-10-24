@@ -15,10 +15,9 @@ class DetailsPet < ActiveRecord::Base
     'No'
   end
 
-  def breed_to_send
+  def breed_to_send(integration_name = nil)
     pet_type = species.capitalize
     breed_id = "#{pet_type}Breed".constantize.find_by_name(breed).try(:id)
-    integration_name = lead.try(:clients_vertical).try(:integration_name)
     mapping_breed = "Client#{pet_type}BreedMapping".constantize.where(integration_name: integration_name,
                                                                       breed_id: breed_id)
                                                                       .try(:first)

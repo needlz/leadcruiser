@@ -1,4 +1,5 @@
 require 'data_generators/pet_premium_generator'
+require 'next_client_builder'
 require 'data_generator_provider'
 require 'workers/send_data_worker.rb'
 class API::V1::LeadsController  < ActionController::API
@@ -9,8 +10,9 @@ class API::V1::LeadsController  < ActionController::API
 
     if lead.save
       render json: { message: 'Lead was created successfully' }, status: :created
-      client_vertical = ClientsVertical.find_by_vertical_id(lead.vertical_id)
-      SendDataWorker.perform_async(lead.id) if client_vertical.try(:active)
+      client_verticals = ClientsVertical.where(vertical_id: lead.vertical_id, active: true, exclusive: true)
+      builder = NextClientBuilder.new(lead, client_verticals)
+      SendDataWorker.perform_async(lead.id, builder.integration_name)
     else
       render json: { errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
     end
