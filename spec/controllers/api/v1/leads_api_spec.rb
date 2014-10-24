@@ -45,7 +45,7 @@ describe 'API::V1::LeadsController', type: :request do
                                       "Lastname cannot be blank", "ZIP cannot be blank", "Day phone cannot be blank",
                                       "Email cannot be blank", "is invalid", "Species cannot be blank", "Pet name cannot be blank",
                                       "Breed cannot be blank", "Birth month cannot be blank", "Birth year cannot be blank",
-                                      "Gender cannot be blank", "Sprayed/neutered cannot be blank", "Conditions cannot be blank"])
+                                      "Gender cannot be blank", "Spayed/neutered cannot be blank", "Conditions cannot be blank"])
     end
 
     it 'does not create lead without vertical_id' do

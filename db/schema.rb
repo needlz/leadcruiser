@@ -11,7 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141017073754) do
+ActiveRecord::Schema.define(version: 20141021122252) do
+
+  create_table "cat_breeds", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "client_cat_breed_mappings", force: true do |t|
+    t.integer  "breed_id"
+    t.string   "integration_name"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "client_dog_breed_mappings", force: true do |t|
+    t.integer  "breed_id"
+    t.string   "integration_name"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "clients_verticals", force: true do |t|
     t.integer  "vertical_id"
@@ -40,6 +62,12 @@ ActiveRecord::Schema.define(version: 20141017073754) do
     t.datetime "updated_at"
   end
 
+  create_table "dog_breeds", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "leads", force: true do |t|
     t.string   "session_hash"
     t.integer  "site_id"
@@ -62,13 +90,24 @@ ActiveRecord::Schema.define(version: 20141017073754) do
     t.integer  "times_sold"
     t.float    "total_sale_amount"
     t.integer  "vertical_id"
-    t.string   "visitor_ip",         default: "127.1.1.1"
+    t.string   "visitor_ip",        default: "127.1.1.1"
   end
 
   create_table "leads_details_verticals", force: true do |t|
     t.integer  "lead_id"
     t.integer  "detail_id"
     t.integer  "vertical_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "responses", force: true do |t|
+    t.text     "response"
+    t.string   "client_times_sold"
+    t.string   "client_offer_amount"
+    t.boolean  "client_offer_accept"
+    t.text     "error_reasons"
+    t.text     "rejection_reasons"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -97,6 +136,15 @@ ActiveRecord::Schema.define(version: 20141017073754) do
     t.string   "location"
     t.string   "browser"
     t.string   "os"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "zip_codes", force: true do |t|
+    t.integer  "zip"
+    t.string   "primary_city"
+    t.string   "state"
+    t.string   "timezone"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

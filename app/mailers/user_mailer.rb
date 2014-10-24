@@ -4,7 +4,7 @@ class UserMailer
 
   def lead_creating(lead)
     template 'lead-was-created'
-    subject = "Pet-Insurance.org New Lead - #{lead.id} #{lead.created_at} "
+    subject = "Pet-Insurance.org #{env_field} New Lead - ID: #{lead.id} - #{lead.created_at}"
     set_template_values(set_lead_params(lead))
 
     mail to: [wrap_recipient(ENV["RECIPIENT_EMAIL"], ENV["RECIPIENT_NAME"], "to"),
@@ -45,5 +45,11 @@ class UserMailer
 
   def wrap_recipient(email, name, type)
     { email: email, name: name, type: type }
+  end
+
+  private
+
+  def env_field
+    '(' + ENV['RAILS_ENV'] + ')' unless ENV['RAILS_ENV'] == 'production'
   end
 end
