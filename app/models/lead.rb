@@ -17,6 +17,8 @@ class Lead < ActiveRecord::Base
     SendEmailWorker.perform_async(self.id)
   end
 
+  private
+
   def check_uniqueness_of_pet
     return false unless pet_insurance?
 
@@ -32,8 +34,6 @@ class Lead < ActiveRecord::Base
 
     true
    end
-
-  private
 
   def pet_insurance?
     vertical_id == 1
