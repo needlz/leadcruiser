@@ -26,5 +26,10 @@ class DetailsPet < ActiveRecord::Base
     mapping_breed || breed
   end
 
+  def validate_same(other)
+    result = breed == other.breed && pet_name.downcase == other.pet_name.downcase
+    errors[:base] << I18n.t('pet_details_uniqueness_for_lead', breed: breed, pet_name: pet_name) if result
+    result
+  end
 
 end
