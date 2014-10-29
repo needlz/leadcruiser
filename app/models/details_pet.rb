@@ -25,4 +25,6 @@ class DetailsPet < ActiveRecord::Base
                                                                       .try(:name)
     mapping_breed || breed
   end
+
+
 end
