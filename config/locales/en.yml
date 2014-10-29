@@ -64,3 +64,4 @@ en:
             session_hash:
               blank: "Session hash cannot be blank"
 
+  pet_details_uniqueness_for_lead: "Lead with '%{breed}' breed or '%{pet_name}' name already exists"

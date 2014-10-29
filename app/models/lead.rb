@@ -2,9 +2,10 @@ require 'httparty'
 require 'workers/send_email_worker.rb'
 class Lead < ActiveRecord::Base
   include ErrorMessages
-  include HTTParty
+
   after_commit :send_email, on: :create
-  before_save :check_uniqueness
+  before_save :check_uniqueness_of_pet
+
   validates :site_id, :vertical_id, :first_name, :last_name, :zip, :day_phone, :email, presence: true
 
   belongs_to :visitor, foreign_key: 'session_hash', primary_key: 'session_hash'
@@ -12,19 +13,29 @@ class Lead < ActiveRecord::Base
   has_one :zip_code, foreign_key: 'zip', primary_key: 'zip'
   has_many :details_pets
 
-
   def send_email
     SendEmailWorker.perform_async(self.id)
   end
 
-  def check_uniqueness
-      return false unless vertical_id == 1
-      lead = Lead.where(email: email)
-      return true unless lead.exists?
+  def check_uniqueness_of_pet
+    return false unless pet_insurance?
 
-      pets_details_of_lead = lead.map{|lead| lead.details_pets.map{|pet| "#{pet.try(:breed)}, #{pet.try(:pet_name)}"}}.flatten
-      new_pets_details = self.details_pets.map{|pet| "#{pet.try(:breed)}, #{pet.try(:pet_name)}"}
+    leads = Lead.where(email: email).includes(:details_pets)
+    return true unless leads.exists?
 
-      return (pets_details_of_lead & new_pets_details).empty?
+    leads.each do |lead|
+      lead.details_pets.each do |pet|
+        next unless self.details_pets.any? { |new_pet| new_pet.validate_same(pet) }
+        return false
+      end
+    end
+
+    true
+   end
+
+  private
+
+  def pet_insurance?
+    vertical_id == 1
   end
 end
