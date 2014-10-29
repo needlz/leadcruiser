@@ -14,6 +14,7 @@ class DataGeneratorProvider
   end
 
   def send_data
+    return if link.blank?
     HTTParty.post link,
                   :body => data_to_send,
                   :headers => {'Content-type' => 'application/xml'}

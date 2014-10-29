@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.6'
-gem "rspec-rails", :group => [:development, :test]
+gem "rspec-rails", group: [:development, :test]
 # Use sqlite3 as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
@@ -36,7 +36,7 @@ gem 'thin'
 gem 'redis'
 gem "redis-store"
 gem 'redis-rails'
-
+gem 'factory_girl_rails', group: [:development, :test]
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
 

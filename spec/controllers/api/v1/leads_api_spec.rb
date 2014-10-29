@@ -56,4 +56,31 @@ describe 'API::V1::LeadsController', type: :request do
 
   end
 
+  describe 'validation on lead uniqueness' do
+    let (:another_pet_data) { { species: 'cat', spayed_or_neutered: 'false', pet_name: 'Mediolan', breed: 'Cymric', birth_month: 12, birth_year: 1998, gender: 'male', conditions: false } }
+    let (:sensitive_case_pet_data) { { species: 'cat', spayed_or_neutered: 'false', pet_name: 'MediOlan', breed: 'Cymric', birth_month: 12, birth_year: 1998, gender: 'male', conditions: false } }
+
+    it 'creates only one lead by email' do
+      api_post 'leads', lead: correct_data, pet: pet_data
+      api_post 'leads', lead: correct_data, pet: pet_data
+
+      expect(Lead.count).to eq(1)
+    end
+
+    it 'creates only one pet by breed' do
+      api_post 'leads', lead: correct_data, pet: pet_data
+      api_post 'leads', lead: correct_data, pet: pet_data
+
+      expect(DetailsPet.count).to eq(1)
+    end
+
+    it 'creates two pets with different names and breeds' do
+      api_post 'leads', lead: correct_data, pet: pet_data
+      api_post 'leads', lead: correct_data, pet: another_pet_data
+      api_post 'leads', lead: correct_data, pet: sensitive_case_pet_data
+
+      expect(DetailsPet.all.map(&:pet_name)).to eq(['kitty', 'Mediolan'])
+    end
+  end
+
 end
