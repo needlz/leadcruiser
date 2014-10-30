@@ -1,28 +1,37 @@
-class @ReportBar
+class @LeadStatisticGraph
 
     @show: (data) ->
-        leads_per_day = []
-        $.each data, (index, value) ->
-            leads_per_day.push [ value[0], "#{value[1]}" ]
-
-        plot = $.plot("#leads_per_day", [data: leads_per_day, label: "leads per day"],
-            series:
-                lines:
-                    show: true
-                points:
-                    show: true
-            grid:
-                hoverable: true
-                clickable: true
-            yaxis:
-                min: 0
-            xaxis:
-                show: true
-                mode: "time"
-                minTickSize: [1, "day"]
-        )
+        leadsPerDay = @.buildDataForGraph(data)
+        @.buildPlot(leadsPerDay)
+        @.makeTooltip()
 
 
+    @buildDataForGraph: (data) ->
+      leadsPerDay = []
+      $.each data, (index, value) ->
+        time = value[0]
+        leadsCount = value[1]
+        leadsPerDay.push [ time, "#{leadsCount}" ]
+
+    @buildPlot: (data) ->
+      plot = $.plot("#leads_per_day", [data: data, label: "Leads per day"],
+        series:
+          lines:
+            show: true
+          points:
+            show: true
+        grid:
+          hoverable: true
+          clickable: true
+        yaxis:
+          min: 0
+        xaxis:
+          show: true
+          mode: "time"
+          minTickSize: [1, "day"]
+      )
+
+    @makeTooltip: ->
 
         $("<div id='tooltip'></div>").css(
             position: "absolute"
@@ -37,7 +46,7 @@ class @ReportBar
             if item
                 x = item.datapoint[0]
                 y = item.datapoint[1]
-                $('#tooltip').html(item.series.label + " of " + @.dateFormat(pos.x) + " = " + y).css(
+                $('#tooltip').html(item.series.label + " of " + @.formatLeadDay(pos.x) + " = " + y).css(
                     top: item.pageY + 5
                     left: item.pageX + 5
                 ).fadeIn 200
@@ -45,19 +54,19 @@ class @ReportBar
 
 
 
-    @dateFormat: (date) ->
-        date = new Date(date)
-        return (date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear())
+    @formatLeadDay: (day) ->
+        date = new Date(day)
+        [date.getMonth() + 1, date.getDate(), date.getFullYear()].join('/')
 
 
     @refresh: (firstDate, secondDate) ->
         $.ajax
             url: "/reports/refresh"
-            type: "POST"
+            type: "GET"
             dataType: "json"
             data:
                 firstDate: firstDate / 1000
                 secondDate: secondDate / 1000
 
             success: (data) ->
-                ReportBar.show data.days
+              LeadStatisticGraph.show data.days
