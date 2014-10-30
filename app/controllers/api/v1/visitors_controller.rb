@@ -1,4 +1,4 @@
-class API::V1::VisitorsController < ApplicationController
+class API::V1::VisitorsController < ActionController::API
 
   def create
       visitor = Visitor.new(visitor_params)

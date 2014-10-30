@@ -39,7 +39,9 @@ gem 'redis-rails'
 gem 'factory_girl_rails', group: [:development, :test]
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
-
+gem 'jquery-rails'
+gem 'by_star', :git => "git://github.com/radar/by_star"
+gem "haml-rails"
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -52,3 +54,4 @@ gem 'spring',        group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'rails_12factor', group: [:staging, :production]

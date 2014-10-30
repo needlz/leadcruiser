@@ -3,7 +3,10 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  # root 'welcome#index'
+  root 'reports#index'
+  resources :reports, only: :index
+
+  get 'reports/refresh', :to => 'reports#refresh'
   namespace :api do
     namespace :v1 do
       with_options only: :create do |option|

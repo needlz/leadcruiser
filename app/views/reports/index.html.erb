@@ -1,0 +1,21 @@
+<script>
+    $(function () {
+        LeadStatisticGraph.show(<%= @leads_per_day %>);
+    });
+
+    $(document).ready(function () {
+        $('.simpledaterange').dateRangePicker().bind('datepicker-change',
+                function (_, period) {
+                    LeadStatisticGraph.refresh(Date.parse(period.date1), Date.parse(period.date2))
+                }
+        );
+    });
+</script>
+
+<div class="row form-group">
+  <div class="col-md-2"><h2>Leads per day graph</h2> </div>
+  <div class="col-md-9 choose-range">Choose range:<input class="simpledaterange"/>
+    <div id="leads_per_day"></div>
+  </div>
+</div>
+

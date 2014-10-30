@@ -31,4 +31,5 @@ class DetailsPet < ActiveRecord::Base
     errors[:base] << I18n.t('pet_details_uniqueness_for_lead', breed: breed, pet_name: pet_name) if result
     result
   end
+
 end
