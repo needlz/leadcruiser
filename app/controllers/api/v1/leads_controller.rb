@@ -1,7 +1,7 @@
 require 'data_generators/pet_premium_generator'
 require 'data_generator_provider'
 require 'workers/send_data_worker.rb'
-class API::V1::LeadsController < ApplicationController
+class API::V1::LeadsController  < ActionController::API
 
   def create
     lead = Lead.new(lead_params)

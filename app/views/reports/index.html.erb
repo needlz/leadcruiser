@@ -1,0 +1,23 @@
+<script>
+
+    $(function() {
+        ReportBar.show(<%= Lead.number_per_day(14.days.ago.beginning_of_day.to_i, Time.now.beginning_of_day.to_i) %>);
+    });
+
+    $( document ).ready(function() {
+        $('.simpledaterange').dateRangePicker().bind('datepicker-change',
+                function(event,obj){
+                    ReportBar.refresh(Date.parse(obj.date1), Date.parse(obj.date2))
+                }
+        );
+    });
+
+</script>
+
+<div class="row form-group">
+  <div class="col-md-2"><h2>Leads per day graph</h2> </div>
+  <div class="col-md-9 choose-range">Choose range:<input class="simpledaterange"/>
+    <div id="leads_per_day"></div>
+  </div>
+</div>
+
