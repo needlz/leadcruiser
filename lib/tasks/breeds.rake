@@ -25,4 +25,11 @@ namespace :breeds do
     end
   end
 
+  task :remove_tables => :environment do
+    DogBreed.destroy_all
+    CatBreed.destroy_all
+    ClientDogBreedMapping.destroy_all
+    ClientCatBreedMapping.destroy_all
+  end
+
 end

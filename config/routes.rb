@@ -4,13 +4,9 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'reports#index'
-  resources :reports, only: :index do
-    member do
-      post 'refresh', action: :refresh, as: 'refresh'
-    end
-  end
+  resources :reports, only: :index
 
-  post 'reports/refresh', :to => 'reports#refresh'
+  get 'reports/refresh', :to => 'reports#refresh'
   namespace :api do
     namespace :v1 do
       with_options only: :create do |option|
@@ -19,10 +15,6 @@ Rails.application.routes.draw do
       end
     end
   end
-
-  # match "user/account" => "user#account", as: :user_account, via: [:get, :post]
-  # resources :milestone, only: [:show]
-
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

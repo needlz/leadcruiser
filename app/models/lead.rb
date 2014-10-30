@@ -17,16 +17,6 @@ class Lead < ActiveRecord::Base
     SendEmailWorker.perform_async(self.id)
   end
 
-  def self.number_per_day(first_day, second_date)
-    data = []
-    last_date = second_date.to_i
-    while last_date >= first_day.to_i do
-      data << [last_date * 1000 ,Lead.by_day(DateTime.parse(Time.at(last_date).to_s)).count]
-      last_date -= 1.day.to_i
-    end
-    data
-  end
-
   private
 
   def check_uniqueness_of_pet

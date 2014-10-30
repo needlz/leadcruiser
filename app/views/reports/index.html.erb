@@ -1,17 +1,15 @@
 <script>
-
-    $(function() {
-        ReportBar.show(<%= Lead.number_per_day(14.days.ago.beginning_of_day.to_i, Time.now.beginning_of_day.to_i) %>);
+    $(function () {
+        LeadStatisticGraph.show(<%= @leads_per_day %>);
     });
 
-    $( document ).ready(function() {
+    $(document).ready(function () {
         $('.simpledaterange').dateRangePicker().bind('datepicker-change',
-                function(event,obj){
-                    ReportBar.refresh(Date.parse(obj.date1), Date.parse(obj.date2))
+                function (_, period) {
+                    LeadStatisticGraph.refresh(Date.parse(period.date1), Date.parse(period.date2))
                 }
         );
     });
-
 </script>
 
 <div class="row form-group">
