@@ -1,14 +1,12 @@
-- count = (@page.to_i-1)*30 + 1
 - @leads.each do |lead|
   %tr
-    %td= count
     %td= lead.created_at
     %td= lead.id
     %td= lead.details_pets.first.pet_name
     %td= lead.details_pets.first.species
-    %td= lead.details_pets.first.birth_month.to_s + ' ' +  lead.details_pets.first.birth_year.to_s
+    %td= "#{lead.details_pets.first.birth_month} #{ lead.details_pets.first.birth_year}"
     %td= lead.try(:zip_code).try(:state)
-    %td= lead.first_name + ' ' + lead.last_name
+    %td= "#{lead.first_name} #{lead.last_name}"
     %td= lead.email
     %td= lead.day_phone
     %td= lead.visitor_ip
@@ -16,4 +14,3 @@
     %td= ''
     %td= ''
     %td= ''
-  - count += 1

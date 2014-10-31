@@ -6,10 +6,6 @@
     %input.simpledaterange
     #leads_per_day
 
-
-
-
-
 .row.form-group
   .col-md-2
     %h2 Leads
@@ -18,7 +14,6 @@
   %table.table.table-hover
     %thead
       %tr
-        %th #
         %th Date/Time
         %th Lead ID
         %th Pet Name
@@ -37,7 +32,6 @@
       = render 'leads'
 
 .col-md-12= will_paginate @leads
-
 
 :javascript
   $(function () {
