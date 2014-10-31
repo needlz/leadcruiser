@@ -23,6 +23,10 @@ module Reporting
       result
     end
 
+    def leads(first_date, last_date)
+      Lead.where(created_at: first_date..last_date).joins(:details_pets).order('created_at DESC')
+    end
+
   end
 end
 
