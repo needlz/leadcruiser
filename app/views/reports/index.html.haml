@@ -1,0 +1,49 @@
+.row.form-group
+  .col-md-2
+    %h2 Leads per day graph
+  .col-md-9.choose-range
+    Choose range:
+    %input.simpledaterange
+    #leads_per_day
+
+.row.form-group
+  .col-md-2
+    %h2 Leads
+
+.col-md-12
+  %table.table.table-hover
+    %thead
+      %tr
+        %th Date/Time
+        %th Lead ID
+        %th Pet Name
+        %th Dog/Cat
+        %th Pet Age
+        %th State
+        %th User Name
+        %th User Email
+        %th User phone
+        %th IP
+        %th Type
+        %th Sold To
+        %th Price
+        %th Response
+    %tbody.lead-table
+      = render 'leads'
+
+.col-md-12= will_paginate @leads
+
+:javascript
+  $(function () {
+      LeadStatisticGraph.show( #{@leads_per_day} );
+  });
+
+  $(document).ready(function () {
+      $('.simpledaterange').dateRangePicker().bind('datepicker-change',
+              function (_, period) {
+                  LeadStatisticGraph.refresh(Date.parse(period.date1), Date.parse(period.date2))
+              }
+      );
+  });
+  Pagination.initialize()
+

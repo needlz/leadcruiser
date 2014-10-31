@@ -23,6 +23,13 @@ module Reporting
       result
     end
 
+    def leads(first_date, last_date, page)
+      Lead.where(created_at: first_date..last_date)
+      .joins(:details_pets)
+      .order(created_at: :desc)
+      .paginate(page: page, per_page: 20)
+    end
+
   end
 end
 
