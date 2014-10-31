@@ -41,6 +41,7 @@ gem 'factory_girl_rails', group: [:development, :test]
 gem 'spring',        group: :development
 gem 'jquery-rails'
 gem "haml-rails"
+gem 'will_paginate', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
