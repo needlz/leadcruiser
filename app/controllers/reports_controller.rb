@@ -1,5 +1,7 @@
 class ReportsController < ApplicationController
 
+  http_basic_authenticate_with name: LOGIN_NAME, password: LOGIN_PASSWORD
+
   def index
    @leads_per_day = lead_amount_per_day(14.days.ago.to_i, Time.now.to_i)
   end
