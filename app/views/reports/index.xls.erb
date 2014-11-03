@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:x="urn:schemas-microsoft-com:office:excel"
+          xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Lead">
+    <Table>
+      <Row>
+        <% I18n.t('reports.lead.columns').values.each do |column_value|%>
+          <Cell><Data ss:Type="String"><%= column_value %></Data></Cell>
+        <% end %>
+      </Row>
+      <% @leads.each do |lead| %>
+          <Row>
+            <Cell><Data ss:Type="String"><%= lead.created_at %></Data></Cell>
+            <Cell><Data ss:Type="Number"><%= lead.id %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.details_pets.first.pet_name %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.details_pets.first.species %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.details_pets.first.birth_month %> <%= lead.details_pets.first.birth_year %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.try(:zip_code).try(:state) %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.first_name %> <%= lead.last_name %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.email %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.day_phone %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.visitor_ip %></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"></Data></Cell>
+          </Row>
+      <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>
+

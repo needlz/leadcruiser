@@ -65,8 +65,27 @@ class @LeadStatisticGraph
             type: "GET"
             dataType: "json"
             data:
-                firstDate: firstDate / 1000
-                secondDate: secondDate / 1000
+                firstDate: firstDate
+                secondDate: secondDate
 
             success: (data) ->
               LeadStatisticGraph.show data.days
+
+    @rebuildPage: (firstDate, secondDate) ->
+      $.ajax
+        url: "/reports"
+        type: "GET"
+        dataType: "script"
+        data:
+          firstDate: firstDate
+          secondDate: secondDate
+
+class @DatePicker
+
+  @initializeForGraph:  ->
+    $(".graph-date-range").dateRangePicker().bind "datepicker-change", (_, period) ->
+      LeadStatisticGraph.refresh period.date1.format("fullUts"), period.date2.format("fullUts")
+
+  @initializeForLeads: ->
+    $(".table-date-range").dateRangePicker().bind "datepicker-change", (_, period) ->
+      LeadStatisticGraph.rebuildPage period.date1.format("fullUts"), period.date2.format("fullUts")
