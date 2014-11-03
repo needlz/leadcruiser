@@ -13,6 +13,7 @@
 .row.form-group
   .col-md-2
     %h2 Leads
+= link_to "Export to CSV", "#{reports_path(format: 'csv')}"
 
 .col-md-12
   %table.table.table-hover

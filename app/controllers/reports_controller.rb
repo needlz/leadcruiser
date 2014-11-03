@@ -4,6 +4,11 @@ class ReportsController < ApplicationController
    @leads_per_day = lead_amount_per_day(14.days.ago.to_i, Time.now.to_i)
    @page = params[:page] || 1
    @leads = Reporting::LeadStatistics.new.leads(14.days.ago.beginning_of_day, Time.now, @page)
+   respond_to do |format|
+     format.html
+     format.csv { send_data @leads.to_csv }
+
+   end
   end
 
   def refresh
