@@ -1,30 +1,40 @@
 module Reporting
   class LeadStatistics
 
-    def amount_per_day(first_date, second_date)
-      begin_date = Time.at(first_date.to_i)
-      finish_date = Time.at(second_date.to_i)
+    def amount_per_day(first_date, last_date)
+      period = period(first_date, last_date)
       day_format = "date_trunc('day', created_at)"
-
-      graph_data = Lead.where(created_at: begin_date..finish_date).group(day_format).order(day_format).count
+      graph_data = Lead.where(created_at: period).group(day_format).order(day_format).count
 
       result = []
-      time_period = begin_date.to_date.beginning_of_day.to_time.to_i..finish_date.to_date.beginning_of_day.to_time.to_i
-
-      time_period.step(1.day).each do |day|
+      day = period.first
+      while day < period.last
         graph_data.each do |date, leads_count|
-          if date.beginning_of_day.to_i == day
-            result << [day * 1000, leads_count]
+          if date.strftime("%m/%d/%Y") == day.strftime("%m/%d/%Y")
+            result << [day.beginning_of_day.to_i * 1000, leads_count]
           else
-            result << [day * 1000, 0] unless graph_data.map { |a| a[0].to_i }.include? day
+             result << [day.beginning_of_day.to_i * 1000, 0] unless graph_data.map { |a| a[0].strftime("%m/%d/%Y") }.include? day.strftime("%m/%d/%Y")
           end
         end
+        day += 1.day
       end
       result
     end
 
-    def leads(first_date, last_date, page)
-      Lead.where(created_at: first_date..last_date).joins(:details_pets).order('created_at DESC').paginate(:page => page, :per_page => 30)
+    def leads(first_date, last_date, page=nil)
+      leads = Lead.where(created_at: period(first_date, last_date))
+      .joins(:details_pets)
+      .order(created_at: :desc)
+      leads = leads.paginate(page: page, per_page: 20) if page
+      leads
+    end
+
+    private
+
+    def period(first_date, last_date)
+      from = first_date.nil? ? 14.days.ago : Time.parse(first_date).try(:beginning_of_day)
+      to = last_date.nil? ? Time.now : Time.parse(last_date).try(:end_of_day)
+      from..to
     end
 
   end

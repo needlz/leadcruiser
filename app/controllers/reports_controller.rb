@@ -1,26 +1,29 @@
 class ReportsController < ApplicationController
 
-  def index
-   @leads_per_day = lead_amount_per_day(14.days.ago.to_i, Time.now.to_i)
-   @page = params[:page] || 1
-   @leads = Reporting::LeadStatistics.new.leads(14.days.ago.beginning_of_day, Time.now, @page)
-   respond_to do |format|
-     format.html
-     format.csv { send_data @leads.to_csv }
+  http_basic_authenticate_with name: LOGIN_NAME, password: LOGIN_PASSWORD
 
+  def index
+    @leads_per_day = statistic.amount_per_day(params[:firstDate], params[:secondDate])
+    @leads = statistic.leads(params[:firstDate], params[:secondDate], params[:page] || 1)
+
+    respond_to do |format|
+      format.html
+      format.js
+      format.xls do
+        @leads = statistic.leads(params[:firstDate], params[:secondDate])
+      end
+    end
    end
-  end
 
   def refresh
     render json: {
-        days: lead_amount_per_day(params[:firstDate], params[:secondDate])
+        days: statistic.amount_per_day(params[:firstDate], params[:secondDate])
     }
   end
-
   private
 
-  def lead_amount_per_day(first_date, last_date)
-    Reporting::LeadStatistics.new.amount_per_day(first_date, last_date)
+  def statistic
+    @statistic ||= Reporting::LeadStatistics.new
   end
 
 end

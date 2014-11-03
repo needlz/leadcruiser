@@ -18,4 +18,5 @@
 //= require jquery.flot.resize
 //= require jquery.flot.pie
 //= require jquery.flot.time
+//= require date.format
 //= require_tree .
