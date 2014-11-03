@@ -3,19 +3,15 @@ module Reporting
 
     def amount_per_day(first_date, last_date)
       period = period(first_date, last_date)
+
       day_format = "date_trunc('day', created_at)"
-      graph_data = Lead.where(created_at: period).group(day_format).order(day_format).count
+      amount_per_existing_days = Lead.where(created_at: period).group(day_format).order(day_format).count
 
       result = []
       day = period.first
       while day < period.last
-        graph_data.each do |date, leads_count|
-          if date.strftime("%m/%d/%Y") == day.strftime("%m/%d/%Y")
-            result << [day.beginning_of_day.to_i * 1000, leads_count]
-          else
-             result << [day.beginning_of_day.to_i * 1000, 0] unless graph_data.map { |a| a[0].strftime("%m/%d/%Y") }.include? day.strftime("%m/%d/%Y")
-          end
-        end
+        matching_item = amount_per_existing_days.detect{ |item| item[0].to_date == day.to_date }
+        result << [day.beginning_of_day.to_i * 1000, matching_item ? matching_item[1] : 0]
         day += 1.day
       end
       result
@@ -23,10 +19,10 @@ module Reporting
 
     def leads(first_date, last_date, page=nil)
       leads = Lead.where(created_at: period(first_date, last_date))
-      .joins(:details_pets)
-      .order(created_at: :desc)
-      leads = leads.paginate(page: page, per_page: 20) if page
-      leads
+        .joins(:details_pets)
+        .order(created_at: :desc)
+      return leads unless page
+      leads.paginate(page: page, per_page: 20)
     end
 
     private

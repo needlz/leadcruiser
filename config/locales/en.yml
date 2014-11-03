@@ -66,24 +66,24 @@ en:
 
   pet_details_uniqueness_for_lead: "Lead with '%{breed}' breed or '%{pet_name}' name already exists"
 
-
-  reports_columns:
-    date_time: 'Date/Time'
-    lead_id: 'Lead ID'
-    pet_name: 'Pet Name'
-    dog_cat: 'Dog/Cat'
-    pet_age: 'Pet Age'
-    state: 'State'
-    user_name: 'User Name'
-    user_email: 'User Email'
-    user_phone: 'User phone'
-    ip: 'IP'
-    type: 'Type'
-    sold_to: 'Sold To'
-    price: 'Price'
-    response: 'Response'
-
   reports:
-    no_available_leads: 'There is no available leads for this period. Please, try to choose other dates.'
     excel_icon_alt: 'Export to XLS'
     choose_range: 'Choose range:'
+
+    lead:
+      columns:
+        date_time: 'Date/Time'
+        lead_id: 'Lead ID'
+        pet_name: 'Pet Name'
+        dog_cat: 'Dog/Cat'
+        pet_age: 'Pet Age'
+        state: 'State'
+        user_name: 'User Name'
+        user_email: 'User Email'
+        user_phone: 'User phone'
+        ip: 'IP'
+        type: 'Type'
+        sold_to: 'Sold To'
+        price: 'Price'
+        response: 'Response'
+      no_available_leads: 'There are no available leads for this period. Please, try to choose other dates.'

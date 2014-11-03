@@ -80,11 +80,6 @@ class @LeadStatisticGraph
           firstDate: firstDate
           secondDate: secondDate
 
-        success: (data) ->
-
-        error:  ->
-
-
 class @DatePicker
 
   @initializeForGraph:  ->

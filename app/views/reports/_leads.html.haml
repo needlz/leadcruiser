@@ -6,7 +6,7 @@
 %table.table.table-hover
   %thead
     %tr
-      - I18n.t('reports_columns').values.each do |column_value|
+      - I18n.t('reports.lead.columns').values.each do |column_value|
         %th= column_value
   %tbody
     - @leads.each do |lead|
@@ -25,9 +25,9 @@
         %td= ''
         %td= ''
         %td= ''
-- if @leads.count == 0
+- if @leads.empty?
   .no-data
-    = t('reports.no_available_leads')
+    = t('reports.lead.no_available_leads')
 
 .col-md-12
   = will_paginate @leads, renderer: BootstrapPagination::Rails
