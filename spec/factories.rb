@@ -27,6 +27,7 @@ module FactoryHelper
       vertical_id 1
       integration_name 'pet_premium'
       active true
+      exclusive true
     end
 
     factory :client_dog_breed_mapping, class: 'ClientDogBreedMapping' do
@@ -36,6 +37,10 @@ module FactoryHelper
 
     factory :dog_breed, class: 'DogBreed' do
       name 'Alapaha Blue Blood Bulldog'
+    end
+
+    factory :vertical do
+      id 1
     end
 
   end

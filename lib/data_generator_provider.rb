@@ -1,16 +1,21 @@
 class DataGeneratorProvider
-  attr_accessor :lead
+  attr_accessor :lead, :integration_name
 
-  def initialize(lead)
+  def initialize(lead, integration_name)
     @lead = lead
+    @integration_name = integration_name
   end
 
   def data_to_send
-    "#{@lead.clients_vertical.integration_name}_generator".camelize.constantize.new(lead).generate
+    "#{integration_name}_generator".camelize.constantize.new(lead).generate
   end
 
   def link
-    "#{@lead.clients_vertical.integration_name}_generator".camelize.constantize::LINK
+    "#{integration_name}_generator".camelize.constantize::LINK
+  end
+
+  def int_name
+    "#{integration_name}_generator"
   end
 
   def send_data
