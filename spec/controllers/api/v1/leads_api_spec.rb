@@ -113,15 +113,15 @@ describe 'API::V1::LeadsController', type: :request do
       lead = Lead.where(session_hash: session_hash).last
       expect(lead.vertical.next_client).to eq('cat_insurance')
 
-      api_post 'leads', lead: correct_data, pet: pet_data
+      api_post 'leads', lead: correct_data, pet: pet_data.merge(pet_name: 'Marko1')
       lead = Lead.where(session_hash: session_hash).last
       expect(lead.vertical.next_client).to eq('pet_indigo')
 
-      api_post 'leads', lead: correct_data, pet: pet_data
+      api_post 'leads', lead: correct_data, pet: pet_data.merge(pet_name: 'Marko2')
       lead = Lead.where(session_hash: session_hash).last
       expect(lead.vertical.next_client).to eq('pet_casual')
 
-      api_post 'leads', lead: correct_data, pet: pet_data
+      api_post 'leads', lead: correct_data, pet: pet_data.merge(pet_name: 'Marko3')
       lead = Lead.where(session_hash: session_hash).last
       expect(lead.vertical.next_client).to eq('cat_insurance')
     end

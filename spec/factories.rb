@@ -40,7 +40,7 @@ module FactoryHelper
     end
 
     factory :vertical do
-
+      id 1
     end
 
   end
