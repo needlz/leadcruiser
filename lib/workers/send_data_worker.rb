@@ -7,6 +7,6 @@ class SendDataWorker
     provider = DataGeneratorProvider.new(lead, integration_name)
     response = provider.send_data
     return unless response
-    Response.create(response: response.to_s, error_reasons:provider.int_name)
+    Response.create(response: response.to_s, lead_id: lead.id)
   end
 end
