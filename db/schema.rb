@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141023091502) do
+ActiveRecord::Schema.define(version: 20141105091719) do
 
   create_table "cat_breeds", force: true do |t|
     t.string   "name"
@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20141023091502) do
     t.text     "rejection_reasons"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lead_id"
   end
 
   create_table "sites", force: true do |t|
