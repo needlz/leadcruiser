@@ -7,7 +7,7 @@ describe 'API::V1::LeadsController', type: :request do
   let (:session_hash) { '#234-22' }
   let! (:vertical) { create(:vertical) }
   let! (:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
-  let (:correct_data) { { first_name: 'John', last_name: 'Doe', session_hash: session_hash, vertical_id: vertical.id, site_id: 1, city: 'NY', zip: 10004, day_phone: '2-12-22', email: 'test@example.com' } }
+  let (:correct_data) { { first_name: 'John', last_name: 'Doe', session_hash: session_hash, vertical_id: vertical.id, site_id: 1, city: 'New York', state:'NY', zip: 10004, day_phone: '2-12-22', email: 'test@example.com' } }
   let (:pet_data) { { species: 'cat', spayed_or_neutered: 'false', pet_name: 'kitty', breed: 'sphinx', birth_month: 12, birth_year: 1998, gender: 'male', conditions: false } }
   let (:wrong_data) { correct_data.except(:first_name) }
 
@@ -24,6 +24,11 @@ describe 'API::V1::LeadsController', type: :request do
     it 'creates lead with session_hash' do
       api_post 'leads', lead: correct_data, pet: pet_data
       expect(Lead.where(session_hash: session_hash).exists?).to eq(true)
+    end
+
+    it 'creates lead with city and state' do
+      api_post 'leads', lead: correct_data, pet: pet_data
+      expect(Lead.where(city: 'New York', state: 'NY').exists?).to eq(true)
     end
 
     it 'creates pet' do

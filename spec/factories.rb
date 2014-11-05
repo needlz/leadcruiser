@@ -17,10 +17,15 @@ module FactoryHelper
       session_hash '#234-22'
       vertical_id 1
       site_id 1
-      city 'NY'
       zip 10001
       day_phone '2-12-22'
       email 'test@example.com'
+
+      trait :with_city_and_state do
+        city 'Alabama'
+        state 'AL'
+      end
+
     end
 
     factory :clients_vertical, class: 'ClientsVertical' do
@@ -41,6 +46,12 @@ module FactoryHelper
 
     factory :vertical do
       id 1
+    end
+
+    factory :zip_code, class: 'ZipCode' do
+      zip 10001
+      primary_city "New York"
+      state "NY"
     end
 
   end
