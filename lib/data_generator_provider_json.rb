@@ -1,4 +1,4 @@
-class DataGeneratorProvider
+class DataGeneratorProviderJson
   attr_accessor :lead, :integration_name
 
   def initialize(lead, integration_name)
@@ -22,7 +22,7 @@ class DataGeneratorProvider
     return if link.blank?
     HTTParty.post link,
                   :body => data_to_send,
-                  :headers => {'Content-type' => 'application/xml'}
+                  :headers => {'Content-type' => 'application/json'}
 
   end
 
