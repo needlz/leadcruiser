@@ -44,6 +44,7 @@ gem "haml-rails"
 gem 'will_paginate', '~> 3.0'
 gem 'will_paginate-bootstrap'
 gem 'sinatra', '>= 1.3.0', :require => nil
+gem 'dotenv-rails', :groups => [:development, :test]
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
