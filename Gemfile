@@ -43,6 +43,8 @@ gem 'jquery-rails'
 gem "haml-rails"
 gem 'will_paginate', '~> 3.0'
 gem 'will_paginate-bootstrap'
+gem 'sinatra', '>= 1.3.0', :require => nil
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -56,3 +58,4 @@ gem 'will_paginate-bootstrap'
 # gem 'debugger', group: [:development, :test]
 
 gem 'rails_12factor', group: [:staging, :production]
+gem "pry", group: :development

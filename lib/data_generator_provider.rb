@@ -19,6 +19,7 @@ class DataGeneratorProvider
   end
 
   def send_data
+    binding.pry
     return if link.blank?
     HTTParty.post link,
                   :body => data_to_send,

@@ -11,7 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141105091719) do
+ActiveRecord::Schema.define(version: 20141105123452) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "cat_breeds", force: true do |t|
     t.string   "name"
@@ -60,7 +63,6 @@ ActiveRecord::Schema.define(version: 20141105091719) do
     t.integer  "lead_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "visitor_ip",         default: "127.1.1.1"
   end
 
   create_table "dog_breeds", force: true do |t|
@@ -91,7 +93,7 @@ ActiveRecord::Schema.define(version: 20141105091719) do
     t.integer  "times_sold"
     t.float    "total_sale_amount"
     t.integer  "vertical_id"
-    t.string   "visitor_ip"
+    t.string   "visitor_ip",        default: "127.1.1.1"
   end
 
   create_table "leads_details_verticals", force: true do |t|

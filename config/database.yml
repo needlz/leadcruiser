@@ -11,7 +11,7 @@ development:
   database: leadcruiser
   pool: 5
   username: postgres
-  password: '123456'
+  password: 'postgres'
   port: 5432
 
 
@@ -30,7 +30,7 @@ test:
   database: leadcruiser_test
   pool: 5
   username: postgres
-  password: '123456'
+  password: 'postgres'
   port: 5432
 
 production:
@@ -40,5 +40,5 @@ production:
   database: leadcruiser_prod
   pool: 5
   username: postgres
-  password: '123456'
+  password: 'postgres'
   port: 5432

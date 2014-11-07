@@ -6,7 +6,9 @@ class SendDataWorker
     lead = Lead.find(lead_id)
     provider = DataGeneratorProvider.new(lead, integration_name)
     response = provider.send_data
-    return unless response
+    if response.nil?
+      response = provider.send_data
+    end
     Response.create(response: response.to_s, lead_id: lead.id)
   end
 end

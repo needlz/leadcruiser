@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   root 'reports#index'
   resources :reports, only: :index
 
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+
   get 'reports/refresh', :to => 'reports#refresh'
   namespace :api do
     namespace :v1 do
