@@ -60,3 +60,4 @@ gem 'dotenv-rails', :groups => [:development, :test]
 
 gem 'rails_12factor', group: [:staging, :production]
 gem "pry", group: :development
+gem "letter_opener", group: :development
