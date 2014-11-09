@@ -1,3 +1,5 @@
+require 'workers/response_petfirst_worker.rb'
+
 class SendDataWorker
   include Sidekiq::Worker
   sidekiq_options queue: "high"
@@ -9,13 +11,14 @@ class SendDataWorker
     if response.nil?
       provider = DataGeneratorProviderJson.new(lead, "pet_first")
       response = provider.send_data
+
+      if response.nil?
+        ResponsePetfirstWorker.perform_async(lead_id)
+      end
     end
 
-    # provider = DataGeneratorProviderJson.new(lead, "pet_first")
-    # response = provider.send_data
-
-    # unless response.nil?
-    #   Response.create(response: response.to_s, lead_id: lead.id)
-    # end
+    unless response.nil?
+      Response.create(response: response.to_s, lead_id: lead.id)
+    end
   end
 end
