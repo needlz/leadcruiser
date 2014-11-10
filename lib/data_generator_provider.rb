@@ -1,29 +1,43 @@
 class DataGeneratorProvider
-  attr_accessor :lead, :integration_name
+  attr_accessor :lead, :client
 
-  def initialize(lead, integration_name)
+  def initialize(lead, client)
     @lead = lead
-    @integration_name = integration_name
+    @client = client
   end
 
   def data_to_send
-    "#{integration_name}_generator".camelize.constantize.new(lead).generate
+    "#{client.integration_name}_generator".camelize.constantize.new(lead).generate
   end
 
   def link
-    "#{integration_name}_generator".camelize.constantize::LINK
+    "#{client.integration_name}_generator".camelize.constantize::LINK
   end
 
   def int_name
-    "#{integration_name}_generator"
+    "#{client.integration_name}_generator"
   end
 
   def send_data
-    return if link.blank?
-    HTTParty.post link,
+    return if client.service_url.nil? && link.blank?
+    binding.pry
+    HTTParty.post request_url,
                   :body => data_to_send,
-                  :headers => {'Content-type' => 'application/xml'}
+                  :headers => request_header
+  end
 
+  private
+
+  def request_url
+    client.service_url.nil? ? link : client.service_url
+  end
+
+  def request_header
+    if client.request_type == "JSON"
+      { 'Content-type' => 'application/json' }
+    elsif client.request_type == "XML"
+      { 'Content-type' => 'application/xml' }
+    end
   end
 
 end
