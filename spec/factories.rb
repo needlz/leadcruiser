@@ -1,5 +1,8 @@
 module FactoryHelper
-  FactoryGirl.define do
+  FactoryGirl.define do  factory :admin_user do
+    
+  end
+
     factory :pet, class: 'DetailsPet' do
       species 'dog'
       spayed_or_neutered 'false'
