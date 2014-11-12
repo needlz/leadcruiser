@@ -41,6 +41,8 @@ gem 'factory_girl_rails', group: [:development, :test]
 gem 'spring',        group: :development
 gem 'jquery-rails'
 gem "haml-rails"
+gem 'will_paginate', '~> 3.0'
+gem 'will_paginate-bootstrap'
 gem 'sinatra', '>= 1.3.0', :require => nil
 gem 'dotenv-rails', :groups => [:development, :test]
 gem 'devise'

@@ -21,5 +21,9 @@ module Leadcruiser
     config.autoload_paths += %W(#{config.root}/app/logic)
     config.middleware.use ActionDispatch::Flash
     config.api_only = false
+
+    Kaminari.configure do |config|
+      config.page_method_name = :per_page_kaminari
+    end
   end
 end
