@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/laserlemon/figaro.git
+  revision: 5720b12ca2b086ee5f0a9f4267b11b7753c67d21
+  branch: master
+  specs:
+    figaro (1.0.0)
+      thor (~> 0.14)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -226,6 +234,7 @@ DEPENDENCIES
   dotenv-rails
   factory_girl_rails
   fakeweb
+  figaro!
   haml-rails
   httparty
   jbuilder (~> 2.0)

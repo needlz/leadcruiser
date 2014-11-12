@@ -2,11 +2,11 @@ class PetfirstResponseMailer
 
   include MandrillMailer
 
-  def send_email(lead_id)
-    lead = Lead.find_by_id(lead_id)
+  def send_email(lead)
     template 'petfirst-response'
     subject = "Lead request from pet-insurance.org"
     set_template_values(set_lead_params(lead))
+    # binding.pry
     mail to: [wrap_recipient(ENV["PETFIRST_EMAIL"], ENV["PETFIRST_NAME"], "to")], subject:subject
     # mail to: [wrap_recipient(ENV["RECIPIENT_SELF_EMAIL"], ENV["RECIPIENT_SELF_NAME"], "to")], subject:subject
 
