@@ -7,6 +7,9 @@ class API::V1::LeadsController  < ActionController::API
 
   def create
     lead = Lead.new(lead_params)
+    lead.times_sold = 1
+    lead.total_sale_amount = 1
+
     pet = lead.details_pets.build(pet_params)
 
     if lead.save
