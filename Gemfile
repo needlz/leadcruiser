@@ -63,3 +63,4 @@ gem "paperclip", "~> 4.2"
 gem 'rails_12factor', group: [:staging, :production]
 gem "pry", group: :development
 gem "letter_opener", group: :development
+gem 'figaro', git: 'git://github.com/laserlemon/figaro.git', branch: 'master'

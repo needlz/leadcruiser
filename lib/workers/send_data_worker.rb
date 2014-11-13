@@ -23,18 +23,15 @@ class SendDataWorker
       provider = DataGeneratorProvider.new(lead, client)
 
       response = provider.send_data
-      binding.pry
 
       count += 1
     end
 
     unless response.nil?
-      binding.pry
       Response.create(response: response.to_s, lead_id: lead.id)
       if @client.integration_name == "pet_first"
-        binding.pry
-        # ResponsePetfirstWorker.perform_async(lead_id)
-        ResponsePetfirstWorker.new.perform(lead_id)
+        ResponsePetfirstWorker.perform_async(lead_id)
+        # ResponsePetfirstWorker.new.perform(lead_id)
       end
     end
 

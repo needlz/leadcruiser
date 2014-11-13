@@ -15,5 +15,7 @@ class AddLogoToClientVerticals < ActiveRecord::Migration
   	add_column :clients_verticals, :email, :string
   	add_column :clients_verticals, :phone_number, :string
   	add_column :clients_verticals, :website_url, :string
+    add_column :clients_verticals, :official_name, :string
+    add_column :clients_verticals, :description, :text
   end
 end

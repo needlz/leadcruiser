@@ -89,6 +89,8 @@ ActiveRecord::Schema.define(version: 20141112085020) do
     t.string   "email"
     t.string   "phone_number"
     t.string   "website_url"
+    t.string   "official_name"
+    t.text     "description"
   end
 
   create_table "details_pets", force: true do |t|

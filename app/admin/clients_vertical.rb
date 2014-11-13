@@ -19,6 +19,7 @@ ActiveAdmin.register ClientsVertical do
     selectable_column
     id_column
     column :integration_name
+    column :official_name
     column :active
     column :weight
     column :exclusive
@@ -28,16 +29,17 @@ ActiveAdmin.register ClientsVertical do
     column :website_url
     column :request_type
     column :service_url
-    column :created_at
     column "Logo" do |client|
       link_to(image_tag(client.logo.url(:thumb), :height => '30'))
     end
+    column :created_at
     actions
   end
 
   form :html => { :enctype => "multipart/form-data" } do |f|
     f.inputs "Details", :multipart => true do
       f.input :integration_name
+      f.input :official_name
       f.input :active
       f.input :weight
       f.input :exclusive
@@ -47,6 +49,7 @@ ActiveAdmin.register ClientsVertical do
       f.input :website_url, :as => :url
       f.input :request_type
       f.input :service_url
+      f.input :description
       f.input :logo, :as => :file, :hint => f.template.image_tag(f.object.logo.url(:thumb))
     end
     f.actions

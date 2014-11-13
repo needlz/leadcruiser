@@ -18,8 +18,8 @@ class API::V1::LeadsController  < ActionController::API
       render json: { :success => true, message: 'Lead was created successfully' }, status: :created
       # client_verticals = ClientsVertical.where(vertical_id: lead.vertical_id, active: true, exclusive: true)
       # builder = NextClientBuilder.new(lead, client_verticals)
-      SendDataWorker.perform_async(lead.id)
-      # SendDataWorker.new.perform(lead.id)
+      # SendDataWorker.perform_async(lead.id)
+      SendDataWorker.new.perform(lead.id)
     else
       render json: { :success => false, errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
     end
