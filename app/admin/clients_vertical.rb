@@ -4,8 +4,8 @@ ActiveAdmin.register ClientsVertical do
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
-  permit_params :integration_name, :active, :weight, :exclusive, :fixed_price, :email, :phone_number,
-                :website_url, :request_type, :service_url, :logo
+  permit_params :integration_name, :official_name, :active, :weight, :exclusive, :fixed_price, :email, :phone_number,
+                :website_url, :request_type, :service_url, :logo, :description
   #
   # or
   #
