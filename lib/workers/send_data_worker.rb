@@ -28,7 +28,7 @@ class SendDataWorker
     end
 
     unless response.nil?
-      Response.create(response: response.to_s, lead_id: lead.id)
+      Response.create(response: response.to_s, lead_id: lead.id, client_name: @client.integration_name)
       if @client.integration_name == "pet_first"
         ResponsePetfirstWorker.perform_async(lead_id)
         # ResponsePetfirstWorker.new.perform(lead_id)
