@@ -1,0 +1,544 @@
+dog_name,our_list,update_action
+Affenpinscher,Affenpinscher,x
+Afghan Greyhound,Afghan Hound,x
+Afghan Hound,African Boerboel,Boerboel
+Airedale,Ainu Dog,Other Purebred
+Airedale Terrier,Airedale Terrier,x
+Akita,Akbash,Other Purebred
+Alaskan Husky,Akita,x
+Alaskan malamute,Alapaha Blue Blood Bulldog,American Bulldog
+Alpine Mastiff,Alaskan Husky,x
+Alsatian,Alaskan Klee Kai,Alaskan Husky
+American Bandogge Mastiff,Alaskan Malamute,x
+American Black and Tan Coonhound,Alpine Dachsbracke,Hound
+American Blue Cascon Hound,American Allaunt,American Bulldog
+American Bulldog,American Alsatian,Alsatian
+American Cocker Spaniel,American Bandogge Mastiff,x
+American Coonhound,American Barbet,Barbet
+American English Coonhound,American Bulldog,x
+American Eskimo,American Bully,American Staffordshire Bull Terrier
+American Foxhound,American Cocker Spaniel,x
+American Hairless Terrier,American English Coonhound,x
+American Hound,American Eskimo Dog,American Eskimo
+American Labrador Retriever,American Foxhound,x
+American Mastiff,American Hairless Terrier,x
+American Pit Bull,American Indian Dog,Native American Indian Dog
+American Pit Bull Terrier,American Mastiff,x
+American Rat Terrier,American Pit Bull Terrier,x
+American Staffordshire Bull Terrier,American Staffordshire Terrier,x
+American Staffordshire Terrier,American Water Spaniel,x
+American Water Spaniel,American White Shepherd,Shepherd
+Anatolian Karabash,Anatolian Shepherd Dog,Anatolian Shepherd
+Anatolian Mastiff,Anglo-french Hounds,Hound
+Anatolian Shepherd,Appenzell Mountain Dog,Appenzeller Sennenhunde
+Appenzeller,Appenzeller Sennenhunde,x
+Appenzeller Sennenhunde,Argentine Dogo,Other Purebred
+Argentinian Mastiff,Ariegeois,Hound
+Australian Cattle Dog,Artois Hound,Hound
+Australian Dingo,Atlas Dog,Other Purebred
+Australian Heeler,Australian Cattle Dog,x
+Australian Kelpie,Australian Kelpie,x
+Australian Shepherd Dog,Australian Shepherd,Australian Shepherd Dog
+Australian Silky Terrier,Australian Short-haired Pinscher,Austrian Pinscher
+Australian Stumpy Tail Cattle Dog,Australian Silky Terrier,Australian Silky Terrier
+Australian Terrier,Australian Terrier,x
+Austrian Pinscher,Austrian Coarse-haired Hound,Hound
+Azawakh Hound,Austrian Hound,Hound
+Barbet,Auvergne Setter,Pointer
+Basenji,Azawakh,Azawakh Hound
+Basset Fauve de Bretagne,Bagel,Mixed
+Basset Hound,Balkan Hound,Hound
+Bavarian Mountain Hound,Banjara Greyhound,Greyhound
+Beagle,Barbet,x
+Bearded Collie,Basenji,x
+Beauceron,Basset Artesien Normand,Basset Hound
+Bedlington Terrier,Basset Griffon Vandeen,Petit Basset Griffon Vendeen
+Belgian Griffon,Basset Hound,x
+Belgian Malinois,Bavarian Mountain Dog,x
+Belgian Mastiff,Beabull,Mixed
+Belgian Sheepdog,Beagle,x
+Belgian Shepherd,Beagle Harrier,Harrier
+Belgian Shepherd Groenendael,Beagle Mix,Mixed
+Belgian Shepherd Laekenois,Bearded Collie,x
+Belgian Shepherd Malinois,Beauce Shepherd,Beauceron
+Belgian Shepherd Tervuren,Beauceron,x
+Belgian Tervuren,Bedlington Terrier,x
+Bergamasco,Belgian Laekenois,Laekenois
+Bergamasco Sheepdog,Belgian Malinois,Belgian Shepherd Malinois
+Berger Picard/Picardy Sheepdog,Belgian Sheepdog,x
+Bernese Mountain Dog,Belgian Shepherd,x
+Bichon,Belgian Shepherd Malinois,x
+Bichon Frise,Belgian Shepherd Tervuren,x
+Bichon-Poo,Belgian Tervuren,x
+Black and Tan Coonhound,Bergamasco,x
+Black and Tan Foxhound,Berger De Picard,Berger Picard/Picardy Sheepdog
+Black and Tan Virginia Foxhound,Bernese Hound,Hound
+Black Russian Terrier,Bernese Mountain Dog,x
+Blackmouth Cur,Bichon Frise,x
+Bloodhound,Bichon Mix,Mixed
+Blue Gascony Griffon,Bichpoo,Bichon-Poo
+Blue Picardy Spaniel,Biewer,Terrier
+Bluetick Coonhound,Billy,Hound
+Boerboel,Black and Tan Coonhound,American Black and Tan Coonhound
+Bolognese,Black Forest Hound,Hound
+Bordeaux Mastiff,Black Mouth Cur,Blackmouth Cur
+Border Collie,Black Russian Terrier,x
+Border Terrier,Bloodhound,x
+Borzoi,Blue Heeler,Queensland Blue Heeler
+Boston Terrier,Blue Lacy,Texas Blue Lacey
+Bouvier des Flandres,Blue Picardy Spaniel,x
+Boxer,Bluetick Coonhound,x
+Boykin Spaniel,Boerboel,x
+Brabancon Griffon,Bolognese,x
+Bracco Italiano,Border Collie,x
+Brazilian Mastiff,Border Collie Mix,Mixed
+Briard,Border Terrier,x
+Briquet Griffon,Borzoi,x
+Briquet Griffon Vendeen,Bosnian Coarse-haired Hound,Hound
+Brittany,Boston Terrier,x
+Bull Boxer,Bourbonnais Setter,pointer
+Bull Terrier,Bouvier Des Flandres,x
+Bull Terrier (miniature),Boxer,x
+Bulldog,Boykin Spaniel,x
+Bullmastiff,Bracco Italiano,x
+Bully Kutta,Braque Du Bourbonnais,pointer
+Cairn Terrier,Braque Francais,Pointer
+Canaan Dog,Brazilian Guard Dog,Fila Brasileiro
+Canadian Eskino/Inuit,Brazilian Tracker,Hound
+Canary Dog,Briard,x
+cane corso,Briquet Griffon Vendeen,x
+Cane Corso Mastiff,Brittany,x
+Cardigan Welsh Corgi,Broholmer,Mastiff
+Catahoula Leopard Dog,Brussels Griffon,Griffon Bruxellois
+Caucasian Ovcharka,Bugg,Mixed
+Cavalier King Charles Spaniel,Bull Terrier,x
+Central Asian Shepherd,Bulldog,x
+Cesky Terrier,Bulldog Mix,Mixed
+Chesapeake Bay Retriever,Bullmastiff,x
+Chihuahua,Bulloxer,Bull Boxer
+Chihuahua (Long Coat),Cairn Terrier,x
+Chihuahua (smooth coat),Canaan Dog,x
+Chinese Crested Dog,Canadian Husky,Canadian Eskino/Inuit
+Chinese Crested Powder Puff,Cane Corso,x
+Chinook,Cardigan Corgis,Cardigan Welsh Corgi
+Chipom,Cardigan Welsh Corgi,x
+Chipoo,Carolina Dog,Dingo
+Chow Chow,Catahoula Leopard Dog,x
+Cimeco dell Etna,Catalonian Shepherd,Other Purebred
+Clumber Spaniel,Caucasian Mountain Dog,Caucasian Ovcharka
+Cockapoo,Cavachon,Mixed
+Cocker Spaniel,Cavalier King Charles Spaniel,x
+Collie,Cavapoo,Mixed
+Coonhound,Central Asian Shepherd Dog,x
+Corgi,Cesky Terrier,x
+Coton de Tulear,Charplaninatz,Shepherd
+Cuban Mastiff,Chesapeake Bay Retriever,x
+Curly Coated Retriever,Chihuahua,x
+Curly-Coated Retriever,Chihuahua Mix,Mixed
+Czechoslovakian Wolfdog,Chinese Crested,Chinese Crested Dog
+Dachshund,Chinese Imperial,Other purebred
+Dachshund (long haired),Chinese Shar-Pei,Shar Pei
+Dachshund (Miniature long haired),Chinook,x
+Dachshund (Miniature short haired),Chiweenie,Mixed
+Dachshund (Miniature smooth haired),Chorkie,Mixed
+Dachshund (Miniature wire haired),Chow Chow,x
+Dachshund (Miniature),Chow Mix,Mixed
+Dachshund (short haired),Chug,Mixed
+Dachshund (smooth haired),Clumber Spaniel,x
+Dachshund (standard),Cockapoo,x
+Dachshund (wire haired),Cocker Spaniel,x
+Dalmatian,Collie,x
+Dandie Dinmont Terrier,Coon Hound,Coonhound
+Decker Giant Terrier,Corgi Mix,Mixed
+Deerhound,Coton de Tulear,x
+Dingo,Curly-Coated Retriever,x
+Doberman Pinscher,Czech Coarse-haired Setter,Other purebred
+Dobermann,Czech Shepherd,Shepherd
+Dogue de Bordeaux,Czechoslovakian Wolfdog,x
+Drever,Dachshund,x
+Dumfriesshire Foxhound,Dachsund Mix,Mixed
+Dunker/Norwegian Hound,Dalmatian,x
+Dutch Sheepdog,Dalmatian Mix,Mixed
+Elkhound,Dandie Dinmont Terrier,x
+English Bull Terrier,Danish-Swedish Farm,Other purebred
+English Bulldog,Deerhound,x
+English Cocker Spaniel,Deutsche Wachtelhund,Other purebred
+English Coonhound,Dingo,x
+English Foxhound,Doberman Pinscher,x
+English Labrador,Dogue de Bordeaux,x
+English Labrador Retriever,Dorgie,Mixed
+English Mastiff,Drentse Partridge Dog,Other purebred
+English Pointer,Drever,x
+English Setter,Dunker,Dunker/Norwegian Hound
+English Shepherd,Dupuy Setter,Other purebred
+English Springer Spaniel,Dutch Sheepdog,x
+English Toy Spaniel,Dutch Shepherd,Other purebred
+English Toy Terrier,Elkhound,x
+English Water Spaniel,English Bull Terrier,x
+Entlebucher,English Bulldog,x
+Entlebucher Sunnenhunde,English Cocker Spaniel,x
+Eskimo Dog,English Coonhound,x
+Estrela Mountain Dog,English Foxhound,x
+Estrela Mountani Dog,English Mastiff,x
+Eurasian,English Pointer,x
+Fawn Brittany Griffon,English Retriever,English Labrador Retriever
+Fell Terrier,English Setter,x
+Field Spaniel,English Shepherd,x
+Fila Brasileiro,English Springer Spaniel,x
+Finnish Lapphund,English Toy Spaniel,x
+Finnish Spitz,English Toy Terrier,x
+Flat Coated Retriever,Entlebucher Mountain Dog,Entlebucher Sunnenhunde
+Formosan (Taiwanese) Mountain Dog,Eskimo Dog,x
+Fox Terrier,Estonian Hound,Hound
+Fox Terrier ( wire haired),Estrela Mountain Dog,x
+Fox Terrier (smooth haired),Eurasier,Eurasian
+Fox Terrier (wire haired),Feist,Mountain Feist
+Foxhound,Fell Terrier,x
+French Bulldog,Field Spaniel,x
+French Mastiff,Fila Brasileiro,x
+French Poodle,Finnish Hound,Finnish Lapphund
+French Spaniel,Finnish Lapphund,Finnish Lapphund
+Galgo Espanol,Finnish Spitz,x
+Ganaraskan,Flat-Coated Retriever,x
+Gascogne Braque Francais,Fox Terrier,x
+German Mastiff,French Bulldog,x
+German Pinscher,French Hounds,Hound
+German Schnauzer,French Setter,Other purebred
+German Shepherd,French Spaniel,x
+German Shepherd (long haired),Frenchie Pug,Mixed
+German Short Haired Pointer,Frenchton,Mixed
+German Spitz,Gascons-saintongeois,Other purebred
+German Spitz (Klein),German Hunt Terrier,Other purebred
+German Spitz (Mittel),German Pinscher,x
+German Wire Haired Pointer,German Shepherd Dog,German Shepherd
+Giant Schnauzer,German Shorthaired Pointer,x
+Glen of Imaal Terrier,German Spaniel,Other purebred
+Golden Retriever,German Spitz,x
+Goldendoodle,German Wirehaired Pointer,German Wire Haired Pointer
+Gordon Setter,Giant Schnauzer,x
+Gran Mastin de Borinquen,Glen of Imaal Terrier,x
+Grand Basset Griffon Vendeen,Golden Retriever,x
+Grand Bleu de Gascogne,Goldendoodle,x
+Great Dane,Gordon Setter,x
+Great Pyrenees,Grand Basset Griffon Vendeen,x
+Greater Swiss Mountain Dog,Grand Bleu de Gascoigne,x
+Greenland Husky,Grand Gascons-Saintongeois,Other purebred
+Grey Ghost Dog,Great Bernese,Bernese Mountain Dog
+Greyhound,Great Dane,x
+Griffon,Great Dane Mix,Mixed
+Griffon Bruxellois,Great Gascony Blue,Grand Bleu de Gascogne
+Griffon Nivernais,Great Pyrenees,x
+Groser Munsterlander,Greater Swiss Mountain Dog,x
+Hamilton Hound,Greenland Dog,Greenland Husky
+Hamiltonstovare,Greyhound,x
+Harrier,Haldenstovare,Hound
+Havanese,Hamiltonstovare,x
+Himalayan Sheepdog,Hanover Hound,Hound
+Hound,Harlequin Pinscher,Miniature Pinscher
+Hovawart,Harrier,x
+Hungarian Agar,Havanese,x
+Hungarian Greyhound,Havashu,Mixed
+Hungarian Kuvasz,Hellenic Hound,Hound
+Hungarian Pointer,Hound Mix,Mixed
+Hungarian Puli,Hovawart,x
+Hungarian Vizsla,Hungarian Coarse-Haired Vizsla,Hungarian Wire Haired Vizsla
+Hungarian Wire Haired Vizsla,Hungarian Greyhound,x
+Husky,Hungarian Kuvasz,x
+Ibizan Hound,Hungarian Puli,x
+Icelandic Buhund,Hungarian Vizsla,x
+Icelandic Sheepdog,Husky,x
+Irish Red & White Setter,Hygenhund,Hound
+Irish Setter,Ibizan Hound,x
+Irish Terrier,Ibizan Wolfhound,Other purebred
+Irish Water Spaniel,Icelandic Sheepdog,x
+Irish Wolfhound,Irish Red and White Setter,Irish Red & White Setter
+Italian Bulldogge,Irish Red Setter,Irish Setter
+Italian Greyhound,Irish Setter,x
+Italian Mastiff,Irish Terrier,x
+Italian Spinone,Irish Water Spaniel,x
+Italian Whippet,Irish Wolfhound,x
+Jack Russell,Istrian Hounds,Hound
+Jack Russell Terrier,Italian Greyhound,x
+Jamthund,Italian Mastiff,x
+Japanese Chin,Italian Setter,Bracco Italiano
+Japanese Mastiff,Italian Spinone,x
+Japanese Shiba Inu,Italian Spitz,Other purebred
+Japanese Spaniel,Jack Russell Terrier,x
+Japanese Spitz,Jamthund,x
+Japanese Terrier,Japanese Akita,Akita
+Kai Ken,Japanese Chin,x
+Karelian Bear,Japanese Fighting Dog,Tosa
+Karelian Bear Dog,Japanese Kishu,Kishu Ken
+Keeshond,Japanese Spitz,x
+Kelpie,Japanese Terrier,x
+Kerry Blue Terrier,Jindo,Other purebred
+King Charles Spaniel,Jug,Mixed
+Kishu Ken,Jura Hounds,Hound
+Komondor,Kai Ken,x
+Kooikerhondje,Kangal Dog,Anatolian Karabash
+Korean Mastiff,Kangaroo Hound,Hound
+Kuvasz,Karelian Bear Dog,x
+Labradoodle,Karelian Bear Dog,x
+Labrador Retriever,Karst Shepherd,Shepherd
+Laekenois,Keeshond,x
+Lagotto Romagnolo,Kerry Blue Terrier,x
+Laika,Kerry Blue Terrier,x
+Lakeland Terrier,King Charles Spaniel,x
+Lancashire Heeler,King Shepherd,Shepherd
+Landseer,Komondor,x
+Large Munsterlander,Kooikerhondje,x
+Leonberger,Koolie,Australian Cattle Dog
+Lhasa Apso,Kromfohrlander,Other purebred
+Long Haired Weimaraner,Kuvasz,x
+Longhair Weimaraner,Labradoodle,x
+Lowchen,Labrador Mix,Mixed
+Lurcher,Labrador Retriever,x
+Mackenzie River Husky,Lagotto Romagnolo,x
+Magyar Agar,Laikas,Laika
+Magyar Vizsla,Lakeland Terrier,x
+Malamute,Lancashire Heeler,x
+Malinois,Landseer,x
+Maltese,Lapland Spitz,Swedish Lapphund
+Maltese Terrier,Lapponian Herder,Finnish Lapphund
+Maltipoo,Large Munsterlander,Groser Munsterlander
+Manchester Terrier,Leonberger,x
+Maremma Sheepdog,Levesque,Other purebred
+Mastiff,Lhasa Apso,x
+Mexican Hairless,Lhasa Apso Mix,Mixed
+Mi-Ki,Llewellin Setter,English Setter
+Minature Australian Shepherd,Longhaired Whippet,Whippet
+Miniature Bull Terrier,Lowchen,x
+Miniature English Bull Terrier,Lucas Terrier,Terrier
+Miniature German Schnauzer,Lucernese Hound,Hound
+Miniature Pinscher,Lundehund,Norwegian Spitz
+Miniature Poodle,Lurcher,x
+Miniature Toy Poodle,Majestic Tree Hound,American Hound
+Miniature Yorkshire Terrier,Majorcan Bulldog,Bulldog
+Miniture Dachshund,Mal-Shi,Mixed
+Mixed,Maltese,x
+Mountain Cur,Malti-Poo,Maltipoo
+Mountain Feist,Manchester Terrier,x
+Mountain Terrier,Maremma,Maremma Sheepdog
+Mudi,Mastiff,x
+Munsterlander,Mastiff Mix,Mixed
+Mutt (mixed),McNab,Border Collie
+Native American Indian,Mexican Hairless Dog,Mexican Hairless
+Native American Indian Dog,MI-KI,x
+Neapolitan Mastiff,Miniature American Eskimo,American Eskimo
+Nebolish Mastiff,Miniature Australian Shepherd,x
+Neopolitan Mastiff,Miniature Bull Terrier,x
+New Zealand Huntaway,Miniature Dachshund,x
+Newfoundland,Miniature English Bulldog,English Bulldog
+Norfolk Terrier,Miniature Husky,Alaskan Husky
+Norrbottenspets,Miniature Pinscher,x
+Norsk Buhund,Miniature Poodle,x
+Norvegian Sheepdog,Miniature Pug,Pug
+Norwegian Buhund,Miniature Schnauzer,Miniature German Schnauzer
+Norwegian Elkhound,Miniature Spitz,German Spitz (Klein)
+Norwegian Lundehund,Miniature Yorkie,Miniature Yorkshire Terrier
+Norwegian Spitz,Mixed Breed,Mixed
+Norwich Terrier,Morkie,Mixed
+Nova Scotia Duck Tolling Retriever,Mountain Cur,x
+Old English Bulldogge,Mountain Dog Mix,Mixed
+Old English Mastiff,Mountain Feist,x
+Old English Sheepdog,Mudi,x
+Olde Boston Bulldogge,Mudi,x
+Olde English Bulldogge,Native American Indian Dog,x
+Olde English Sheepdog,Neapolitan Mastiff,Neopolitan Mastiff
+Olde Victorian Bulldogge,Newfoundland,x
+Other Purebred,Nivernais Griffon,Griffon Nivernais
+Otter Hound,Norfolk Terrier,x
+Owczarek Podhalanski,Norrbottenspets,x
+Pakistani Bully Kutta,Norwegian Buhund,x
+Papillon,Norwegian Elkhound,x
+Parson Jack Russell Terrier,Norwegian Lundehund,x
+Parson Russell Terrier,Norwich Terrier,x
+Patterdale Terrier,Nova Scotia Duck Tolling Retriever,x
+Patterdale Terrier,Oeruvian Inca Orchid,Peruvian Incan Orchid
+Pekingese,Old Danish Pointer,Pointer
+Pembroke Welsh Corgi,Old English Sheepdog,x
+Perro de Presa Canario,Olde Boston Bulldogge,x
+Persian Greyhound,Olde English Bulldogge,x
+Peruvian Incan Orchid,Other Hybrid,Mixed
+Petit Basset Griffon Vendeen,Otterhound,x
+Petit Brabancon Griffon,Ovcharka,Caucasian Ovcharka
+Pharaoh Hound,Papillon,x
+Picardy Spaniel,Parson Russell Terrier,x
+Pinscher,Patterdale Terrier,x
+Pit Bull,Peekapoo,Mixed
+Pit Bull Terrier,Pekingese,x
+Plott Coonhound,Pembroke Welsh Corgi,x
+Plott Hound,Perro de Presa Canario,x
+Pointer,Peruvian Inca Orchid,x
+Polish Lowland Sheepdog,Petit Basset Griffon Vendeen,x
+Pomapoo,Petit Brabancon,Petit Brabancon Griffon
+Pomeranian,Pharaoh Hound,x
+Poodle,Pharaoh Hound,x
+Porkie,Picardy Shepherd,Berger Picard/Picardy Sheepdog
+Portuguese Podengo,Pinscher,x
+Portuguese Pointer,Pit Bull - American Terrier,American Pit Bull Terrier
+Portuguese Water Dog,Pitbull Mix,Mixed
+Prague Ratter,Plott,Plott Hound
+Pudelpointer,Poggle,Mixed
+Puerto Rican Mastiff,Pointer,x
+Pug,Pointer Mix,Mixed
+Puggle,Poitevin,Hound
+Puli,Polish Lowland Sheepdog,x
+Pumi,Pom-A-Nauze,Mixed
+Pyrenean Mastiff,Pomapoo,x
+Pyrenean Shepherd,Pomeranian,x
+Pyrenees Braque Francais,Pomeranian Mix,Mixed
+Queensland Blue Healer,Pont-audemer Spaniel,Picardy Spaniel
+Queensland Blue Heeler,Poodle,x
+Rat Terrier,Poodle - Miniature,Miniature Poodle
+Ratting Terrier,Poodle - Standard,Standard Poodle
+Red Heeler,Poodle - Toy,Toy Poodle
+Red Setter,Poodle Mix,Mixed
+Redbone Coonhound,Porcelaine,Hound
+Redbone Hound,Portuguese Podengo,x
+Rhodesian Ridgeback,Portuguese Pointer,x
+River Husky,Portuguese Setter,Portuguese Pointer
+Rottweiler,Portuguese Sheepdog,Other purebred
+Rough Collie,Portuguese Watchdog,Mastiff
+Russian Bolonka,Portuguese Water Dog,x
+Russian Greyhound,Posavatz Hound,Hound
+Russian Hound,Prague Ratter,x
+Russian Shorthaired Sighthound,Pudelpointer,x
+Russian Sighthound,Pug,x
+Russian Terrier,Pug Mix,Mixed
+Russian Wolfhound,Puggle,x
+Saint Bernard,Pugshire,Mixed
+Saint Johns Waterdog,Puli,x
+Sakhalin Husky,Pumi,x
+Saluki,Pyrenean Mastiff,x
+Samoyed,Pyrenean Mountain Dog,Great Pyrenees
+Schipperke,Pyrenean Shepherd,x
+Schnauzer,Queensland Heeler,Queensland Blue Healer
+Schnoodle,Rafeiro do Alentejo,Mastiff
+Scottish Deerhound,Rat Terrier,x
+Scottish Terrier,Redbone Coonhound,x
+Sealyham Terrier,Redtick Coonhound,American English Coonhound
+Segugio Italiano,Retriever Mix,Mixed
+Shar Pei,Rhodesian Ridgeback,x
+Shepherd,Rottweiler,x
+Shetland Sheepdog,Rottweiler Mix,Mixed
+Shiba Inu,Rough Collie,x
+Shih Tzu,Rumanian Shepherd Dog,Shepherd
+Shikoku,Russian Hounds,Russian Hound
+Shiloh Shepherd,Russian Sheepdogs,Caucasian Ovcharka
+Short Haired Collie,Russian Toy Terrier,Russian Terrier
+Short Haired German Pointer,Russian Tsvetnaya Bolonka,Russian Bolonka
+Short Haired Pointer,Saint Bernard,x
+Shropshire Terrier,Saint-German Setter,Pointer
+Siberian Husky,Saluki,x
+Silken Windhound,Samoyed,x
+Silky Terrier,Schapendoes,Dutch Sheepdog
+Silky Terrier,Schiller Hound,Other purebred
+Skye Terrier,Schipperke,x
+Sloughi,Schnauzer - Giant,Giant Schnauzer
+Small Munsterlander,Schnauzer - Miniature,Miniature German Schnauzer
+Smooth Collie,Schnauzer - Standard,Standard Schnauzer
+Smooth Fox Terrier,Schnauzer - Toy,Miniature German Schnauzer
+Snoodle,Schnauzer (Standard),Standard Schnauzer
+Soft Coated Wheaten,Schnauzer Mix,Mixed
+Soft Coated Wheaten Terrier,Schnoodle,x
+South African Mastiff,Scottish Deerhound,x
+Spanish Bulldog,Scottish Terrier,x
+Spanish Galgo,Sealyham Terrier,x
+Spanish Greyhound,Segugio Italiano,x
+Spanish Mastiff,Shar Pei Mix,Mixed
+Spanish Water Dog,Shar-pei,Shar Pei
+Spinone,Sharpoo,Mixed
+St. Bernard,Sheltie,Shetland Sheepdog
+St. Johns Waterdog,Sheltie Mix,Mixed
+Stabyhound,Shepherd Mix,Mixed
+Staffordshire Bull Terrier,Shetland Sheepdog,x
+Staffordshire Terrier,Shetland Sheepdog,x
+Standard Dachshund,Shiba Inu,x
+Standard Poodle,Shih Tzu,x
+Standard Schnauzer,Shih Tzu Mix,Mixed
+Sussex Spaniel,Shih-Poo,Mixed
+Swedish Elkhound,Shiloh Shepherd,x
+Swedish Lapphund,Siberian Husky,x
+Swedish Vallhund,Sicilian Hound,Other purebred
+Terrier,Silken Windhound,x
+Terrierpoo,Silky Terrier,x
+Texas Blue Lacey,Skye Terrier,x
+Thai Ridgeback,Sloughi,x
+Tibetan Mastiff,Slovakian Kuvasz,Kuvasz
+Tibetan Spaniel,Sluki,Persian Greyhound
+Tibetan Terrier,Smaland Hound,Hound
+Tosa,Small Munsterlander,Small Munsterlander
+Tosa Inu,Small-sized French Setter,Other purebred
+Toy Fox Terrier,Smooth Collie,x
+Toy Manchester Terrier,Smooth Fox Terrier,x
+Toy Poodle,Soft Coated Wheaten Terrier,x
+Treeing Walker Coonhound,Spanish Alano,Spanish Bulldog
+Victorian Bulldog,Spanish Bulldog,x
+Virginia Foxhound,Spanish Greyhound,x
+Vizsla,Spanish Hounds,Other purebred
+Water Spaniel,Spanish Mastiff,x
+Weimaraner,Spanish Pointer,Pointer
+Weimaraner (long haired),Spanish Water Dog,x
+Weimaraner Vorstehhund,Spinone Italiano,Spinone
+Welsh Foxhound,Spitz,German Spitz
+Welsh Hound,Springer Spaniel,English Springer Spaniel
+Welsh Sheepdog,Stabyhoun,x
+Welsh Springer Spaniel,Staffordshire Bull Terrier,x
+Welsh Terrier,Staffordshire Terrier,x
+West Highland Terrier,Standard Poodle,x
+West Highland White Terrier,Standard Schnauzer,x
+Wheaten Terrier,Steinbracke,Hound
+Whippet,Stephens` Stock,Other purebred
+Wire Haired German Pointer,Sussex Spaniel,x
+Wire Haired Pointer,Swedish Lapphund,x
+Wire Haired Pointing Griffon,Swedish Vallhund,Stabyhound
+Wire Haired Vizsla,Swiss Hound,Other purebred
+Yankee Bull Terrier,Tamaskan,Other purebred
+Yankee Terrier,Tawny Brittany Basset,Basset Fauve de Bretagne
+Yorkipoo,Tawny Brittany Griffon,Other purebred
+Yorkshire Terrier,Teacup Poodle,Miniature Toy Poodle
+,Teacup Yorkie,Miniature Yorkshire Terrier
+,Telomian,Dingo
+,Terrier Mix,Mixed
+,Thai Ridgeback,x
+,Tibetan Mastiff,x
+,Tibetan Spaniel,x
+,Tibetan Terrier,x
+,Tosa,x
+,Toy Australian Shepherd,Minature Australian Shepherd
+,Toy Eskimo Dog,American Eskimo
+,Toy Fox Terrier,x
+,Toy Maltese,Maltese
+,Toy Manchester Terrier,x
+,Toy Poodle,x
+,Toy Schnauzer,Miniature German Schnauzer
+,Translvanian Hound,Other purebred
+,Treeing Cur,Other purebred
+,Treeing Tennessee Brindle,Mountain Cur
+,Treeing Walker Coonhound,x
+,Tyrolean Hound,Other purebred
+,Victoria Bulldog,Victorian Bulldog
+,Vizsla,x
+,Walker Hound,Treeing Walker Coonhound
+,Weimaraner,x
+,Welsh Corgi,Corgi
+,Welsh Sheepdog,x
+,Welsh Springer Spaniel,x
+,Welsh Terrier,x
+,West Highland Terrier,x
+,West Highland White Terrier,x
+,Wetterhound,Water Spaniel
+,Wheaten Terrier,x
+,Whippet,x
+,Whoodle,Mixed
+,Wire Fox Terrier,Fox Terrier ( wire haired)
+,Wirehaired Pointing Griffon,Wire Haired Pointing Griffon
+,Wooly-Haired Griffon,Griffon
+,Xoloitzcuintli,Mexican Hairless
+,Yellow Lab,Labrador Retriever
+,Yoodle,Mixed
+,Yorkie Mix,Mixed
+,Yorkie Poo,Yorkipoo
+,Yorkshire Terrier,x
+,Yugoslavian Mountain Dog,Shepherd

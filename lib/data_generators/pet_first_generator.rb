@@ -54,8 +54,8 @@ class PetFirstGenerator
       :PetsCovered => lead.details_pets.first.species,
       :Pet1BDay => lead.details_pets.first.birth_year.to_s,
       :Pet1Name => lead.details_pets.first.pet_name,
-      :Pet1Breed => lead.details_pets.first.breed,
-      :Pet1Breed => lead.details_pets.first.species
+      :Pet1Breed => lead.details_pets.first.breed_to_send('pet_first'),
+      :Pet1Species => lead.details_pets.first.species
     }.to_json
   end
 
