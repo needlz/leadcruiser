@@ -16,6 +16,7 @@ class Lead < ActiveRecord::Base
 
   def send_email
     SendEmailWorker.perform_async(self.id)
+    # SendEmailWorker.new.perform(self.id)
   end
 
   private

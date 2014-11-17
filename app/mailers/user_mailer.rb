@@ -6,10 +6,9 @@ class UserMailer
     template 'lead-was-created'
     subject = "Pet-Insurance.org #{env_field} New Lead - ID: #{lead.id} - #{lead.created_at}"
     set_template_values(set_lead_params(lead))
-
+    # binding.pry
     mail to: [wrap_recipient(ENV["RECIPIENT_EMAIL"], ENV["RECIPIENT_NAME"], "to"),
               wrap_recipient(ENV["RECIPIENT_BCC_EMAIL"], ENV["RECIPIENT_BCC_NAME"], "bcc")], subject:subject
-
   end
 
   private

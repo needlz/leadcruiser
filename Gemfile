@@ -43,6 +43,9 @@ gem 'jquery-rails'
 gem "haml-rails"
 gem 'will_paginate', '~> 3.0'
 gem 'will_paginate-bootstrap'
+gem 'sinatra', '>= 1.3.0', :require => nil
+gem 'dotenv-rails', :groups => [:development, :test]
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -56,3 +59,6 @@ gem 'will_paginate-bootstrap'
 # gem 'debugger', group: [:development, :test]
 
 gem 'rails_12factor', group: [:staging, :production]
+gem "pry", group: :development
+gem "letter_opener", group: :development
+gem 'figaro', git: 'git://github.com/laserlemon/figaro.git', branch: 'master'
