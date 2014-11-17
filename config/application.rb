@@ -19,5 +19,11 @@ module Leadcruiser
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     config.autoload_paths += %W(#{config.root}/app/logic)
+    config.middleware.use ActionDispatch::Flash
+    config.api_only = false
+
+    Kaminari.configure do |config|
+      config.page_method_name = :per_page_kaminari
+    end
   end
 end

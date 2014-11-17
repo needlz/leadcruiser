@@ -7,18 +7,39 @@ class API::V1::LeadsController  < ActionController::API
 
   def create
     lead = Lead.new(lead_params)
+    lead.times_sold = 1
+    lead.total_sale_amount = 1
+
     pet = lead.details_pets.build(pet_params)
 
     if lead.save
       AutoResponseThankWorker.perform_async(lead.email)
-      # AutoResponseThankWorker.new.perform(lead.email)
-      render json: { :success => true, message: 'Lead was created successfully' }, status: :created
+      # render json: { :success => true, message: 'Lead was created successfully' }, status: :created
       # client_verticals = ClientsVertical.where(vertical_id: lead.vertical_id, active: true, exclusive: true)
       # builder = NextClientBuilder.new(lead, client_verticals)
-      # SendDataWorker.perform_async(lead.id)
       SendDataWorker.new.perform(lead.id)
+
+      # Check Responses table and return with JSON response
+      response = Response.find_by_lead_id(lead.id)
+      unless response.nil?
+        cv = ClientsVertical.find_by_integration_name(response.client_name)
+        
+        json_response = {
+          :integration_name   => cv.integration_name,
+          :email              => cv.email,
+          :phone_number       => cv.phone_number,
+          :website_url        => cv.website_url,
+          :official_name      => cv.official_name,
+          :description        => cv.description,
+          :logo_url           => cv.logo.url
+        }.to_json
+
+        render json: { :success => true, :client => json_response}, status: :created
+      else
+        render json: { errors: "Unable to get response!"}, status: :unprocessable_entity
+      end
     else
-      render json: { :success => false, errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
+      render json: { errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
     end
   end
 

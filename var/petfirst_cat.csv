@@ -1,0 +1,110 @@
+cat_name,add_action,our_list,update_action
+Abyssinian,x,Abyssinian,x
+American Bobtail,x,Alley Cat,Domestic Short Hair
+American Hairless,add,American Bobtail,x
+American Shorthair,x,American Bobtail Shorthair,American Bobtail
+Angora,x,American Curl,Domestic Medium Hair
+Asian,add,American Curl Longhair,Domestic Medium Hair
+Balinese,x,American Curl Shorthair,Domestic Medium Hair
+Bengal,x,American Shorthair,x
+Birman,x,American Shorthair (purebred),American Shorthair
+Bombay,x,American Wirehair (purebred),American Shorthair
+British,0,Angora,x
+British Black,0,Ashera,Savannah
+British Blue,0,Balinese,x
+British Shorthair,x,Bengal,x
+Burmese,x,Bengalese,Bengal
+Burmilla,x,Birman,x
+Calico,x,Bombay,x
+Californian Spangled,x,British Longhair,British
+Chartruex,x,British Shorthair,British Shorthair
+Chinchilla,x,Burmese,x
+Colour Point,x,Burmilla,x
+Cornish Rex,x,Calico,x
+Devon Rex,x,California Spangled,x
+Domestic Long Hair,x,Cameo Longhair,Domestic Medium Hair
+Domestic Medium Hair,x,Canadian Hairless (Sphynx),Sphynx
+Domestic Short Hair,x,Chartreux,x
+Egyptian Mau,x,Chausie,Mixed
+Exotic,x,Chinchilla,x
+Feral,0,Colorpoint,Colour Point
+Foreign Short Hair,x,Colorpoint Longhair,Colour Point
+Havana,x,Colorpoint Shorthair,Colour Point
+Himalayan,x,Cornish Rex,x
+Japanese Bobtail,x,Cymric,Domestic Medium Hair
+Japanese Short Hair,,Devon Rex,x
+Korat,x,Domestic Longhair,Domestic Long Hair
+Maine Coon,x,Domestic Mediumhair,Domestic Medium Hair
+Manx,x,Domestic Shorthair,Domestic Short Hair
+Mixed,x,Donskoy,Domestic Medium Hair
+munchkin,x,Dwarf Cat,munchkin
+Non Pedigree,,Egyptian Mau,x
+Norwegian Forest Cat,x,European Burmese,Burmese
+Ocicat,x,European Shorthair,Domestic Short Hair
+Oriental,x,Exotic,x
+Persian,x,Exotic Longhair,Exotic
+Ragamuffin,x,Exotic Shorthair,Exotic
+Ragdoll,x,Habari,Domestic Medium Hair
+Russian Blue,x,Havana Brown,Havana
+Savannah,x,Highland Fold,Scottish Fold
+Scottish Fold,x,Highlander,Domestic Medium Hair
+Selkirk Rex,x,Highlander Shorthair,Domestic Medium Hair
+Siamese,x,Himalayan,x
+Siamese Cross,,Himalayan Blue Point,Himalayan
+Siberian,x,Himalayan Flame Point,Himalayan
+Singapura,x,Himalayan Lilac Point,Himalayan
+Snowshoe,x,Himalayan Seal Point,Himalayan
+Somali,x,Japanese Bobtail,x
+Sphynx,x,Japanese Bobtail Longhair,Japanese Bobtail
+Tabby,x,Javanese,Oriental
+Tabby (Silver),,Kashmir,Himalayan
+Tiffanie,x,Korat,x
+Tonkinese,x,Kurilian Bobtail,Japanese Bobtail
+Turkish Angora,x,Kurilian Bobtail Long Hair,Japanese Bobtail
+Turkish Van,x,LaPerm,Domestic Medium Hair
+,,LaPerm Shorthair,Domestic Medium Hair
+,,Maine Coon,x
+,,Manx,x
+,,Minskin,Mixed
+,,Moggie,Non Pedigree
+,,Munchkin,x
+,,Munchkin Longhair,munchkin
+,,Nebelung,Russian Blue
+,,Norwegian Forest Cat,x
+,,Ocicat,x
+,,Ojos Azules,Domestic Short Hair
+,,Ojos Azules Longhair,Domestic Long Hair
+,,Oriental,x
+,,Oriental Colorpoint,Oriental
+,,Oriental Longhair,Oriental
+,,Oriental Shorthair,Foreign Short Hair
+,,Other Hybrid,Mixed
+,,Persian,x
+,,Peterbald,Mixed
+,,Pixiebob,Domestic Short Hair
+,,Pixiebob Longhair,Domestic Long Hair
+,,Ragamuffin,x
+,,Ragdoll,x
+,,Russian Blue,x
+,,Safari,Savannah
+,,Savannah,x
+,,Scottish Fold,x
+,,Scottish Fold Longhair,Scottish Fold
+,,Selkirk Rex,x
+,,Selkirk Rex Longhair,Selkirk Rex
+,,Serengeti,Bengal
+,,Seychellois,Siamese Cross
+,,Siamese,x
+,,Siberian,x
+,,Singapura,x
+,,Snowshoe,x
+,,Sokoke,Domestic Short Hair
+,,Somali,x
+,,Sphynx,x
+,,Tabby,x
+,,Thai,Siamese
+,,Tiffany,Tiffanie
+,,Tonkinese,x
+,,Toyger,Tabby
+,,Turkish Angora,x
+,,Turkish Van,x

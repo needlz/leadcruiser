@@ -25,6 +25,39 @@ namespace :breeds do
     end
   end
 
+  task :load_petfirst_dog_mapping => :environment do
+    require 'csv'
+    CSV.foreach( "var/petfirst_dog.csv", :headers => true) do |row|
+      dog_breed = DogBreed.find_by_name(row['our_list'])
+      if dog_breed.nil?
+        DogBreed.create(name: row['our_list'].gsub("\u00A0", ''))
+      end
+
+      ClientDogBreedMapping.create(
+        breed_id: DogBreed.find_by_name(row['our_list']).id, 
+        integration_name: 'pet_first', 
+        name: row['update_action'].gsub("\u00A0", '')
+      ) if row['update_action'] != 'x'
+    end
+  end
+
+  task :load_petfirst_cat_mapping => :environment do
+    require 'csv'
+    CSV.foreach( "var/petfirst_cat.csv", :headers => true) do |row|
+      cat_breed = CatBreed.find_by_name(row['our_list'])
+      if cat_breed.nil?
+        CatBreed.create(name: row['our_list'].gsub("\u00A0", ''))
+      end
+
+      ClientCatBreedMapping.create(
+        breed_id: CatBreed.find_by_name(row['our_list']).id, 
+        integration_name: 'pet_first', 
+        name: row['update_action'].gsub("\u00A0", '')
+      ) if row['update_action'] != 'x'
+
+    end
+  end
+
   task :remove_tables => :environment do
     DogBreed.destroy_all
     CatBreed.destroy_all
