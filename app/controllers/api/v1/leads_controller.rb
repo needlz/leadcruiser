@@ -31,7 +31,7 @@ class API::V1::LeadsController  < ActionController::API
         other_cvs.each do |other_cv|
           other_clients << JSON[cv_json(other_cv)]
         end
-        binding.pry
+
         render json: { :success => true, :client => json_response.to_json, :other_client => other_clients.to_json}, status: :created
       else
         render json: { errors: "Unable to get response!"}, status: :unprocessable_entity
