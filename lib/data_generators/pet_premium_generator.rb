@@ -14,7 +14,7 @@ class PetPremiumGenerator
   def generate
     builder = Nokogiri::XML::Builder.new do |xml|
       xml.LeadData( Target: 'Lead.Insert', Partner: ENV["PET_PREMIUM_EMAIL"], Password: ENV["PET_PREMIUM_PASSWORD"], RequestTime: DateTime.now.strftime('%Y-%m-%d %H:%M:%S') ) do
-        xml.AffiliateData(Id: lead.id, OfferId: lead.id, VerifyAddress: "false", RespondOnNoSale: "true", LeadId: lead.id, Source: 'All')
+        xml.AffiliateData(Id: 1320, OfferId: 36, VerifyAddress: "false", RespondOnNoSale: "true", LeadId: lead.id, Source: 'All')
         generate_contact_data_xml(xml)
         xml.QuoteRequest(QuoteType: 'Pet') do
           generate_owners_xml(xml)
