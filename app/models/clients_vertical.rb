@@ -8,13 +8,13 @@ class ClientsVertical < ActiveRecord::Base
                     :styles => {
                         :medium => "200x100>",
                         :thumb => "30x15>"
-                    },
-                    url: ':s3_domain_url',
-                    :s3_credentials => {
-                      :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-                      :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
-                    },
-                    bucket: ENV['S3_BUCKET_NAME']
+                    }#,
+                    # url: ':s3_domain_url',
+                    # :s3_credentials => {
+                    #   :access_key_id => ENV['AWS_ACCESS_KEY_ID'],
+                    #   :secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
+                    # },
+                    # bucket: ENV['S3_BUCKET_NAME']
                     
                     
   validates_attachment_content_type :logo, :content_type => /\Aimage\/.*\Z/
