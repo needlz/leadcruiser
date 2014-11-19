@@ -23,18 +23,16 @@ class API::V1::LeadsController  < ActionController::API
       response = Response.find_by_lead_id(lead.id)
       unless response.nil?
         cv = ClientsVertical.find_by_integration_name(response.client_name)
+        other_cvs = ClientsVertical.where('integration_name != ?', response.client_name).order(sort_order: :asc)
         
-        json_response = {
-          :integration_name   => cv.integration_name,
-          :email              => cv.email,
-          :phone_number       => cv.phone_number,
-          :website_url        => cv.website_url,
-          :official_name      => cv.official_name,
-          :description        => cv.description,
-          :logo_url           => cv.logo.url
-        }.to_json
+        json_response = cv_json(cv)
 
-        render json: { :success => true, :client => json_response}, status: :created
+        other_clients = []
+        other_cvs.each do |other_cv|
+          other_clients << JSON[cv_json(other_cv)]
+        end
+
+        render json: { :success => true, :client => json_response.to_json, :other_client => other_clients.to_json}, status: :created
       else
         render json: { errors: "Unable to get response!"}, status: :unprocessable_entity
       end
@@ -44,6 +42,21 @@ class API::V1::LeadsController  < ActionController::API
   end
 
   private
+
+  def cv_json(cv)
+    {
+      :integration_name   => cv.integration_name,
+      :email              => cv.email,
+      :phone_number       => cv.phone_number,
+      :website_url        => cv.website_url,
+      :official_name      => cv.official_name,
+      :description        => cv.description,
+      :logo_url           => cv.logo.url,
+      :sort_order         => cv.sort_order,
+      :display            => cv.display
+    }
+  end
+
   def lead_params
     params.fetch(:lead, {}).permit(:session_hash, :site_id, :form_id, :vertical_id, :leads_details_id,
                                  :first_name, :last_name, :address_1, :address_2, :city, :state, :zip,

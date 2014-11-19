@@ -43,7 +43,13 @@ class SendDataWorker
     end
 
     if sold
-      Response.create(response: response.to_s, lead_id: lead.id, client_name: @client.integration_name)
+      Response.create(
+          response: response.to_s, 
+          lead_id: lead.id, 
+          client_name: @client.integration_name, 
+          price: @client.fixed_price
+      )
+      
       if @client.integration_name == "pet_first"
         ResponsePetfirstWorker.perform_async(lead_id)
         # ResponsePetfirstWorker.new.perform(lead_id)

@@ -13,6 +13,7 @@ class Lead < ActiveRecord::Base
   has_one :zip_code, foreign_key: 'zip', primary_key: 'zip'
   has_many :details_pets
   belongs_to :vertical
+  has_one :response
 
   def send_email
     SendEmailWorker.perform_async(self.id)

@@ -22,9 +22,15 @@
         %td= lead.day_phone
         %td= lead.visitor_ip
         %td= ''
-        %td= ''
-        %td= ''
-        %td= ''
+        %td
+          - unless lead.response.nil?
+            = lead.response.client_name
+        %td
+          - unless lead.response.nil?
+            = lead.response.price
+        %td
+          - unless lead.response.nil?
+            = lead.response.response
 - if @leads.empty?
   .no-data
     = t('reports.lead.no_available_leads')
