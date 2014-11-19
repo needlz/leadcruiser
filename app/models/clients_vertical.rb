@@ -8,7 +8,9 @@ class ClientsVertical < ActiveRecord::Base
                     :styles => {
                         :medium => "200x100>",
                         :thumb => "30x15>"
-                    }
+                    },
+                    url: ':s3_domain_url'
+                    
   validates_attachment_content_type :logo, :content_type => /\Aimage\/.*\Z/
   
   def refresh_queue

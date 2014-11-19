@@ -29,19 +29,35 @@ class API::V1::LeadsController  < ActionController::API
 
         other_clients = []
         other_cvs.each do |other_cv|
-          other_clients << JSON[cv_json(other_cv)]
+          if other_cv.display
+            other_clients << JSON[cv_json(other_cv)]
+          end
         end
 
         render json: { :success => true, :client => json_response.to_json, :other_client => other_clients.to_json}, status: :created
       else
-        render json: { errors: "Unable to get response!"}, status: :unprocessable_entity
+        render json: { errors: "Unable to get response!", :other_client => all_client_list.to_json}, status: :unprocessable_entity
       end
     else
-      render json: { errors: lead.error_messages + pet.error_messages }, status: :unprocessable_entity
+      render json: { errors: lead.error_messages + pet.error_messages, :other_client => all_client_list.to_json }, status: :unprocessable_entity
     end
   end
 
   private
+
+  def all_client_list
+    other_cvs = ClientsVertical.all.order(sort_order: :asc)
+    
+    other_clients = []
+    other_cvs.each do |other_cv|
+      if other_cv.display
+        binding.pry
+        other_clients << JSON[cv_json(other_cv)]
+      end
+    end
+
+    return other_clients
+  end
 
   def cv_json(cv)
     {
