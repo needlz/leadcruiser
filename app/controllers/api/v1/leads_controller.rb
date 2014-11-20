@@ -16,8 +16,7 @@ class API::V1::LeadsController  < ActionController::API
     if lead.save
 
       if duplicated
-        lead.status = Lead::DUPLICATED
-        lead.save
+        lead.update_attributes(:status => Lead::DUPLICATED)
 
         render json: { errors: "The email address of this lead was duplicated", :other_client => all_client_list.to_json}, status: :unprocessable_entity and return
       end
@@ -31,8 +30,7 @@ class API::V1::LeadsController  < ActionController::API
         # Update lead
         lead.times_sold = 1
         lead.total_sale_amount = 1
-        lead.status = Lead::SOLD
-        lead.save
+        lead.update_attributes(:status => Lead::DUPLICATED)
 
         # Concatenate JSON Response of other clients list
         cv = ClientsVertical.find_by_integration_name(response.client_name)
