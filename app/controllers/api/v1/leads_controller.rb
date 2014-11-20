@@ -6,22 +6,35 @@ require 'workers/send_data_worker.rb'
 class API::V1::LeadsController  < ActionController::API
 
   def create
-    lead = Lead.new(lead_params)
-    lead.times_sold = 1
-    lead.total_sale_amount = 1
 
+    lead = Lead.new(lead_params)
     pet = lead.details_pets.build(pet_params)
 
+    # Check duplication for the lead sold
+    duplicated = duplicated_lead(lead_params[:email], lead_params[:vertical_id])
+
     if lead.save
-      AutoResponseThankWorker.perform_async(lead.email)
-      # render json: { :success => true, message: 'Lead was created successfully' }, status: :created
-      # client_verticals = ClientsVertical.where(vertical_id: lead.vertical_id, active: true, exclusive: true)
-      # builder = NextClientBuilder.new(lead, client_verticals)
+
+      if duplicated
+        lead.status = Lead::DUPLICATED
+        lead.save
+
+        render json: { errors: "The email address of this lead was duplicated", :other_client => all_client_list.to_json}, status: :unprocessable_entity and return
+      end
+
+      AutoResponseThankWorker.perform_async(lead.email, lead.vertical_id)
       SendDataWorker.new.perform(lead.id)
 
       # Check Responses table and return with JSON response
       response = Response.find_by_lead_id(lead.id)
       unless response.nil?
+        # Update lead
+        lead.times_sold = 1
+        lead.total_sale_amount = 1
+        lead.status = Lead::SOLD
+        lead.save
+
+        # Concatenate JSON Response of other clients list
         cv = ClientsVertical.find_by_integration_name(response.client_name)
         other_cvs = ClientsVertical.where('integration_name != ?', response.client_name).order(sort_order: :asc)
         
@@ -36,7 +49,7 @@ class API::V1::LeadsController  < ActionController::API
 
         render json: { :success => true, :client => json_response.to_json, :other_client => other_clients.to_json}, status: :created
       else
-        render json: { errors: "Unable to get response!", :other_client => all_client_list.to_json}, status: :unprocessable_entity
+        render json: { errors: "Unable to get response from the client", :other_client => all_client_list.to_json}, status: :unprocessable_entity
       end
     else
       render json: { errors: lead.error_messages + pet.error_messages, :other_client => all_client_list.to_json }, status: :unprocessable_entity
@@ -45,13 +58,25 @@ class API::V1::LeadsController  < ActionController::API
 
   private
 
+  # Check the incoming lead with email was sold before
+  def duplicated_lead(email, vertical_id)
+    
+    exist_lead = Lead.where('email = ? and vertical_id = ? and status = ?', email, vertical_id, Lead::SOLD).first
+    if exist_lead.nil? || exist_lead.response.nil? || exist_lead.response.client_name == ''
+      return false
+    else
+      return true
+    end
+
+    return false
+  end
+
   def all_client_list
     other_cvs = ClientsVertical.all.order(sort_order: :asc)
     
     other_clients = []
     other_cvs.each do |other_cv|
       if other_cv.display
-        binding.pry
         other_clients << JSON[cv_json(other_cv)]
       end
     end
