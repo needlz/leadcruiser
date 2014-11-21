@@ -86,4 +86,6 @@ en:
         sold_to: 'Sold To'
         price: 'Price'
         response: 'Response'
+        landing_page: 'Landing Page'
+        keyword: 'Keyword'
       no_available_leads: 'There are no available leads for this period. Please, try to choose other dates.'

@@ -31,6 +31,12 @@
         %td
           - unless lead.response.nil?
             = lead.response.response
+        %td
+          - unless lead.visitor.nil?
+            = lead.visitor.landing_page
+        %td
+          - unless lead.visitor.nil?
+            = lead.visitor.keywords
 - if @leads.empty?
   .no-data
     = t('reports.lead.no_available_leads')
