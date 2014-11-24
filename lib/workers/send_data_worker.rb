@@ -10,7 +10,7 @@ class SendDataWorker
     return unless lead_id
 
     lead = Lead.find(lead_id)
-    client_verticals = ClientsVertical.where(vertical_id: lead.vertical_id, exclusive: true)
+    client_verticals = ClientsVertical.where(vertical_id: lead.vertical_id, active: true, exclusive: true)
     
     response = nil
     sold = false
@@ -20,8 +20,8 @@ class SendDataWorker
         break
       end
       builder = NextClientBuilder.new(lead, client_verticals)
-      @client = ClientsVertical.find_by_integration_name(builder.integration_name)
-      provider = DataGeneratorProvider.new(lead, client)
+      @client = ClientsVertical.where(active: true, integration_name: builder.integration_name).first
+      provider = DataGeneratorProvider.new(lead, @client)
 
       response = provider.send_data
       unless response.nil?

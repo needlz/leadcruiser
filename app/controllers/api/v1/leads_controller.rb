@@ -34,7 +34,7 @@ class API::V1::LeadsController  < ActionController::API
 
         # Concatenate JSON Response of other clients list
         cv = ClientsVertical.find_by_integration_name(response.client_name)
-        other_cvs = ClientsVertical.unscoped.where('integration_name != ? and display = true', response.client_name).order(sort_order: :asc)
+        other_cvs = ClientsVertical.where('integration_name != ? and display = true', response.client_name).order(sort_order: :asc)
         
         json_response = cv_json(cv)
 
@@ -70,7 +70,7 @@ class API::V1::LeadsController  < ActionController::API
   end
 
   def all_client_list
-    other_cvs = ClientsVertical.unscoped.where('display = true').order(sort_order: :asc)
+    other_cvs = ClientsVertical.where('display = true').order(sort_order: :asc)
     
     other_clients = []
     other_cvs.each do |other_cv|

@@ -10,8 +10,6 @@ class ClientsVertical < ActiveRecord::Base
                         :thumb => "30x15>"
                     }
 
-  default_scope { where(active: true) }
-                    
   validates_attachment_content_type :logo, :content_type => /\Aimage\/.*\Z/
   
   def refresh_queue
