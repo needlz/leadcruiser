@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141119000011) do
+ActiveRecord::Schema.define(version: 20141120151659) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -140,6 +140,7 @@ ActiveRecord::Schema.define(version: 20141119000011) do
     t.float    "total_sale_amount"
     t.integer  "vertical_id"
     t.string   "visitor_ip",        default: "127.1.1.1"
+    t.string   "status"
   end
 
   create_table "leads_details_verticals", force: true do |t|

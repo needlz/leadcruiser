@@ -4,7 +4,7 @@ class Lead < ActiveRecord::Base
   include ErrorMessages
 
   after_commit :send_email, on: :create
-  before_save :check_uniqueness_of_pet
+  # before_save :check_uniqueness_of_pet
 
   validates :site_id, :vertical_id, :first_name, :last_name, :zip, :day_phone, :email, presence: true
 
@@ -14,6 +14,10 @@ class Lead < ActiveRecord::Base
   has_many :details_pets
   belongs_to :vertical
   has_one :response
+
+  # constant
+  DUPLICATED  = "duplicated"
+  SOLD        = "sold"
 
   def send_email
     SendEmailWorker.perform_async(self.id)

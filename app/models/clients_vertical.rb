@@ -9,6 +9,8 @@ class ClientsVertical < ActiveRecord::Base
                         :medium => "200x100>",
                         :thumb => "30x15>"
                     }
+                    
+                    
   validates_attachment_content_type :logo, :content_type => /\Aimage\/.*\Z/
   
   def refresh_queue

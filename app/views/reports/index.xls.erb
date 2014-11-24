@@ -24,9 +24,11 @@
             <Cell><Data ss:Type="String"><%= lead.day_phone %></Data></Cell>
             <Cell><Data ss:Type="String"><%= lead.visitor_ip %></Data></Cell>
             <Cell><Data ss:Type="String"></Data></Cell>
-            <Cell><Data ss:Type="String"></Data></Cell>
-            <Cell><Data ss:Type="String"></Data></Cell>
-            <Cell><Data ss:Type="String"></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.response.nil? ? '' : lead.response.client_name %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.response.nil? ? '' : lead.response.price %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.response.nil? ? '' : lead.response.response %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.visitor.nil? ? '' : lead.visitor.landing_page %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.visitor.nil? ? '' : lead.visitor.keywords %></Data></Cell>
           </Row>
       <% end %>
     </Table>

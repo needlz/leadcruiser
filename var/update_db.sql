@@ -1,0 +1,2 @@
+update responses set client_name='pet_first', price=(select fixed_price from clients_verticals where integration_name='pet_first') where response like '{"CompletedMessage"%';
+update responses set client_name='pet_premium', price=(select fixed_price from clients_verticals where integration_name='pet_premium') where response like '{"Response"=>{"%';
