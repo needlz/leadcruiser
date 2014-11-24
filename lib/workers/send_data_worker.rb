@@ -10,7 +10,7 @@ class SendDataWorker
     return unless lead_id
 
     lead = Lead.find(lead_id)
-    client_verticals = ClientsVertical.where(vertical_id: lead.vertical_id, active: true, exclusive: true)
+    client_verticals = ClientsVertical.where(vertical_id: lead.vertical_id, exclusive: true)
     
     response = nil
     sold = false

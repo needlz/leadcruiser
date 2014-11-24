@@ -9,7 +9,8 @@ class ClientsVertical < ActiveRecord::Base
                         :medium => "200x100>",
                         :thumb => "30x15>"
                     }
-                    
+
+  default_scope { where(active: true) }
                     
   validates_attachment_content_type :logo, :content_type => /\Aimage\/.*\Z/
   
