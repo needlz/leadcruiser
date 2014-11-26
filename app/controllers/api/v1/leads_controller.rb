@@ -57,6 +57,18 @@ class API::V1::LeadsController  < ActionController::API
 
   private
 
+  def duplicated_lead(email, vertical_id)
+    
+    exist_lead = Lead.where('email = ? and vertical_id = ? and status = ?', email, vertical_id, Lead::SOLD).first
+    if exist_lead.nil? || exist_lead.response.nil? || exist_lead.response.client_name == ''
+      return false
+    else
+      return true
+    end
+
+    return false
+  end 
+
   def all_client_list
     other_cvs = ClientsVertical.where('display = true').order(sort_order: :asc)
     
