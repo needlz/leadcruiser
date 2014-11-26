@@ -3,6 +3,7 @@ require 'data_generators/pet_first_generator'
 require 'next_client_builder'
 require 'data_generator_provider'
 require 'workers/send_data_worker.rb'
+
 class API::V1::LeadsController  < ActionController::API
 
   def create
@@ -55,19 +56,6 @@ class API::V1::LeadsController  < ActionController::API
   end
 
   private
-
-  # Check the incoming lead with email was sold before
-  def duplicated_lead(email, vertical_id)
-    
-    exist_lead = Lead.where('email = ? and vertical_id = ? and status = ?', email, vertical_id, Lead::SOLD).first
-    if exist_lead.nil? || exist_lead.response.nil? || exist_lead.response.client_name == ''
-      return false
-    else
-      return true
-    end
-
-    return false
-  end
 
   def all_client_list
     other_cvs = ClientsVertical.where('display = true').order(sort_order: :asc)

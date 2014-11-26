@@ -20,6 +20,8 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  post '/admin/resend_lead', :to => 'admins#resend_lead', :as => 'resend_lead'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
