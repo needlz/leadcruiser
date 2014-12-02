@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141120151659) do
+ActiveRecord::Schema.define(version: 20141202155026) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -117,6 +117,16 @@ ActiveRecord::Schema.define(version: 20141120151659) do
     t.datetime "updated_at"
   end
 
+  create_table "ftp_leads", force: true do |t|
+    t.integer  "lead_id"
+    t.string   "sent_filename"
+    t.datetime "sent_time"
+    t.string   "received_filename"
+    t.datetime "received_time"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "leads", force: true do |t|
     t.string   "session_hash"
     t.integer  "site_id"
@@ -147,6 +157,22 @@ ActiveRecord::Schema.define(version: 20141120151659) do
     t.integer  "lead_id"
     t.integer  "detail_id"
     t.integer  "vertical_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "purchase_orders", force: true do |t|
+    t.integer  "vertical_id"
+    t.string   "client_name"
+    t.string   "state_filter"
+    t.string   "pre_conditions"
+    t.float    "price"
+    t.string   "status"
+    t.boolean  "activated"
+    t.integer  "max_leads"
+    t.integer  "daily_leads"
+    t.date     "start_date"
+    t.date     "expiration_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
