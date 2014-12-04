@@ -19,7 +19,7 @@ class HartvilleGenerator
         end
       end
     end
-    binding.pry
+
     builder.to_xml
   end
 

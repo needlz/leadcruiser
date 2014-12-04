@@ -24,7 +24,7 @@ class SendDataWorker
       provider = DataGeneratorProvider.new(lead, @client)
 
       response = provider.send_data
-      binding.pry
+
       unless response.nil?
         if @client.integration_name == 'pet_premium'
           if response["Response"]["Result"]["Value"] == "BaeOK"
