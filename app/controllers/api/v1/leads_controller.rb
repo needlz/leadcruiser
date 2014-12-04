@@ -1,5 +1,6 @@
 require 'data_generators/pet_premium_generator'
 require 'data_generators/pet_first_generator'
+require 'data_generators/hartville_generator'
 require 'next_client_builder'
 require 'data_generator_provider'
 require 'workers/send_data_worker.rb'

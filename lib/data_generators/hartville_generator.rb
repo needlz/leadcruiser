@@ -2,6 +2,8 @@ require 'nokogiri'
 
 class HartvilleGenerator
 
+  LINK = ""
+
   attr_accessor :lead
 
   def initialize(lead)
@@ -28,8 +30,8 @@ class HartvilleGenerator
     xml.send(:ProductPhone, '')
     xml.send(:Station, '')
     xml.send(:ProductCode, '')
-    xml.send(:CallDate, lead.create_at.strftime("%m/%d/%Y"))
-    xml.send(:CallTime, lead.create_at.strftime("%H%M"))
+    xml.send(:CallDate, lead.created_at.strftime("%m/%d/%Y"))
+    xml.send(:CallTime, lead.created_at.strftime("%H%M"))
     xml.send(:TRANSFERED, 'Yes')
     xml.send(:ANI, '')
     xml.send(:MailingFirstName, lead.first_name)
@@ -60,7 +62,7 @@ class HartvilleGenerator
         xml.send("Pet#{i}BreedId", 0)
         xml.send("Pet#{i}Age_Years", pet.birth_year)
         xml.send("Pet#{i}Age_Months", pet.birth_month)
-        xml.send("Pet#{i}PreExisting", pet.conditions? == 'Yes' : 1 : 0)
+        xml.send("Pet#{i}PreExisting", pet.conditions == 'Yes' ? 1 : 0)
       else
         xml.send("Pet#{i}Name", '')
         xml.send("Pet#{i}Breed", '')
