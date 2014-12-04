@@ -23,7 +23,8 @@ class DataGeneratorProvider
 
     HTTParty.post request_url,
                   :body => data_to_send,
-                  :headers => request_header
+                  :headers => request_header,
+                  :timeout => 20
   end
 
   private
