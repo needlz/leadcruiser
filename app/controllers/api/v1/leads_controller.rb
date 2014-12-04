@@ -3,6 +3,7 @@ require 'data_generators/pet_first_generator'
 require 'next_client_builder'
 require 'data_generator_provider'
 require 'workers/send_data_worker.rb'
+
 class API::V1::LeadsController  < ActionController::API
 
   def create
@@ -34,7 +35,7 @@ class API::V1::LeadsController  < ActionController::API
 
         # Concatenate JSON Response of other clients list
         cv = ClientsVertical.find_by_integration_name(response.client_name)
-        other_cvs = ClientsVertical.where('integration_name != ?', response.client_name).order(sort_order: :asc)
+        other_cvs = ClientsVertical.where('integration_name != ? and display = true', response.client_name).order(sort_order: :asc)
         
         json_response = cv_json(cv)
 
@@ -56,7 +57,6 @@ class API::V1::LeadsController  < ActionController::API
 
   private
 
-  # Check the incoming lead with email was sold before
   def duplicated_lead(email, vertical_id)
     
     exist_lead = Lead.where('email = ? and vertical_id = ? and status = ?', email, vertical_id, Lead::SOLD).first
@@ -67,10 +67,10 @@ class API::V1::LeadsController  < ActionController::API
     end
 
     return false
-  end
+  end 
 
   def all_client_list
-    other_cvs = ClientsVertical.all.order(sort_order: :asc)
+    other_cvs = ClientsVertical.where('display = true').order(sort_order: :asc)
     
     other_clients = []
     other_cvs.each do |other_cv|

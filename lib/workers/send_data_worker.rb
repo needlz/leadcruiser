@@ -20,8 +20,8 @@ class SendDataWorker
         break
       end
       builder = NextClientBuilder.new(lead, client_verticals)
-      @client = ClientsVertical.find_by_integration_name(builder.integration_name)
-      provider = DataGeneratorProvider.new(lead, client)
+      @client = ClientsVertical.where(active: true, integration_name: builder.integration_name).first
+      provider = DataGeneratorProvider.new(lead, @client)
 
       response = provider.send_data
       unless response.nil?
