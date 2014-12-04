@@ -62,7 +62,7 @@ gem "aws-sdk"
 # gem 'debugger', group: [:development, :test]
 
 gem 'rails_12factor', group: [:staging, :production]
-gem "pry", group: :development
+gem "pry", group: [:development, :staging]
 gem "letter_opener", group: :development
 gem 'figaro', git: 'git://github.com/laserlemon/figaro.git', branch: 'master'
 gem 'airbrake'
