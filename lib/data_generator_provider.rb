@@ -20,12 +20,13 @@ class DataGeneratorProvider
 
   def send_data
     return if client.service_url.nil? && link.blank?
+    
     response = HTTParty.post request_url,
                   :body => data_to_send,
-                  :headers => request_header,
-                  :http_proxy => ENV["PROXIMO_URL"]
+                  :http_proxy => { :http_proxyaddr => ENV["PROXIMO_URL"] },
+                  :headers => request_header
 
-    puts "*********************" + response.to_s() + "************************************"
+    puts "*********************" + HTTParty.to_s() + "************************************"
     return response
   end
 
