@@ -20,7 +20,8 @@ class DataGeneratorProvider
 
   def send_data
     return if client.service_url.nil? && link.blank?
-    puts "*********************" + request_url + "::::::" + request_header + "*********************"
+    puts "*********************" + request_url + "************************************"
+    puts "*********************" + request_header + "************************************"
     HTTParty.post request_url,
                   :body => data_to_send,
                   :headers => request_header
