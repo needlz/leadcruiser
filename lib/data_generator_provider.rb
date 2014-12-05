@@ -23,6 +23,7 @@ class DataGeneratorProvider
     puts "*********************" + request_url + "************************************"
     puts "*********************" + request_header.to_s() + "************************************"
     HTTParty.post request_url,
+                  :http_proxy => ENV["PROXIMO_URL"],
                   :body => data_to_send,
                   :headers => request_header
   end
