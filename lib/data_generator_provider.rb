@@ -1,3 +1,5 @@
+require 'uri'
+
 class DataGeneratorProvider
   attr_accessor :lead, :client
 
@@ -21,12 +23,15 @@ class DataGeneratorProvider
   def send_data
     return if client.service_url.nil? && link.blank?
     
+    proxy_uri = URI.parse(ENV["PROXIMO_URL"])
     response = HTTParty.post request_url,
                   :body => data_to_send,
-                  :http_proxy => { :http_proxyaddr => ENV["PROXIMO_URL"] },
+                  :http_proxyaddr => proxy_uri.host,
+                  :http_proxyport => proxy_uri.port,
+                  :http_proxyuser => proxy_uri.password,
+                  :http_proxypass => proxy_uri.port,
                   :headers => request_header
 
-    puts "*********************" + HTTParty.to_s() + "************************************"
     return response
   end
 
