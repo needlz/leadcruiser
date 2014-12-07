@@ -31,7 +31,7 @@ class DataGeneratorProvider
                   :http_proxyuser => proxy_uri.password,
                   :http_proxypass => proxy_uri.port,
                   :headers => request_header
-
+    binding.pry
     return response
   end
 
