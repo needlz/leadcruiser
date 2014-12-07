@@ -24,14 +24,13 @@ class DataGeneratorProvider
     return if client.service_url.nil? && link.blank?
     
     proxy_uri = URI.parse(ENV["PROXIMO_URL"])
-    response = HTTParty.post request_url,
+    HTTParty.post request_url,
                   :body => data_to_send,
                   :http_proxyaddr => proxy_uri.host,
                   :http_proxyport => proxy_uri.port,
-                  :http_proxyuser => proxy_uri.password,
-                  :http_proxypass => proxy_uri.port,
+                  :http_proxyuser => proxy_uri.user,
+                  :http_proxypass => proxy_uri.password,
                   :headers => request_header
-    return response
   end
 
   private
