@@ -11,7 +11,7 @@ class HartvilleGenerator
   end
 
   def generate
-    builder = Nokogiri::XML::Builder.new do |xml|
+    builder = Nokogiri::XML::Builder.new({:encoding => 'UTF-8'}) do |xml|
       xml.root do
         xml.row do
           generate_contact_data_xml(xml)
