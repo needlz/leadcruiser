@@ -33,6 +33,7 @@ class UserMailer
      gender: lead.details_pets.first.gender,
      conditions: lead.details_pets.first.conditions.to_s,
      client_name: client.official_name,
+     sold_price: response.price.to_s,
      session_hash: lead.try(:visitor).try(:session_hash),
      referring_url: lead.try(:visitor).try(:referring_url),
      landing_page: lead.try(:visitor).try(:landing_page),
