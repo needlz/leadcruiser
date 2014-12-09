@@ -2,10 +2,11 @@ class UserMailer
 
   include MandrillMailer
 
-  def lead_creating(lead)
+  def lead_creating(response)
+    lead = response.lead
     template 'lead-was-created'
     subject = "Pet-Insurance.org #{env_field} New Lead - ID: #{lead.id} - #{lead.created_at}"
-    set_template_values(set_lead_params(lead))
+    set_template_values(set_lead_params(lead, response))
 
     mail to: [wrap_recipient(ENV["RECIPIENT_EMAIL"], ENV["RECIPIENT_NAME"], "to"),
               wrap_recipient(ENV["RECIPIENT_BCC_EMAIL"], ENV["RECIPIENT_BCC_NAME"], "bcc")], subject:subject
@@ -13,13 +14,15 @@ class UserMailer
 
   private
 
-  def set_lead_params(lead)
+  def set_lead_params(lead, response)
+    client = ClientsVertical.where('integration_name = ?', response.client_name).first
     {
      first_name: lead.first_name,
      last_name: lead.last_name,
      email: lead.email,
      day_phone: lead.day_phone,
      zip: lead.zip,
+     state: lead.state || lead.try(:zip_code).try(:state),
      visitor_ip: lead.visitor_ip,
      pet_name: lead.details_pets.first.pet_name,
      species: lead.details_pets.first.species,
@@ -29,6 +32,7 @@ class UserMailer
      birth_year: lead.details_pets.first.birth_year,
      gender: lead.details_pets.first.gender,
      conditions: lead.details_pets.first.conditions.to_s,
+     client_name: client.official_name,
      session_hash: lead.try(:visitor).try(:session_hash),
      referring_url: lead.try(:visitor).try(:referring_url),
      landing_page: lead.try(:visitor).try(:landing_page),
