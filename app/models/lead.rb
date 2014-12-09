@@ -3,7 +3,7 @@ require 'workers/send_email_worker.rb'
 class Lead < ActiveRecord::Base
   include ErrorMessages
 
-  after_commit :send_email, on: :create
+  # after_commit :send_email, on: :create
   # before_save :check_uniqueness_of_pet
 
   validates :site_id, :vertical_id, :first_name, :last_name, :zip, :day_phone, :email, presence: true

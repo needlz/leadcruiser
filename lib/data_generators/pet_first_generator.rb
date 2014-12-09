@@ -50,6 +50,8 @@ class PetFirstGenerator
       :Email => lead.email,
       :Phone => lead.day_phone,
       :ZipCode => lead.zip,
+      :StreetAddress1 => lead.address_1,
+      :StreetAddress2 => lead.address_2,
       :LeadId => lead.id.to_s,
       :PetsCovered => lead.details_pets.first.species,
       :Pet1BDay => lead.details_pets.first.birth_year.to_s,
