@@ -25,18 +25,22 @@ class SendDataWorker
 
       response = provider.send_data
       unless response.nil?
-        if @client.integration_name == 'pet_premium'
+        if @client.integration_name == ClientsVertical::PET_PREMIUM
           if response["Response"]["Result"]["Value"] == "BaeOK"
             sold = true
             break
           end
-        elsif @client.integration_name == 'pet_first'
+        elsif @client.integration_name == ClientsVertical::PET_FIRST
           if response["Error"]["ErrorText"] == ""
             sold = true
             break
           end
+        elsif @client.integration_name == ClientsVertical::PETS_BEST
+          if response["Status"] == "Success" and response["Message"].nil?
+            sold = true
+            break
+          end
         end
-        
       end
 
       count += 1

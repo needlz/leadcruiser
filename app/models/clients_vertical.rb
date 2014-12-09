@@ -11,6 +11,10 @@ class ClientsVertical < ActiveRecord::Base
                     }
 
   validates_attachment_content_type :logo, :content_type => /\Aimage\/.*\Z/
+
+  PET_PREMIUM   = "pet_premium"
+  PET_FIRST     = "pet_first"
+  PETS_BEST     = "pets_best"
   
   def refresh_queue
     self.vertical.update_attributes(next_client: nil)
