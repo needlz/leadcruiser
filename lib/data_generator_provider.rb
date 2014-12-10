@@ -31,8 +31,8 @@ class DataGeneratorProvider
     #               :http_proxyport => proxy_uri.port,
     #               :http_proxyuser => proxy_uri.user,
     #               :http_proxypass => proxy_uri.password,
-    #               :headers => header
-    # puts data.request.inspect
+    #               :headers => request_header
+    # binding.pry
     url = URI(request_url)
     req = Net::HTTP::Post.new(url.path)
     # req.content_type = 'application/x-www-form-urlencoded'
