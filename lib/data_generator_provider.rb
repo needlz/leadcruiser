@@ -24,6 +24,7 @@ class DataGeneratorProvider
   def send_data
     return if client.service_url.nil? && link.blank?
 
+    ########## For Hartville from here ##############
     proxy_uri = URI.parse(ENV["PROXIMO_URL"])
     # data = HTTParty.post request_url,
     #               :body => data_to_send,
@@ -33,19 +34,28 @@ class DataGeneratorProvider
     #               :http_proxypass => proxy_uri.password,
     #               :headers => request_header
     # binding.pry
-    url = URI(request_url)
-    req = Net::HTTP::Post.new(url.path)
-    # req.content_type = 'application/x-www-form-urlencoded'
-    req.content_type = 'application/xml'
-    req.body = data_to_send
-    # req.content_length = data_to_send.bytesize().to_s()
-    binding.pry
-    proxy = Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
-    response = proxy.start(url.hostname, url.port) {|http| 
-      binding.pry
-      http.request(req) 
-    }
-    binding.pry
+    # url = URI(request_url)
+    # req = Net::HTTP::Post.new(url.path)
+    # # req.content_type = 'application/x-www-form-urlencoded'
+    # req.content_type = 'application/xml'
+    # req.body = data_to_send
+    # # req.content_length = data_to_send.bytesize().to_s()
+    # binding.pry
+    # proxy = Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
+    # response = proxy.start(url.hostname, url.port) {|http| 
+    #   binding.pry
+    #   http.request(req) 
+    # }
+    # binding.pry
+    
+    ########## True code ##################
+    if client.integration_name == ClientsVertical::PETS_BEST
+      return HTTParty.get request_url, :query => data_to_send
+    else
+      return HTTParty.post request_url,
+                    :body => data_to_send,
+                    :headers => request_header
+    end
   end
 
   private
