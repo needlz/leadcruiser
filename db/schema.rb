@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141202155026) do
+ActiveRecord::Schema.define(version: 20141212203547) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -164,15 +164,19 @@ ActiveRecord::Schema.define(version: 20141202155026) do
   create_table "purchase_orders", force: true do |t|
     t.integer  "vertical_id"
     t.string   "client_name"
-    t.string   "state_filter"
-    t.string   "pre_conditions"
+    t.integer  "weight"
+    t.boolean  "exclusive"
+    t.string   "states"
+    t.boolean  "preexisting_conditions"
     t.float    "price"
     t.string   "status"
-    t.boolean  "activated"
-    t.integer  "max_leads"
-    t.integer  "daily_leads"
+    t.boolean  "active"
+    t.integer  "leads_max_limit"
+    t.integer  "leads_daily_limit"
+    t.integer  "leads_count_sold"
+    t.integer  "daily_leads_count"
     t.date     "start_date"
-    t.date     "expiration_date"
+    t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -189,6 +193,7 @@ ActiveRecord::Schema.define(version: 20141202155026) do
     t.integer  "lead_id"
     t.string   "client_name"
     t.float    "price"
+    t.integer  "purchase_order_id"
   end
 
   create_table "sites", force: true do |t|
@@ -197,6 +202,11 @@ ActiveRecord::Schema.define(version: 20141202155026) do
     t.string   "site_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "states", force: true do |t|
+    t.string "name"
+    t.string "code"
   end
 
   create_table "verticals", force: true do |t|

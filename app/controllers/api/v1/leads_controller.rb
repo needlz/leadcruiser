@@ -32,8 +32,8 @@ class API::V1::LeadsController  < ActionController::API
       unless response.nil?
         # Update lead
         lead.times_sold = 1
-        lead.total_sale_amount = 1
-        lead.update_attributes(:status => Lead::SOLD)
+        lead.total_sale_amount = response.price
+        lead.update_attributes :status => Lead::SOLD
 
         # Concatenate JSON Response of other clients list
         cv = ClientsVertical.find_by_integration_name(response.client_name)

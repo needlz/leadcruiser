@@ -19,4 +19,8 @@ class ClientsVertical < ActiveRecord::Base
   def refresh_queue
     self.vertical.update_attributes(next_client: nil)
   end
+
+  def display_name
+    self.integration_name
+  end
 end
