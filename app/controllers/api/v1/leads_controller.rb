@@ -8,6 +8,7 @@ require 'workers/send_data_worker.rb'
 class API::V1::LeadsController  < ActionController::API
 
   def create
+    error = "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
 
     lead = Lead.new(lead_params)
     pet = lead.details_pets.build(pet_params)
@@ -48,7 +49,7 @@ class API::V1::LeadsController  < ActionController::API
         end
 
         # If sold client is Pets Best, return redirect URL
-        redirect_url = ""
+        redirect_url = cv.website_url
         if cv.integration_name == ClientsVertical::PETS_BEST
           resp_str = response.response.gsub("=>", ":")
           resp_str = resp_str.gsub("nil", "\"nil\"")
@@ -65,10 +66,10 @@ class API::V1::LeadsController  < ActionController::API
           :other_client => other_clients.to_json
         }, status: :created
       else
-        render json: { errors: "Unable to get response from the client", :other_client => all_client_list.to_json}, status: :unprocessable_entity
+        render json: { errors: error.gsub("[pets_name]", pet["pet_name"]) , :other_client => all_client_list.to_json}, status: :unprocessable_entity
       end
     else
-      render json: { errors: lead.error_messages + pet.error_messages, :other_client => all_client_list.to_json }, status: :unprocessable_entity
+      render json: { errors: error.gsub("[pets_name]", pet["pet_name"]), :other_client => all_client_list.to_json }, status: :unprocessable_entity
     end
   end
 
