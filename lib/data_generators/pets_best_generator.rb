@@ -38,7 +38,7 @@ class PetsBestGenerator
       query["b"+idx_str]    = pet.breed_to_send('pets_best')
       query["g"+idx_str]    = pet.gender.downcase
       query["dob"+idx_str]  = pet.birth_month.to_s + "-" + pet.birth_day.to_s + "-" + pet.birth_year.to_s
-      query["mc"+idx_str]   = ''
+      query["mc"+idx_str]   = pet.conditions
 
       idx = idx + 1
     end
