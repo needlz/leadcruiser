@@ -25,16 +25,11 @@ namespace :breeds do
     end
   end
 
-  # Delete Pets Best cat mapping data
-  task :init_petsbest_cat => :environment do
+  # Delete Pet Premium Breed Mapping data
+  task :init_petpremium => :environment do
     ClientCatBreedMapping.delete_all(['integration_name = ?', 'pet_premium'])
-  end
-
-  # Delete Pets Best dog mapping data
-  task :init_petsbest_dog => :environment do
     ClientDogBreedMapping.delete_all(['integration_name = ?', 'pet_premium'])
   end
-
 
 
   # Populate cat mapping data for Pet First
@@ -72,16 +67,11 @@ namespace :breeds do
     end
   end
 
-  # Delete Pet First cat mapping data
-  task :init_petsbest_cat => :environment do
+  # Delete Pet First breed mapping data
+  task :init_petfirst => :environment do
     ClientCatBreedMapping.delete_all(['integration_name = ?', 'pet_first'])
-  end
-
-  # Delete Pet First dog mapping data
-  task :init_petsbest_dog => :environment do
     ClientDogBreedMapping.delete_all(['integration_name = ?', 'pet_first'])
   end
-
 
 
 
@@ -120,15 +110,12 @@ namespace :breeds do
     end
   end
 
-  # Delete Pets Best cat mapping data
+  # Delete Pets Best breed mapping data
   task :init_petsbest_cat => :environment do
     ClientCatBreedMapping.delete_all(['integration_name = ?', 'pets_best'])
-  end
-
-  # Delete Pets Best dog mapping data
-  task :init_petsbest_dog => :environment do
     ClientDogBreedMapping.delete_all(['integration_name = ?', 'pets_best'])
   end
+
 
   task :remove_tables => :environment do
     DogBreed.destroy_all
