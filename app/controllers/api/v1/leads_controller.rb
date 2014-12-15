@@ -47,7 +47,23 @@ class API::V1::LeadsController  < ActionController::API
           end
         end
 
-        render json: { :success => true, :client => json_response.to_json, :other_client => other_clients.to_json}, status: :created
+        # If sold client is Pets Best, return redirect URL
+        redirect_url = ""
+        if cv.integration_name == ClientsVertical::PETS_BEST
+          resp_str = response.response.gsub("=>", ":")
+          resp_str = resp_str.gsub("nil", "\"nil\"")
+          resp_json = JSON.parse(resp_str)
+          redirect_url = cv.service_url + "/?" + resp_json["OriginalQuerystring"]
+          redirect_url["aqr=true"] = "aqr=false"
+          redirect_url["Json=true"] = "Json=false"
+        end
+
+        render json: { 
+          :success => true, 
+          :redirect_url => redirect_url,
+          :client => json_response.to_json, 
+          :other_client => other_clients.to_json
+        }, status: :created
       else
         render json: { errors: "Unable to get response from the client", :other_client => all_client_list.to_json}, status: :unprocessable_entity
       end
