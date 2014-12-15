@@ -50,10 +50,8 @@ class DataGeneratorProvider
     
     ########## True code ##################
     if client.integration_name == ClientsVertical::PETS_BEST
-      binding.pry
       return HTTParty.get request_url, :query => data_to_send
     else
-      binding.pry
       return HTTParty.post request_url,
                     :body => data_to_send,
                     :headers => request_header
