@@ -42,7 +42,8 @@ ActiveAdmin.register PurchaseOrder do
       f.input :weight
       f.input :exclusive
       f.input :states
-      f.input :preexisting_conditions
+      f.input :preexisting_conditions,
+              :as => :select
       f.input :price
       f.input :active
       f.input :leads_max_limit

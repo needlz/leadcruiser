@@ -104,7 +104,7 @@ class SendDataWorker
 
         # Check preexisting conditions
         pet = lead.details_pets.first
-        unless !po.preexisting_conditions.nil? and po.preexisting_conditions == pet.conditions
+        if !po.preexisting_conditions.nil? and po.preexisting_conditions != pet.conditions
           # binding.pry
           next
         end
@@ -122,10 +122,16 @@ class SendDataWorker
         end
 
         # Check Date
-        unless po.start_date < Date.today and Date.today < po.end_date
+        if !po.start_date.nil? and po.start_date > Date.today
           # binding.pry
           next
         end
+
+        if !po.end_date.nil? and po.end_date < Date.today
+          # binding.pry
+          next
+        end
+        
 
         return po
       end
