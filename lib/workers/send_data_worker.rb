@@ -27,7 +27,6 @@ class SendDataWorker
         count += 1
         next
       end
-      binding.pry
       # if @client.integration_name == ClientsVertical::PETS_BEST
       #   state_filter = ["CA", "NY", "TX", "CO", "FL", "NJ", "AZ", "NV", "IL", "VA"]
       #   state = lead.state || lead.try(:zip_code).try(:state)
@@ -39,7 +38,7 @@ class SendDataWorker
 
       provider = DataGeneratorProvider.new(lead, @client)
       response = provider.send_data
-      binding.pry
+      # Check response message is success or failure.
       unless response.nil?
         if @client.integration_name == ClientsVertical::PET_PREMIUM
           if response["Response"]["Result"]["Value"] == "BaeOK"
