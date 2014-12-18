@@ -92,14 +92,16 @@ class SendDataWorker
       pos.each do |po|
         # Check states
         state = lead.state || lead.try(:zip_code).try(:state)
-        state_filter_array = po.states.split(/,/)
-        # Remove whitespace in the code
-        for i in 0..state_filter_array.length-1
-          state_filter_array[i] = state_filter_array[i].strip
-        end
-        if state_filter_array.length > 0 and !state_filter_array.include? state
-          # binding.pry
-          next
+        unless po.states.nil?
+          state_filter_array = po.states.split(/,/)
+          # Remove whitespace in the code
+          for i in 0..state_filter_array.length-1
+            state_filter_array[i] = state_filter_array[i].strip
+          end
+          if state_filter_array.length > 0 and !state_filter_array.include? state
+            # binding.pry
+            next
+          end
         end
 
         # Check preexisting conditions
