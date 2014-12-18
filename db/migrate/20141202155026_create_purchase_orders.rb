@@ -12,8 +12,8 @@ class CreatePurchaseOrders < ActiveRecord::Migration
       t.boolean  :active
       t.integer  :leads_max_limit
       t.integer  :leads_daily_limit
-      t.integer  :leads_count_sold
-      t.integer  :daily_leads_count
+      t.integer  :leads_count_sold, default: 0
+      t.integer  :daily_leads_count, default: 0
 
       t.date     :start_date
       t.date     :end_date

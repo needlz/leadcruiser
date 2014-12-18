@@ -96,27 +96,32 @@ class SendDataWorker
           state_filter_array[i] = state_filter_array[i].strip
         end
         unless state != "" and state_filter_array.include? state
+          binding.pry
           next
         end
 
         # Check preexisting conditions
         pet = lead.details_pets.first
         unless !po.preexisting_conditions.nil? and po.preexisting_conditions == pet.conditions
+          binding.pry
           next
         end
 
         # Check Maximum leads limit
-        unless !po.leads_max_limit.nil? and po.leads_max_limit > po.leads_count_sold
+        if !po.leads_max_limit.nil? and po.leads_count_sold >= po.leads_max_limit
+          binding.pry
           next
         end
 
         # Check Daily leads limit
-        unless !po.leads_daily_limit.nil? and po.leads_daily_limit > po.daily_leads_count
+        if !po.leads_daily_limit.nil? and po.daily_leads_count >= po.leads_daily_limit
+          binding.pry
           next
         end
 
         # Check Date
         unless po.start_date < Date.today and Date.today < po.end_date
+          binding.pry
           next
         end
 
