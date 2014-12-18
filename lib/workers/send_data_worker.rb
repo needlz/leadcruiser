@@ -24,6 +24,7 @@ class SendDataWorker
 
       purchase_order = check_purchase_order(lead, @client)
       if purchase_order.nil?
+        # binding.pry
         count += 1
         next
       end
@@ -38,6 +39,7 @@ class SendDataWorker
 
       provider = DataGeneratorProvider.new(lead, @client)
       response = provider.send_data
+      # binding.pry
       # Check response message is success or failure.
       unless response.nil?
         if @client.integration_name == ClientsVertical::PET_PREMIUM
@@ -96,32 +98,32 @@ class SendDataWorker
           state_filter_array[i] = state_filter_array[i].strip
         end
         unless state != "" and state_filter_array.include? state
-          binding.pry
+          # binding.pry
           next
         end
 
         # Check preexisting conditions
         pet = lead.details_pets.first
         unless !po.preexisting_conditions.nil? and po.preexisting_conditions == pet.conditions
-          binding.pry
+          # binding.pry
           next
         end
 
         # Check Maximum leads limit
         if !po.leads_max_limit.nil? and po.leads_count_sold >= po.leads_max_limit
-          binding.pry
+          # binding.pry
           next
         end
 
         # Check Daily leads limit
         if !po.leads_daily_limit.nil? and po.daily_leads_count >= po.leads_daily_limit
-          binding.pry
+          # binding.pry
           next
         end
 
         # Check Date
         unless po.start_date < Date.today and Date.today < po.end_date
-          binding.pry
+          # binding.pry
           next
         end
 

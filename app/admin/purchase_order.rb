@@ -46,7 +46,7 @@ ActiveAdmin.register PurchaseOrder do
       f.input :price
       f.input :active
       f.input :leads_max_limit
-      f.input :leads_count_sold
+      f.input :leads_daily_limit
       f.input :start_date
       f.input :end_date
     end
