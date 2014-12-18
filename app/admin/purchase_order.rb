@@ -11,7 +11,17 @@ ActiveAdmin.register PurchaseOrder do
     column :weight
     column :exclusive
     column :states
-    column :preexisting_conditions
+    column "Pre existing Conditions" do |po|
+      if po.preexisting_conditions.nil?
+        ""
+      else
+        if po.preexisting_conditions
+          "Yes"
+        else
+          "No"
+        end
+      end
+    end
     column :price
     column :status
     column :active

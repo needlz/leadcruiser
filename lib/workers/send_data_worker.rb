@@ -97,7 +97,7 @@ class SendDataWorker
         for i in 0..state_filter_array.length-1
           state_filter_array[i] = state_filter_array[i].strip
         end
-        unless state != "" and state_filter_array.include? state
+        if state_filter_array.length > 0 and !state_filter_array.include? state
           # binding.pry
           next
         end
