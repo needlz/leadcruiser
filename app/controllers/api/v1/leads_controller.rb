@@ -1,5 +1,6 @@
 require 'data_generators/pet_premium_generator'
 require 'data_generators/pet_first_generator'
+require 'data_generators/hartville_generator'
 require 'data_generators/pets_best_generator'
 require 'next_client_builder'
 require 'data_generator_provider'
@@ -32,8 +33,8 @@ class API::V1::LeadsController  < ActionController::API
       unless response.nil?
         # Update lead
         lead.times_sold = 1
-        lead.total_sale_amount = 1
-        lead.update_attributes(:status => Lead::SOLD)
+        lead.total_sale_amount = response.price
+        lead.update_attributes :status => Lead::SOLD
 
         # Concatenate JSON Response of other clients list
         cv = ClientsVertical.find_by_integration_name(response.client_name)

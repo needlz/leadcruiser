@@ -4,6 +4,7 @@ class Response < ActiveRecord::Base
 	after_commit :send_email, on: :create
 
 	belongs_to :lead
+	belongs_to :purchase_order
 
 	def send_email
     SendEmailWorker.perform_async(self.id)
