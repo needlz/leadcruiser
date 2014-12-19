@@ -5,6 +5,7 @@ class Lead < ActiveRecord::Base
 
   # after_commit :send_email, on: :create
   # before_save :check_uniqueness_of_pet
+  before_save  :populate_state
 
   validates :site_id, :vertical_id, :first_name, :last_name, :zip, :day_phone, :email, presence: true
 
@@ -25,6 +26,12 @@ class Lead < ActiveRecord::Base
   end
 
   private
+
+  def populate_state
+    if self.state.nil?
+      self.state = ZipCode.find_by_zip(self.zip).try(:state)
+    end
+  end
 
   def check_uniqueness_of_pet
     return false unless pet_insurance?
