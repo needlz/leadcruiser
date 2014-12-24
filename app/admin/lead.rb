@@ -31,13 +31,17 @@ ActiveAdmin.register Lead do
     column :visitor_ip
     column :first_name
     column :last_name
-    column :address_1
-    column :address_2
-    column :city
     column :state
     column :zip
     column :day_phone
     column :email
+    column "Pre existing Condition" do |lead|
+      if lead.details_pets.first.conditions
+        "True"
+      else
+        "False"
+      end
+    end
     column :times_sold
     column :total_sale_amount
     column :status

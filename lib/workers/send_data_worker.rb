@@ -28,35 +28,43 @@ class SendDataWorker
         count += 1
         next
       end
-      # if @client.integration_name == ClientsVertical::PETS_BEST
-      #   state_filter = ["CA", "NY", "TX", "CO", "FL", "NJ", "AZ", "NV", "IL", "VA"]
-      #   state = lead.state || lead.try(:zip_code).try(:state)
-      #   unless state_filter.include? state
-      #     count += 1
-      #     next
-      #   end
-      # end
 
       provider = DataGeneratorProvider.new(lead, @client)
       response = provider.send_data
       puts response
       # Check response message is success or failure.
       unless response.nil?
+        rejection_reasons = nil
+        resp_model = Response.create(
+            response: response.to_s, 
+            lead_id: lead.id, 
+            client_name: @client.integration_name
+        )
         if @client.integration_name == ClientsVertical::PET_PREMIUM
           if response["Response"]["Result"]["Value"] == "BaeOK"
             sold = true
-            break
+          else
+            rejection_reasons = response["Response"]["Result"]["Error"].to_s
           end
         elsif @client.integration_name == ClientsVertical::PET_FIRST
           if response["Error"]["ErrorText"] == ""
             sold = true
-            break
+          else
+            rejection_reasons = response["Error"]["ErrorText"].to_s
           end
         elsif @client.integration_name == ClientsVertical::PETS_BEST
           if response["Status"] == "Success" and response["Message"].nil?
             sold = true
-            break
+          else
+            rejection_reasons = response["Message"].to_s
           end
+        end
+
+        if sold && !resp_model.nil?
+          resp_model.update_attributes :price => purchase_order.price, :purchase_order => purchase_order
+          break
+        elsif !sold && !resp_model.nil?
+          resp_model.update_attributes :rejection_reasons => rejection_reasons
         end
       end
 
@@ -64,14 +72,6 @@ class SendDataWorker
     end
 
     if sold
-      Response.create(
-          response: response.to_s, 
-          lead_id: lead.id, 
-          client_name: @client.integration_name, 
-          price: purchase_order.price,
-          purchase_order: purchase_order
-      )
-
       purchase_order.update_attributes :leads_count_sold => purchase_order.leads_count_sold + 1,
                                        :daily_leads_count => purchase_order.daily_leads_count + 1
       
