@@ -39,7 +39,7 @@ class SendDataWorker
 
       provider = DataGeneratorProvider.new(lead, @client)
       response = provider.send_data
-      # binding.pry
+      puts response
       # Check response message is success or failure.
       unless response.nil?
         if @client.integration_name == ClientsVertical::PET_PREMIUM
