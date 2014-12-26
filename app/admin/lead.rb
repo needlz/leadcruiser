@@ -24,7 +24,6 @@ ActiveAdmin.register Lead do
   index do
     selectable_column
     id_column
-    column :session_hash
     column :site_id
     column :form_id
     column :vertical_id
