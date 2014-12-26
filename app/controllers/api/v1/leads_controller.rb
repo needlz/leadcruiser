@@ -29,7 +29,7 @@ class API::V1::LeadsController  < ActionController::API
       SendDataWorker.new.perform(lead.id)
 
       # Check Responses table and return with JSON response
-      response = Response.find_by_lead_id(lead.id)
+      response = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id).try(:first)
       unless response.nil?
         # Update lead
         lead.times_sold = 1
