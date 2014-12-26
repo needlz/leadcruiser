@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   def duplicated_lead(email, vertical_id)
     
     exist_lead = Lead.where('email = ? and vertical_id = ? and status = ?', email, vertical_id, Lead::SOLD).first
-    if exist_lead.nil? || exist_lead.response.nil? || exist_lead.response.client_name == ''
+    if exist_lead.nil? || exist_lead.responses.nil?
       return false
     else
       return true
