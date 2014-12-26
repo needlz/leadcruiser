@@ -14,7 +14,7 @@ class Lead < ActiveRecord::Base
   has_one :zip_code, foreign_key: 'zip', primary_key: 'zip'
   has_many :details_pets
   belongs_to :vertical
-  has_one :response
+  has_many :responses
 
   # constant
   DUPLICATED  = "duplicated"
@@ -23,6 +23,10 @@ class Lead < ActiveRecord::Base
   def send_email
     SendEmailWorker.perform_async(self.id)
     # SendEmailWorker.new.perform(self.id)
+  end
+
+  def latest_response
+    Response.where('lead_id = ?', self.id).order(id: :desc).try(:first)
   end
 
   private
