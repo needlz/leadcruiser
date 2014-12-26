@@ -23,14 +23,14 @@
         %td= lead.visitor_ip
         %td= ''
         %td
-          - unless lead.response.nil?
-            = lead.response.client_name
+          - unless lead.latest_response.nil?
+            = lead.latest_response.client_name
         %td
-          - unless lead.response.nil?
-            = lead.response.price
+          - unless lead.latest_response.nil?
+            = lead.latest_response.price
         %td
-          - unless lead.response.nil?
-            = lead.response.response
+          - unless lead.latest_response.nil?
+            = lead.latest_response.response
         %td
           - unless lead.visitor.nil?
             = lead.visitor.landing_page

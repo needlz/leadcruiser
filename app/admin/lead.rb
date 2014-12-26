@@ -24,7 +24,6 @@ ActiveAdmin.register Lead do
   index do
     selectable_column
     id_column
-    column :session_hash
     column :site_id
     column :form_id
     column :vertical_id
@@ -45,6 +44,13 @@ ActiveAdmin.register Lead do
     column :times_sold
     column :total_sale_amount
     column :status
+    column "Rejection Reason" do |lead|
+      if lead.latest_response.nil?
+        ""
+      else
+        lead.latest_response.rejection_reasons
+      end
+    end
     column "Created At" do |lead|
       unless lead.created_at.nil?
         lead.created_at.strftime("%Y-%m-%d %H:%M:%S")
