@@ -22,7 +22,7 @@ class SendDataWorker
       binding.pry
       exclusive_po = po_builder.next_exclusive_po(exclusive_po, rejected_po_id_list)
       binding.pry
-      rejected_po_id_list.push exclusive_po.id
+      rejected_po_id_list.push exclusive_po[:id]
     end
     binding.pry
     ########################

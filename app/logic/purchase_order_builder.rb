@@ -1,4 +1,5 @@
 class PurchaseOrderBuilder
+	include ActionView::Helpers::NumberHelper
 
 	attr_accessor :lead, 
 								:exclusive_pos, 
@@ -26,7 +27,6 @@ class PurchaseOrderBuilder
 			@shared_price_keys << key.to_i
 		end
 		@shared_price_keys = @shared_price_keys.sort {|a,b| b <=> a}
-		binding.pry		
 	end
 
 	def exclusive_pos_length
@@ -64,56 +64,55 @@ class PurchaseOrderBuilder
 		if current_po.nil?
 			# Select highest price list
 			if @exclusive_price_keys.length == 0
-				nil
+				return nil
 			end
-			highest_price = number_with_precision(@exclusive_price_keys[0], precision: 1, significant: true)
-			binding.pry
+			highest_price = number_with_precision(@exclusive_price_keys[0], :precision => 1)
 			same_price_po_list = @exclusive_pos[highest_price]
 			# Select randomized PO
-			random_po = rand(0..same_price_po_list.length)
-
-			random_po
+			random = rand(0..same_price_po_list.length-1)
+			same_price_po_list[random]
 		else
-			selected_po = nil # It is finally selected PO
 			if @exclusive_price_keys.length == 0
 				return nil
 			end
-			binding.pry
 			# Select selectable price level
-			current_price = current_po.real_price
+			current_price = current_po[:real_price]
 			current_price_idx = 0
-			for i in 0..@exclusive_price_keys.length
+			for i in 0..@exclusive_price_keys.length-1
 				if current_price == @exclusive_price_keys[i]
 					current_price_idx = i
 				end
 			end
 			binding.pry
-			for i in current_price_idx..@exclusive_price_keys.length
-				pr = @exclusive_price_keys[i]
+			for i in current_price_idx..@exclusive_price_keys.length-1
+				pr = number_with_precision(@exclusive_price_keys[i], :precision => 1)
 				same_price_po_list = @exclusive_pos[pr]
+				binding.pry
 				rejected_po_count = 0
-				for j in 0..same_price_po_list.length
-					if rejected_po_id_list.include? same_price_po_list[j].id
+				for j in 0..same_price_po_list.length-1
+					if rejected_po_id_list.include? same_price_po_list[j][:id]
 						rejected_po_count = rejected_po_count + 1
 					end
 				end
-
+				binding.pry
 				if rejected_po_count == same_price_po_list.length
 					next
 				end
-
+				binding.pry
 				selected = false
 				try_count = 0
 				while try_count != same_price_po_list.length
-					random_po = rand(0..same_price_po_list.length)
+					random = rand(0..same_price_po_list.length-1)
+					random_po = same_price_po_list[random]
 					try_count = try_count + 1
-					unless rejected_po_id_list.include? random_po.id
+					unless rejected_po_id_list.include? random_po[:id]
+						binding.pry
 						return random_po
 					end
 				end
 			end
-
-			return selected_po
+			binding.pry
+			return nil
 		end
 	end
 
@@ -189,12 +188,7 @@ class PurchaseOrderBuilder
           next
         end
 
-        # available_pos << {
-        # 	:id => po.id,
-        # 	:client_name => po.client_name,
-        # 	:real_price => po.price + po.weight.to_i
-        # }
-        real_price = po.price + po.weight.to_i
+        real_price = (po.price + po.weight.to_i).to_s
         if available_pos[real_price].nil?
         	available_pos[real_price] = []
         end
