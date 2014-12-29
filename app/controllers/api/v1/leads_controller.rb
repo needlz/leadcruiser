@@ -67,6 +67,7 @@ class API::V1::LeadsController  < ActionController::API
           :other_client => other_clients.to_json
         }, status: :created
       else
+        lead.update_attributes :status => Lead::NO_POS
         render json: { errors: error.gsub("[pets_name]", pet["pet_name"]) , :other_client => all_client_list.to_json}, status: :unprocessable_entity
       end
     else

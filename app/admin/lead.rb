@@ -28,11 +28,8 @@ ActiveAdmin.register Lead do
     column :form_id
     column :vertical_id
     column :visitor_ip
-    column :first_name
     column :last_name
     column :state
-    column :zip
-    column :day_phone
     column :email
     column "Pre existing Condition" do |lead|
       if lead.details_pets.first.conditions
@@ -44,6 +41,11 @@ ActiveAdmin.register Lead do
     column :times_sold
     column :total_sale_amount
     column :status
+    column "Sold To" do |lead|
+      unless lead.latest_response.nil?
+        lead.latest_response.client_name
+      end
+    end
     column "Rejection Reason" do |lead|
       if lead.latest_response.nil?
         ""
@@ -54,11 +56,6 @@ ActiveAdmin.register Lead do
     column "Created At" do |lead|
       unless lead.created_at.nil?
         lead.created_at.strftime("%Y-%m-%d %H:%M:%S")
-      end
-    end
-    column "Updated At" do |lead|
-      unless lead.updated_at.nil?
-        lead.updated_at.strftime("%Y-%m-%d %H:%M:%S")
       end
     end
 
