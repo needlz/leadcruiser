@@ -7,13 +7,15 @@ class PurchaseOrderBuilder
 								:shared_pos, 
 								:shared_pos_length,
 								:exclusive_price_keys, 
-								:shared_price_keys
+								:shared_price_keys,
+								:times_sold
 
 	def initialize(lead)
 		@lead = lead
 		@exclusive_pos_length = 0
 		@shared_pos_length = 0
 
+		# Init exclusive_po list, price keys and legnth
 		@exclusive_pos = purchase_order_list(true)
 		@exclusive_price_keys = []
 		@exclusive_pos.keys.each do |key|
@@ -21,12 +23,16 @@ class PurchaseOrderBuilder
 		end
 		@exclusive_price_keys = @exclusive_price_keys.sort {|a,b| b <=> a}
 
+		# Init shared_po list, price keys and legnth
 		@shared_pos = purchase_order_list(false)
 		@shared_price_keys = []
 		@shared_pos.keys.each do |key|
 			@shared_price_keys << key.to_i
 		end
 		@shared_price_keys = @shared_price_keys.sort {|a,b| b <=> a}
+
+		# Init times_sold
+		@times_sold = @lead.vertical.times_sold.to_i
 	end
 
 	def exclusive_pos_length
@@ -35,29 +41,6 @@ class PurchaseOrderBuilder
 
 	def shared_pos_length
 		@shared_pos_length
-	end
-
-	# Return final purchase order lists
-	def next_build
-		final_po_list = []
-
-		if @exclusive_pos.length == 0
-			final_po_list = get_shared_po_group
-		else
-			shared_price_sum = 0
-			shared_po_group = get_shared_po_group
-			shared_po_group.each do |po|
-				shared_price_sum += po.real_price
-			end
-
-			if shared_price_sum < exclusive_pos[0].real_price
-				final_po_list.push shared_price_sum
-			else
-				final_po_list.push exclusive_pos[0]
-			end
-		end
-
-		final_po_list
 	end
 
 	def next_exclusive_po(current_po, rejected_po_id_list)
@@ -83,22 +66,22 @@ class PurchaseOrderBuilder
 					current_price_idx = i
 				end
 			end
-			binding.pry
+
 			for i in current_price_idx..@exclusive_price_keys.length-1
 				pr = number_with_precision(@exclusive_price_keys[i], :precision => 1)
 				same_price_po_list = @exclusive_pos[pr]
-				binding.pry
+
 				rejected_po_count = 0
 				for j in 0..same_price_po_list.length-1
 					if rejected_po_id_list.include? same_price_po_list[j][:id]
-						rejected_po_count = rejected_po_count + 1
+						rejected_po_count = rejected_po_count + 1 # All POs in this price level are rejected
 					end
 				end
-				binding.pry
+
 				if rejected_po_count == same_price_po_list.length
-					next
+					next # Go to next highest price
 				end
-				binding.pry
+
 				selected = false
 				try_count = 0
 				while try_count != same_price_po_list.length
@@ -106,35 +89,101 @@ class PurchaseOrderBuilder
 					random_po = same_price_po_list[random]
 					try_count = try_count + 1
 					unless rejected_po_id_list.include? random_po[:id]
-						binding.pry
 						return random_po
 					end
 				end
 			end
-			binding.pry
+
 			return nil
 		end
 	end
 
-	def next_shared_pos(current_po, rejected_po_id_list)
-		if current_idx.nil?
-
+	def next_shared_pos(current_po, rejected_po_id_list, limit)
+		returned_pos = []
+		total_count = 0
+		if current_po.nil?
 			
 			# Get same price list and select by random
-			same_price_list = []
+			if @shared_price_keys.length == 0
+				return nil
+			end
+			
+			for i in 0..@shared_price_keys.length-1
+				pr = number_with_precision(@shared_price_keys[i], :precision => 1)
+				same_price_po_list = @shared_pos[pr]
+
+				same_price_po_list_temp = []
+				for j in 0..same_price_po_list.length-1
+					same_price_po_list_temp.push same_price_po_list[j]
+				end
+
+				# Select available #{times_sold} POs
+				while same_price_po_list_temp.length != 0
+					random = rand(0..same_price_po_list_temp.length-1)
+					random_po = same_price_po_list_temp[random]
+					unless returned_pos.include? random_po
+						returned_pos.push random_po
+						total_count += 1
+					end
+					same_price_po_list_temp.delete_at random
+
+					if total_count == limit
+						return returned_pos
+					end
+				end
+			end
+
+			# Even if the count is less than times_sold, it returns shared_pos
+			return returned_pos
 		else
+			if @shared_price_keys.length == 0
+				return returned_pos
+			end
+			# Select selectable price level
+			current_price = current_po[:real_price]
+			current_price_idx = 0
+			for i in 0..@shared_price_keys.length-1
+				if current_price == @shared_price_keys[i]
+					current_price_idx = i
+				end
+			end
+
+			for i in current_price_idx..@shared_price_keys.length-1
+				pr = number_with_precision(@shared_price_keys[i], :precision => 1)
+				same_price_po_list = @shared_pos[pr]
+
+				rejected_po_count = 0
+				for j in 0..same_price_po_list.length-1
+					if rejected_po_id_list.include? same_price_po_list[j][:id]
+						rejected_po_count = rejected_po_count + 1 # All POs in this price level are rejected
+					end
+				end
+
+				if rejected_po_count == same_price_po_list.length
+					next # Go to next highest price
+				end
+
+				selected = false
+				try_count = 0
+				while try_count != same_price_po_list.length
+					random = rand(0..same_price_po_list.length-1)
+					random_po = same_price_po_list[random]
+					try_count = try_count + 1
+					unless rejected_po_id_list.include? random_po[:id]
+						returned_pos.push random_po
+					end
+
+					if returned_pos.length == @times_sold
+						return returned_pos
+					end
+				end
+			end
+
+			return returned_pos
 		end
 	end
 
 	private
-
-	def get_shared_po_group
-		if @exclusive_pos.length < @lead.vertical.times_sold.to_i
-			@exclusive_pos
-		else
-			@exclusive_pos[0..@lead.vertical.times_sold.to_i]
-		end
-	end
 
 	# Get available purchase list by lead
 	def purchase_order_list(exclusive)
