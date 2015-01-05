@@ -105,7 +105,7 @@ class PurchaseOrderBuilder
 			
 			# Get same price list and select by random
 			if @shared_price_keys.length == 0
-				return nil
+				return returned_pos
 			end
 			
 			for i in 0..@shared_price_keys.length-1
