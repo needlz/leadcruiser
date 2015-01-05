@@ -45,19 +45,18 @@ class SendDataWorker
     current_shared_po = nil
 
     while used_exclusive_po_id_list.length != exclusive_po_length || used_shared_po_id_list.length != shared_po_length
-      binding.pry
       exclusive_po = po_builder.next_exclusive_po(current_exclusive_po, used_exclusive_po_id_list)
       current_shared_pos = po_builder.next_shared_pos(current_shared_po, used_shared_po_id_list, lead.vertical.times_sold)
       shared_pos_price_sum = 0
       for i in 0..current_shared_pos.length - 1
         shared_pos_price_sum += current_shared_pos[i][:real_price]
       end
-      binding.pry
+
       exclusive_price = 0
       unless exclusive_po.nil?
         exclusive_price = exclusive_po[:real_price]
       end
-      binding.pry
+
       # Compare the price
       is_exclusive = true
       if shared_pos_price_sum > exclusive_price
@@ -65,42 +64,35 @@ class SendDataWorker
       end
 
       if is_exclusive && !exclusive_po.nil?
-        binding.pry
         client = ClientsVertical.where(active: true, integration_name: exclusive_po[:client_name]).try(:first)
-        binding.pry
         provider = DataGeneratorProvider.new(lead, client)
+
         response = provider.send_data
-        binding.pry
         sold = check_response(lead, response, client, exclusive_po)
-        binding.pry
         used_exclusive_po_id_list.push exclusive_po[:id]
         current_exclusive_po = exclusive_po
+
         if sold
           update_po_attribute(current_exclusive_po, client, lead)
-          binding.pry
           break
         end
       else
         failed_count = 0
         shared_selling = false
         for i in 0..current_shared_pos.length - 1
-          binding.pry
           client = ClientsVertical.where(active:true, integration_name: current_shared_pos[i][:client_name]).try(:first)
           provider = DataGeneratorProvider.new(lead, client)
           response = provider.send_data
           sold = check_response(lead, response, client, current_shared_pos[i])
-          binding.pry
           used_shared_po_id_list.push current_shared_pos[i][:id]
           current_shared_po = current_shared_pos[i]
           if !sold
             if !shared_selling
-              binding.pry
               break
             else
               failed_count += 1
             end
           else
-            binding.pry
             shared_selling = true
             update_po_attribute(current_shared_po, client, lead)
           end
@@ -118,22 +110,20 @@ class SendDataWorker
           new_shared_pos = []
           while failed_count != 0
             new_shared_pos = po_builder.next_shared_pos(current_shared_po, used_shared_po_id_list, failed_count)
-            binding.pry
+
             if new_shared_pos.length == 0
               break
             end
 
             for i in 0..new_shared_pos.length - 1
-              binding.pry
               client = ClientsVertical.where(active:true, integration_name: new_shared_pos[i][:client_name]).try(:first)
               provider = DataGeneratorProvider.new(lead, client)
               response = provider.send_data
               sold = check_response(lead, response, client, new_shared_pos[i])
-              binding.pry
+
               used_shared_po_id_list.push new_shared_pos[i][:id]
               current_shared_po = new_shared_pos[i]
               if sold
-                binding.pry
                 update_po_attribute(current_shared_po, client, lead)
                 failed_count -= 1
               end
@@ -261,6 +251,15 @@ class SendDataWorker
           sold = true
         else
           rejection_reasons = response["Message"].to_s
+        end
+      else
+        if !response["success"].nil? && response["success"]
+          sold = true
+        end
+
+        if !response["errors"].nil? && response["errors"]
+          sold = false
+          rejection_reasons = "Test Failure"
         end
       end
 
