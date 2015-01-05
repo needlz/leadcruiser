@@ -48,10 +48,13 @@ class SendDataWorker
       exclusive_po = po_builder.next_exclusive_po(current_exclusive_po, used_exclusive_po_id_list)
       current_shared_pos = po_builder.next_shared_pos(current_shared_po, used_shared_po_id_list, lead.vertical.times_sold)
       shared_pos_price_sum = 0
-      for i in 0..current_shared_pos.length - 1
-        shared_pos_price_sum += current_shared_pos[i][:real_price]
-      end
 
+      if current_shared_pos.length != 0
+        for i in 0..current_shared_pos.length - 1
+          shared_pos_price_sum += current_shared_pos[i][:real_price]
+        end
+      end
+      
       exclusive_price = 0
       unless exclusive_po.nil?
         exclusive_price = exclusive_po[:real_price]
