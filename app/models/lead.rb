@@ -19,6 +19,7 @@ class Lead < ActiveRecord::Base
   # constant
   DUPLICATED  = "duplicated"
   SOLD        = "sold"
+  NO_POS      = "No Matching POs"
 
   def send_email
     SendEmailWorker.perform_async(self.id)
