@@ -267,7 +267,14 @@ class SendDataWorker
       end
 
       if sold && !resp_model.nil?
+        # Update reponse
         resp_model.update_attributes :price => purchase_order[:real_price], :purchase_order_id => purchase_order[:id]
+
+        # Update lead
+        lead.times_sold = lead.times_sold.to_i + 1
+        lead.total_sale_amount = lead.total_sale_amount.to_i + purchase_order[:real_price]
+        lead.update_attributes :status => Lead::SOLD
+
         sold = true        
       elsif !sold && !resp_model.nil?
         resp_model.update_attributes :rejection_reasons => rejection_reasons

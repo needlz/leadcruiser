@@ -9,7 +9,7 @@ class TestSuccess1Generator
   end
 
   def generate
-    {}
+    {}.to_json
   end
 
 end
