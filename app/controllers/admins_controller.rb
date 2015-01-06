@@ -34,9 +34,9 @@ class AdminsController < ApplicationController
       puts response
       unless response.nil?
         # Update lead
-        lead.times_sold = 1
-        lead.total_sale_amount = response.price
-        lead.update_attributes :status => Lead::SOLD
+        # lead.times_sold = lead.times_sold.to_i + 1
+        # lead.total_sale_amount = lead.total_sale_amount.to_i + response.price
+        # lead.update_attributes :status => Lead::SOLD
 
         return true
       end

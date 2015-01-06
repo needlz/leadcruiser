@@ -30,6 +30,10 @@ class Lead < ActiveRecord::Base
     Response.where('lead_id = ?', self.id).order(id: :desc).try(:first)
   end
 
+  def sold_responses
+    Response.where('lead_id = ? and price is not null', self.id).order(id: :desc)
+  end
+
   private
 
   def populate_state

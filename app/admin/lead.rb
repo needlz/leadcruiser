@@ -42,16 +42,21 @@ ActiveAdmin.register Lead do
     column :total_sale_amount
     column :status
     column "Sold To" do |lead|
-      unless lead.latest_response.nil?
-        lead.latest_response.client_name
+      client_list = ""
+      responses = lead.sold_responses
+      unless responses.length == 0
+        for i in 0..responses.length - 2
+          client = ClientsVertical.where('vertical_id = ? and integration_name = ?', lead.vertical_id, responses[i].client_name).try(:first)
+          client_list += client.id.to_s + ", "
+        end
+        client = ClientsVertical.where(
+            'vertical_id = ? and integration_name = ?', 
+            lead.vertical_id, 
+            lead.sold_responses[responses.length - 1].client_name
+          ).try(:first)
+        client_list += client.id.to_s
       end
-    end
-    column "Rejection Reason" do |lead|
-      if lead.latest_response.nil?
-        ""
-      else
-        lead.latest_response.rejection_reasons
-      end
+      client_list
     end
     column "Created At" do |lead|
       unless lead.created_at.nil?

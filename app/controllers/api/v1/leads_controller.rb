@@ -34,11 +34,6 @@ class API::V1::LeadsController  < ActionController::API
       # Check Responses table and return with JSON response
       response = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id).try(:first)
       unless response.nil?
-        # Update lead
-        lead.times_sold = 1
-        lead.total_sale_amount = response.price
-        lead.update_attributes :status => Lead::SOLD
-
         # Concatenate JSON Response of other clients list
         cv = ClientsVertical.find_by_integration_name(response.client_name)
         other_cvs = ClientsVertical.where('integration_name != ? and display = true', response.client_name).order(sort_order: :asc)
