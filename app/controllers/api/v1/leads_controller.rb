@@ -53,9 +53,10 @@ class API::V1::LeadsController  < ActionController::API
           resp_str = response.response.gsub("=>", ":")
           resp_str = resp_str.gsub("nil", "\"nil\"")
           resp_json = JSON.parse(resp_str)
-          redirect_url = cv.service_url + "/?" + resp_json["OriginalQuerystring"]
-          redirect_url["aqr=true"] = "aqr=false"
-          redirect_url["Json=true"] = "Json=false"
+          redirect_url = resp_json["QuoteRetrievalUrl"]
+          # redirect_url = cv.service_url + "/?" + resp_json["OriginalQuerystring"]
+          # redirect_url["aqr=true"] = "aqr=false"
+          # redirect_url["Json=true"] = "Json=false"
         end
 
         render json: { 

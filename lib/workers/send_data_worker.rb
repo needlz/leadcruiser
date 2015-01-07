@@ -1,43 +1,34 @@
 require 'workers/response_petfirst_worker.rb'
+require 'workers/send_email_worker.rb'
 
 class SendDataWorker
+  include Sidekiq::Worker
+  sidekiq_options queue: "high"
 
   attr_accessor :client
 
-  include Sidekiq::Worker
-  sidekiq_options queue: "high"
+  NO_EXCLUSIVE_POS = "No matching exclusive purchase orders"
+  NO_SHARED_POS = "No matching shared purchase orders"
+  NIL_RESPONSE = "Nil response"
+  
   def perform(lead_id)
     return unless lead_id
 
     lead = Lead.find(lead_id)
 
+    # Get available exclusive and shared POs
     po_builder = PurchaseOrderBuilder.new(lead)
     exclusive_po_length = po_builder.exclusive_pos_length
     shared_po_length = po_builder.shared_pos_length
 
+    if exclusive_po_length == 0
+      record_transaction lead_id, nil, nil, nil, false, nil, NO_EXCLUSIVE_POS, nil
+    end
+    if shared_po_length == 0
+      record_transaction lead_id, nil, nil, nil, false, nil, NO_SHARED_POS, nil
+    end
 
-    # rejected_po_id_list = []
-    # exclusive_po = nil
-    # while rejected_po_id_list.length != exclusive_po_length
-    #   binding.pry
-    #   exclusive_po = po_builder.next_exclusive_po(exclusive_po, rejected_po_id_list)
-    #   binding.pry
-    #   rejected_po_id_list.push exclusive_po[:id]
-    # end
-    # binding.pry
-
-    # rejected_po_id_list = []
-    # shared_po = nil
-    # while rejected_po_id_list.length != shared_po_length
-    #   binding.pry
-    #   shared_pos = po_builder.next_shared_pos(shared_po, rejected_po_id_list)
-    #   binding.pry
-    #   for i in 0..shared_pos.length-1
-    #     rejected_po_id_list.push shared_pos[i][:id]
-    #     shared_po = shared_pos[i]
-    #   end
-    # end
-
+    # Initialize algorithm variables
     used_shared_po_id_list  = []
     used_exclusive_po_id_list = []
     current_shared_pos = []
@@ -49,6 +40,7 @@ class SendDataWorker
       current_shared_pos = po_builder.next_shared_pos(current_shared_po, used_shared_po_id_list, lead.vertical.times_sold)
       shared_pos_price_sum = 0
 
+      # Calculate exclusive and shared POs' price
       if current_shared_pos.length != 0
         for i in 0..current_shared_pos.length - 1
           shared_pos_price_sum += current_shared_pos[i][:real_price]
@@ -66,12 +58,13 @@ class SendDataWorker
         is_exclusive = false
       end
 
+      # Exclusive selling is selected by price
       if is_exclusive && !exclusive_po.nil?
         client = ClientsVertical.where(active: true, integration_name: exclusive_po[:client_name]).try(:first)
         provider = DataGeneratorProvider.new(lead, client)
 
         response = provider.send_data
-        sold = check_response(lead, response, client, exclusive_po)
+        sold = check_response(lead, response, client, exclusive_po, true)
         used_exclusive_po_id_list.push exclusive_po[:id]
         current_exclusive_po = exclusive_po
 
@@ -80,6 +73,7 @@ class SendDataWorker
           break
         end
       else
+        # Shared selling is selected by price
         failed_count = 0
         shared_selling = false
         for i in 0..current_shared_pos.length - 1
@@ -228,7 +222,7 @@ class SendDataWorker
     end
   end
 
-  def check_response(lead, response, client, purchase_order)
+  def check_response(lead, response, client, purchase_order, exclusive_selling=false)
     sold = false
     unless response.nil?
       rejection_reasons = nil
@@ -275,10 +269,24 @@ class SendDataWorker
         lead.total_sale_amount = lead.total_sale_amount.to_i + purchase_order[:real_price]
         lead.update_attributes :status => Lead::SOLD
 
+        # Record transaction history
+        record_transaction lead.id, client.id, resp_model.purchase_order_id, resp_model.price, true, exclusive_selling, nil, resp_model.id
+
+        # Send response email
+        SendEmailWorker.perform_async(resp_model.id)
+
         sold = true        
       elsif !sold && !resp_model.nil?
         resp_model.update_attributes :rejection_reasons => rejection_reasons
+
+        # Record transaction history
+        record_transaction lead.id, client.id, purchase_order[:id], purchase_order[:real_price], false, exclusive_selling, rejection_reasons, resp_model.id
       end
+    else
+      sold = false
+      
+      # Record transaction history
+      record_transaction lead.id, client.id, purchase_order[:id], purchase_order[:real_price], false, exclusive_selling, NIL_RESPONSE, nil      
     end    
 
     sold
@@ -341,5 +349,23 @@ class SendDataWorker
     end
 
     nil
+  end
+
+  def record_transaction(
+    lead_id, client_id=nil, po_id=nil, price=nil, success=false, 
+    exclusive_selling=nil, reason=nil, response_id=nil)
+
+    unless lead_id.nil?
+      TransactionAttempt.create(
+        lead_id: lead_id,
+        client_id: client_id,
+        purchase_order_id: po_id,
+        price: price,
+        success: success,
+        exclusive_selling: exclusive_selling,
+        reason: reason,
+        response_id: response_id
+      )
+    end
   end
 end
