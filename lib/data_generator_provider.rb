@@ -9,8 +9,8 @@ class DataGeneratorProvider
     @client = client
   end
 
-  def data_to_send
-    "#{client.integration_name}_generator".camelize.constantize.new(lead).generate
+  def data_to_send(exclusive)
+    "#{client.integration_name}_generator".camelize.constantize.new(lead).generate exclusive
   end
 
   def link
@@ -21,7 +21,7 @@ class DataGeneratorProvider
     "#{client.integration_name}_generator"
   end
 
-  def send_data
+  def send_data (exclusive=true)
     return if client.service_url.nil? && link.blank?
 
     ########## For Hartville from here ##############
@@ -50,10 +50,10 @@ class DataGeneratorProvider
     
     ########## True code ##################
     if client.integration_name == ClientsVertical::PETS_BEST
-      return HTTParty.get request_url, :query => data_to_send
+      return HTTParty.get request_url, :query => data_to_send(exclusive)
     else
       return HTTParty.post request_url,
-                    :body => data_to_send,
+                    :body => data_to_send(exclusive),
                     :headers => request_header
     end
   end

@@ -5,6 +5,6 @@ class Response < ActiveRecord::Base
 	belongs_to :lead
 	belongs_to :purchase_order
 
-	has_many :transaction_attemps
+	has_many :transaction_attempts
 
 end

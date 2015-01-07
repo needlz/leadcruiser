@@ -79,7 +79,7 @@ class SendDataWorker
         for i in 0..current_shared_pos.length - 1
           client = ClientsVertical.where(active:true, integration_name: current_shared_pos[i][:client_name]).try(:first)
           provider = DataGeneratorProvider.new(lead, client)
-          response = provider.send_data
+          response = provider.send_data(false)
           sold = check_response(lead, response, client, current_shared_pos[i])
           used_shared_po_id_list.push current_shared_pos[i][:id]
           current_shared_po = current_shared_pos[i]
@@ -115,7 +115,7 @@ class SendDataWorker
             for i in 0..new_shared_pos.length - 1
               client = ClientsVertical.where(active:true, integration_name: new_shared_pos[i][:client_name]).try(:first)
               provider = DataGeneratorProvider.new(lead, client)
-              response = provider.send_data
+              response = provider.send_data(false)
               sold = check_response(lead, response, client, new_shared_pos[i])
 
               used_shared_po_id_list.push new_shared_pos[i][:id]

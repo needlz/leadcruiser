@@ -8,7 +8,7 @@ class TestSuccess1Generator
     @lead = lead
   end
 
-  def generate
+  def generate(exclusive)
     {}.to_json
   end
 

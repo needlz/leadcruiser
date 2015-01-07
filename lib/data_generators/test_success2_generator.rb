@@ -8,7 +8,7 @@ class TestSuccess2Generator
     @lead = lead
   end
 
-  def generate
+  def generate(exclusive)
     {}
   end
 
