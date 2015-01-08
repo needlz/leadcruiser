@@ -60,7 +60,7 @@ class SendDataWorker
 
       # Exclusive selling is selected by price
       if is_exclusive && !exclusive_po.nil?
-        client = ClientsVertical.where(active: true, integration_name: exclusive_po[:client_name]).try(:first)
+        client = ClientsVertical.where(active: true, id: exclusive_po[:client_id]).try(:first)
         provider = DataGeneratorProvider.new(lead, client)
 
         response = provider.send_data
@@ -77,7 +77,7 @@ class SendDataWorker
         failed_count = 0
         shared_selling = false
         for i in 0..current_shared_pos.length - 1
-          client = ClientsVertical.where(active:true, integration_name: current_shared_pos[i][:client_name]).try(:first)
+          client = ClientsVertical.where(active:true, id: current_shared_pos[i][:client_id]).try(:first)
           provider = DataGeneratorProvider.new(lead, client)
           response = provider.send_data(false)
           sold = check_response(lead, response, client, current_shared_pos[i])
@@ -113,7 +113,7 @@ class SendDataWorker
             end
 
             for i in 0..new_shared_pos.length - 1
-              client = ClientsVertical.where(active:true, integration_name: new_shared_pos[i][:client_name]).try(:first)
+              client = ClientsVertical.where(active:true, id: new_shared_pos[i][:client_id]).try(:first)
               provider = DataGeneratorProvider.new(lead, client)
               response = provider.send_data(false)
               sold = check_response(lead, response, client, new_shared_pos[i])
@@ -296,8 +296,8 @@ class SendDataWorker
   end
 
   def check_purchase_order(lead, client)
-    pos = PurchaseOrder.where('vertical_id = ? and client_name = ? and active = ? and exclusive = ?', 
-                                @client.vertical_id, @client.integration_name, true, true)
+    pos = PurchaseOrder.where('vertical_id = ? and client_id = ? and active = ? and exclusive = ?', 
+                                @client.vertical_id, @client.id, true, true)
     if pos.nil? || pos.length == 0
       nil
     else
