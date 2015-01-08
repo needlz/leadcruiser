@@ -1,4 +1,4 @@
-ActiveAdmin.register TransactionAttempt do
+ActiveAdmin.register Vertical do
 
 
   # See permitted parameters documentation:
@@ -17,20 +17,18 @@ ActiveAdmin.register TransactionAttempt do
   index do
     id_column
     column :lead_id
-    column "Client Name" do |tr|
-      tr.clients_vertical.try(:integration_name)
-    end
-    column :purchase_order_id
-    column :price
-    column :weight
-    column :success
-    column :exclusive_selling
-    column :reason
-    column :response_id
-    column "Created At" do |response|
-      unless response.created_at.nil?
-        response.created_at.strftime("%Y-%m-%d %H:%M:%S")
+    column :name
+    column :times_sold
+    column "Created At" do |v|
+      unless v.created_at.nil?
+        v.created_at.strftime("%Y-%m-%d %H:%M:%S")
       end
     end
+    column "Updated At" do |v|
+      unless v.updated_at.nil?
+        v.updated_at.strftime("%Y-%m-%d %H:%M:%S")
+      end
+    end
+    actions
   end
 end

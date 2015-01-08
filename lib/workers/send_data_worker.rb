@@ -22,10 +22,10 @@ class SendDataWorker
     shared_po_length = po_builder.shared_pos_length
 
     if exclusive_po_length == 0
-      record_transaction lead_id, nil, nil, nil, false, nil, NO_EXCLUSIVE_POS, nil
+      record_transaction lead_id, nil, nil, nil, nil, false, nil, NO_EXCLUSIVE_POS, nil
     end
     if shared_po_length == 0
-      record_transaction lead_id, nil, nil, nil, false, nil, NO_SHARED_POS, nil
+      record_transaction lead_id, nil, nil, nil, nil, false, nil, NO_SHARED_POS, nil
     end
 
     # Initialize algorithm variables
@@ -270,7 +270,8 @@ class SendDataWorker
         lead.update_attributes :status => Lead::SOLD
 
         # Record transaction history
-        record_transaction lead.id, client.id, resp_model.purchase_order_id, resp_model.price, true, exclusive_selling, nil, resp_model.id
+        po_history = PurchaseOrder.find purchase_order[:id]
+        record_transaction lead.id, client.id, resp_model.purchase_order_id, po_history.price, po_history.weight, true, exclusive_selling, nil, resp_model.id
 
         # Send response email
         SendEmailWorker.perform_async(resp_model.id)
@@ -280,13 +281,15 @@ class SendDataWorker
         resp_model.update_attributes :rejection_reasons => rejection_reasons
 
         # Record transaction history
-        record_transaction lead.id, client.id, purchase_order[:id], purchase_order[:real_price], false, exclusive_selling, rejection_reasons, resp_model.id
+        po_history = PurchaseOrder.find purchase_order[:id]
+        record_transaction lead.id, client.id, purchase_order[:id], po_history.price, po_history.weight, false, exclusive_selling, rejection_reasons, resp_model.id
       end
     else
       sold = false
       
       # Record transaction history
-      record_transaction lead.id, client.id, purchase_order[:id], purchase_order[:real_price], false, exclusive_selling, NIL_RESPONSE, nil      
+      po_history = PurchaseOrder.find purchase_order[:id]
+      record_transaction lead.id, client.id, purchase_order[:id], po_history.price, po_history.weight, false, exclusive_selling, NIL_RESPONSE, nil      
     end    
 
     sold
@@ -352,7 +355,7 @@ class SendDataWorker
   end
 
   def record_transaction(
-    lead_id, client_id=nil, po_id=nil, price=nil, success=false, 
+    lead_id, client_id=nil, po_id=nil, price=nil, weight=nil, success=false, 
     exclusive_selling=nil, reason=nil, response_id=nil)
 
     unless lead_id.nil?
@@ -361,6 +364,7 @@ class SendDataWorker
         client_id: client_id,
         purchase_order_id: po_id,
         price: price,
+        weight: weight,
         success: success,
         exclusive_selling: exclusive_selling,
         reason: reason,

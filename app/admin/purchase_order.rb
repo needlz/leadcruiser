@@ -47,8 +47,8 @@ ActiveAdmin.register PurchaseOrder do
     f.inputs "Purchase Order" do
       f.input :vertical
       f.input :client_name, 
-              :as => :select, 
-              :collection => ClientsVertical.select(:integration_name).uniq.pluck(:integration_name, :integration_name).uniq
+              :as => :select,
+              :collection => ClientsVertical.select(:id, :integration_name).uniq
       f.input :weight
       f.input :exclusive
       f.input :states
