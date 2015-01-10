@@ -3,65 +3,76 @@ Abyssinian,Abyssinian,x
 American Bobtail,Alley Cat,Domestic Short Hair
 American Hairless,American Bobtail,x
 American Shorthair,American Bobtail Shorthair,American Bobtail
-Angora,American Shorthair,x
-Asian,American Shorthair (purebred),American Shorthair
-Balinese,American Wirehair (purebred),American Shorthair
-Bengal,Angora,x
-Birman,Ashera,Savannah
-Bombay,Balinese,x
-British,Bengal,x
-British Black,Bengalese,Bengal
-British Blue,Birman,x
-British Shorthair,Bombay,x
-Burmese,British Longhair,British
-Burmilla,British Shorthair,British Shorthair
-Calico,Burmese,x
-Californian Spangled,Burmilla,x
-Chartruex,Calico,x
-Chinchilla,California Spangled,x
-Colour Point,Canadian Hairless (Sphynx),Sphynx
-Cornish Rex,Chartreux,x
-Devon Rex,Chausie,Mixed
-Domestic Long Hair,Chinchilla,x
-Domestic Medium Hair,Colorpoint,Colour Point
-Domestic Short Hair,Colorpoint Longhair,Colour Point
-Egyptian Mau,Colorpoint Shorthair,Colour Point
-Exotic,Cornish Rex,x
-Feral,Devon Rex,x
-Foreign Short Hair,Domestic Longhair,Domestic Long Hair
-Havana,Domestic Mediumhair,Domestic Medium Hair
-Himalayan,Domestic Shorthair,Domestic Short Hair
-Japanese Bobtail,Dwarf Cat,munchkin
-Japanese Short Hair,Egyptian Mau,x
-Korat,European Burmese,Burmese
-Maine Coon,European Shorthair,Domestic Short Hair
-Manx,Exotic,x
-Mixed,Exotic Longhair,Exotic
-munchkin,Exotic Shorthair,Exotic
-Non Pedigree,Havana Brown,Havana
-Norwegian Forest Cat,Highland Fold,Scottish Fold
-Ocicat,Himalayan,x
-Oriental,Himalayan Blue Point,Himalayan
-Persian,Himalayan Flame Point,Himalayan
-Ragamuffin,Himalayan Lilac Point,Himalayan
-Ragdoll,Himalayan Seal Point,Himalayan
-Russian Blue,Japanese Bobtail,x
-Savannah,Japanese Bobtail Longhair,Japanese Bobtail
-Scottish Fold,Javanese,Oriental
-Selkirk Rex,Kashmir,Himalayan
-Siamese,Korat,x
-Siamese Cross,Kurilian Bobtail,Japanese Bobtail
-Siberian,Kurilian Bobtail Long Hair,Japanese Bobtail
-Singapura,Maine Coon,x
-Snowshoe,Manx,x
-Somali,Minskin,Mixed
-Sphynx,Moggie,Non Pedigree
-Tabby,Munchkin,x
-Tabby (Silver),Munchkin Longhair,munchkin
-Tiffanie,Nebelung,Russian Blue
-Tonkinese,Norwegian Forest Cat,x
-Turkish Angora,Ocicat,x
-Turkish Van,Ojos Azules,Domestic Short Hair
+Angora,American Curl,
+Asian,American Curl Longhair,
+Balinese,American Curl Shorthair,
+Bengal,American Shorthair,x
+Birman,American Shorthair (purebred),American Shorthair
+Bombay,American Wirehair (purebred),American Shorthair
+British,Angora,x
+British Black,Ashera,Savannah
+British Blue,Balinese,x
+British Shorthair,Bengal,x
+Burmese,Bengalese,Bengal
+Burmilla,Birman,x
+Calico,Bombay,x
+Californian Spangled,British Longhair,British
+Chartruex,British Shorthair,British Shorthair
+Chinchilla,Burmese,x
+Colour Point,Burmilla,x
+Cornish Rex,Calico,x
+Devon Rex,California Spangled,x
+Domestic Long Hair,Cameo Longhair,
+Domestic Medium Hair,Canadian Hairless (Sphynx),Sphynx
+Domestic Short Hair,Chartreux,x
+Egyptian Mau,Chausie,Mixed
+Exotic,Chinchilla,x
+Feral,Colorpoint,Colour Point
+Foreign Short Hair,Colorpoint Longhair,Colour Point
+Havana,Colorpoint Shorthair,Colour Point
+Himalayan,Cornish Rex,x
+Japanese Bobtail,Cymric,
+Japanese Short Hair,Devon Rex,x
+Korat,Domestic Longhair,Domestic Long Hair
+Maine Coon,Domestic Mediumhair,Domestic Medium Hair
+Manx,Domestic Shorthair,Domestic Short Hair
+Mixed,Donskoy,
+munchkin,Dwarf Cat,munchkin
+Non Pedigree,Egyptian Mau,x
+Norwegian Forest Cat,European Burmese,Burmese
+Ocicat,European Shorthair,Domestic Short Hair
+Oriental,Exotic,x
+Persian,Exotic Longhair,Exotic
+Ragamuffin,Exotic Shorthair,Exotic
+Ragdoll,Habari,
+Russian Blue,Havana Brown,Havana
+Savannah,Highland Fold,Scottish Fold
+Scottish Fold,Highlander,
+Selkirk Rex,Highlander Shorthair,
+Siamese,Himalayan,x
+Siamese Cross,Himalayan Blue Point,Himalayan
+Siberian,Himalayan Flame Point,Himalayan
+Singapura,Himalayan Lilac Point,Himalayan
+Snowshoe,Himalayan Seal Point,Himalayan
+Somali,Japanese Bobtail,x
+Sphynx,Japanese Bobtail Longhair,Japanese Bobtail
+Tabby,Javanese,Oriental
+Tabby (Silver),Kashmir,Himalayan
+Tiffanie,Korat,x
+Tonkinese,Kurilian Bobtail,Japanese Bobtail
+Turkish Angora,Kurilian Bobtail Long Hair,Japanese Bobtail
+Turkish Van,LaPerm,
+,LaPerm Shorthair,
+,Maine Coon,x
+,Manx,x
+,Minskin,Mixed
+,Moggie,Non Pedigree
+,Munchkin,x
+,Munchkin Longhair,munchkin
+,Nebelung,Russian Blue
+,Norwegian Forest Cat,x
+,Ocicat,x
+,Ojos Azules,Domestic Short Hair
 ,Ojos Azules Longhair,Domestic Long Hair
 ,Oriental,x
 ,Oriental Colorpoint,Oriental

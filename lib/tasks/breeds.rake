@@ -81,14 +81,16 @@ namespace :breeds do
     CSV.foreach( "var/pets_best_dog.csv", :headers => true) do |row|
       dog_breed = DogBreed.find_by_name(row['our_list'])
       if dog_breed.nil?
-        DogBreed.create(name: row['our_list'].gsub("\u00A0", ''))
+        dog_breed = DogBreed.create(name: row['our_list'].gsub("\u00A0", ''))
       end
 
-      ClientDogBreedMapping.create(
-        breed_id: DogBreed.find_by_name(row['our_list']).id, 
-        integration_name: 'pets_best', 
-        name: row['action'].gsub("\u00A0", '')
-      ) if row['action'] != 'x'
+      unless dog_breed.nil?
+        ClientDogBreedMapping.create(
+          breed_id: dog_breed.id, 
+          integration_name: 'pets_best', 
+          name: row['action'].gsub("\u00A0", '')
+        ) if row['action'] != 'x' && !row['action'].nil? && row['action'] != '**Remove from our list**'
+      end
     end
   end
 
@@ -98,15 +100,16 @@ namespace :breeds do
     CSV.foreach( "var/pets_best_cat.csv", :headers => true) do |row|
       cat_breed = CatBreed.find_by_name(row['our_list'])
       if cat_breed.nil?
-        CatBreed.create(name: row['our_list'].gsub("\u00A0", ''))
+        cat_breed = CatBreed.create(name: row['our_list'].gsub("\u00A0", ''))
       end
 
-      ClientCatBreedMapping.create(
-        breed_id: CatBreed.find_by_name(row['our_list']).id, 
-        integration_name: 'pets_best', 
-        name: row['action'].gsub("\u00A0", '')
-      ) if row['action'] != 'x'
-
+      unless cat_breed.nil?
+        ClientCatBreedMapping.create(
+          breed_id: cat_breed.id, 
+          integration_name: 'pets_best', 
+          name: row['action'].gsub("\u00A0", '')
+        ) if row['action'] != 'x' && !row['action'].nil?
+      end
     end
   end
 
