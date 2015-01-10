@@ -33,7 +33,7 @@ class API::V1::LeadsController  < ActionController::API
 
       # Check Responses table and return with JSON response
       response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
-      unless response_list.nil? && response_list.length != 0
+      if !response_list.nil? && response_list.length != 0
         # Concatenate JSON Response of other clients list
         sold_client_name_list = []
         sold_clients = []
@@ -47,10 +47,10 @@ class API::V1::LeadsController  < ActionController::API
             resp_str = response.response.gsub("=>", ":")
             resp_str = resp_str.gsub("nil", "\"nil\"")
             resp_json = JSON.parse(resp_str)
-            redirect_url = resp_json["QuoteRetrievalUrl"]
-            # redirect_url = cv.service_url + "/?" + resp_json["OriginalQuerystring"]
-            # redirect_url["aqr=true"] = "aqr=false"
-            # redirect_url["Json=true"] = "Json=false"
+            # redirect_url = resp_json["QuoteRetrievalUrl"]
+            redirect_url = cv.service_url + "/?" + resp_json["OriginalQuerystring"]
+            redirect_url["aqr=true"] = "aqr=false"
+            redirect_url["Json=true"] = "Json=false"
           end
           sold_clients << JSON[cv_json(cv, redirect_url)]
         end
