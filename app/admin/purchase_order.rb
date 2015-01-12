@@ -3,6 +3,15 @@ ActiveAdmin.register PurchaseOrder do
   permit_params :vertical_id, :client_id, :weight, :exclusive, :states, :preexisting_conditions, :price, 
                 :status, :active, :leads_max_limit, :leads_daily_limit, :start_date, :end_date
 
+  filter :vertical
+  filter :clients_vertical
+  filter :exclusive
+  filter :preexisting_conditions
+  filter :price
+  filter :active
+  filter :start_date
+  filter :end_date
+
   index do
     selectable_column
     id_column

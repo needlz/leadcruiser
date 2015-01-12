@@ -15,6 +15,8 @@ ActiveAdmin.register ClientsVertical do
   #   permitted
   # end
 
+  config.filters = false
+
   index do
     selectable_column
     id_column

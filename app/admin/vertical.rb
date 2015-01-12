@@ -13,10 +13,10 @@ ActiveAdmin.register Vertical do
   #   permitted << :other if resource.something?
   #   permitted
   # end
-
+  config.filters = false
+  
   index do
     id_column
-    column :lead_id
     column :name
     column :times_sold
     column "Created At" do |v|
