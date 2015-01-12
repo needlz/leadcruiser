@@ -187,15 +187,14 @@ class PurchaseOrderBuilder
 
 	# Get available purchase list by lead
 	def purchase_order_list(exclusive)
-    pos = PurchaseOrder.where('vertical_id = ? and active = ? and exclusive = ?', 
-                                @lead.vertical_id, true, exclusive)
+    pos = PurchaseOrder.where('vertical_id = ? and active = ? and exclusive = ?', @lead.vertical_id, true, exclusive)
     available_pos = {}
     if pos.nil? || pos.length == 0
       available_pos
     else
       pos.each do |po|
       	# Check client active status
-      	client = ClientsVertical.find_by_integration_name(po.client_name)
+      	client = po.clients_vertical
       	if client.nil? || !client.active
       		next
       	end
@@ -243,7 +242,7 @@ class PurchaseOrderBuilder
         end
        	available_pos[real_price] << {
         	:id => po.id,
-        	:client_name => po.client_name,
+        	:client_id => po.client_id,
         	:real_price => po.price + po.weight.to_i
         }
 

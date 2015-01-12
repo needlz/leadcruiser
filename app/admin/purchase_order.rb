@@ -1,13 +1,24 @@
 ActiveAdmin.register PurchaseOrder do
 
-  permit_params :vertical_id, :client_name, :weight, :exclusive, :states, :preexisting_conditions, :price, 
+  permit_params :vertical_id, :client_id, :weight, :exclusive, :states, :preexisting_conditions, :price, 
                 :status, :active, :leads_max_limit, :leads_daily_limit, :start_date, :end_date
+
+  filter :vertical
+  filter :clients_vertical
+  filter :exclusive
+  filter :preexisting_conditions
+  filter :price
+  filter :active
+  filter :start_date
+  filter :end_date
 
   index do
     selectable_column
     id_column
     column :vertical_id
-    column :client_name
+    column "Client" do |po|
+      po.clients_vertical.try(:integration_name)
+    end
     column :weight
     column :exclusive
     column :states
@@ -46,9 +57,9 @@ ActiveAdmin.register PurchaseOrder do
   form  do |f|
     f.inputs "Purchase Order" do
       f.input :vertical
-      f.input :client_name, 
-              :as => :select, 
-              :collection => ClientsVertical.select(:integration_name).uniq.pluck(:integration_name, :integration_name).uniq
+      f.input :client_id, 
+              :as => :select,
+              :collection => ClientsVertical.select(:integration_name, :id).uniq.pluck(:integration_name, :id)
       f.input :weight
       f.input :exclusive
       f.input :states

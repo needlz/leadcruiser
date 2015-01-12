@@ -32,36 +32,41 @@ class API::V1::LeadsController  < ActionController::API
       SendDataWorker.new.perform(lead.id)
 
       # Check Responses table and return with JSON response
-      response = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id).try(:first)
-      unless response.nil?
+      response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
+      if !response_list.nil? && response_list.length != 0
         # Concatenate JSON Response of other clients list
-        cv = ClientsVertical.find_by_integration_name(response.client_name)
-        other_cvs = ClientsVertical.where('integration_name != ? and display = true', response.client_name).order(sort_order: :asc)
-        
-        json_response = cv_json(cv)
+        sold_client_name_list = []
+        sold_clients = []
+        response_list.each do |response|
+          sold_client_name_list << response.client_name
 
+          cv = ClientsVertical.find_by_integration_name(response.client_name)
+          # If sold client is Pets Best, return redirect URL
+          redirect_url = cv.website_url
+          if cv.integration_name == ClientsVertical::PETS_BEST
+            resp_str = response.response.gsub("=>", ":")
+            resp_str = resp_str.gsub("nil", "\"nil\"")
+            resp_json = JSON.parse(resp_str)
+            # redirect_url = resp_json["QuoteRetrievalUrl"]
+            redirect_url = cv.service_url + "/?" + resp_json["OriginalQuerystring"]
+            redirect_url["aqr=true"] = "aqr=false"
+            redirect_url["Json=true"] = "Json=false"
+          end
+          sold_clients << JSON[cv_json(cv, redirect_url)]
+        end
+        
+        other_cvs = ClientsVertical.where('integration_name NOT IN  (?) and display = true', sold_client_name_list).order(sort_order: :asc)
+        
         other_clients = []
         other_cvs.each do |other_cv|
           if other_cv.display
-            other_clients << JSON[cv_json(other_cv)]
+            other_clients << JSON[cv_json(other_cv, other_cv.website_url)]
           end
-        end
-
-        # If sold client is Pets Best, return redirect URL
-        redirect_url = cv.website_url
-        if cv.integration_name == ClientsVertical::PETS_BEST
-          resp_str = response.response.gsub("=>", ":")
-          resp_str = resp_str.gsub("nil", "\"nil\"")
-          resp_json = JSON.parse(resp_str)
-          redirect_url = cv.service_url + "/?" + resp_json["OriginalQuerystring"]
-          redirect_url["aqr=true"] = "aqr=false"
-          redirect_url["Json=true"] = "Json=false"
         end
 
         render json: { 
           :success => true, 
-          :redirect_url => redirect_url,
-          :client => json_response.to_json, 
+          :client => sold_clients.to_json, 
           :other_client => other_clients.to_json
         }, status: :created
       else
@@ -100,7 +105,7 @@ class API::V1::LeadsController  < ActionController::API
     return other_clients
   end
 
-  def cv_json(cv)
+  def cv_json(cv, redirect_url=nil)
     {
       :integration_name   => cv.integration_name,
       :email              => cv.email,
@@ -110,7 +115,8 @@ class API::V1::LeadsController  < ActionController::API
       :description        => cv.description,
       :logo_url           => cv.logo.url,
       :sort_order         => cv.sort_order,
-      :display            => cv.display
+      :display            => cv.display,
+      :redirect_url       => redirect_url
     }
   end
 

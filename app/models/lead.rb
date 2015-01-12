@@ -15,6 +15,7 @@ class Lead < ActiveRecord::Base
   has_many :details_pets
   belongs_to :vertical
   has_many :responses
+  has_many :transaction_attempts
 
   # constant
   DUPLICATED  = "duplicated"

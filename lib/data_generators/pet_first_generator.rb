@@ -9,7 +9,7 @@ class PetFirstGenerator
   end
 
 
-  def generate
+  def generate(exclusive)
     # FirstName : string
     # LastName: string
     # Phone: string

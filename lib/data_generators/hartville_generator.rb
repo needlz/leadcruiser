@@ -10,7 +10,7 @@ class HartvilleGenerator
     @lead = lead
   end
 
-  def generate
+  def generate(exclusive)
     # builder = Nokogiri::XML::Builder.new({:encoding => 'UTF-8'}) do |xml|
     #   xml.root do
     #     xml.row do

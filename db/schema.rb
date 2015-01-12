@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141222151834) do
+ActiveRecord::Schema.define(version: 20150108180758) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -163,7 +163,6 @@ ActiveRecord::Schema.define(version: 20141222151834) do
 
   create_table "purchase_orders", force: true do |t|
     t.integer  "vertical_id"
-    t.string   "client_name"
     t.integer  "weight"
     t.boolean  "exclusive"
     t.string   "states"
@@ -179,6 +178,7 @@ ActiveRecord::Schema.define(version: 20141222151834) do
     t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "client_id"
   end
 
   create_table "responses", force: true do |t|
@@ -207,6 +207,20 @@ ActiveRecord::Schema.define(version: 20141222151834) do
   create_table "states", force: true do |t|
     t.string "name"
     t.string "code"
+  end
+
+  create_table "transaction_attempts", force: true do |t|
+    t.integer  "lead_id"
+    t.integer  "client_id"
+    t.integer  "purchase_order_id"
+    t.integer  "price"
+    t.boolean  "success"
+    t.boolean  "exclusive_selling"
+    t.text     "reason"
+    t.integer  "response_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "weight"
   end
 
   create_table "verticals", force: true do |t|

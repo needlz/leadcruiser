@@ -1,8 +1,11 @@
 class ClientsVertical < ActiveRecord::Base
+
+  after_commit :refresh_queue
   
   belongs_to :lead, foreign_key: 'vertical_id', primary_key: 'vertical_id'
   belongs_to :vertical
-  after_commit :refresh_queue
+
+  has_many :transaction_attempts, foreign_key: 'id', primary_key: 'client_id'
 
   has_attached_file :logo,
                     :styles => {

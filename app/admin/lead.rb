@@ -21,6 +21,15 @@ ActiveAdmin.register Lead do
     redirect_to admin_leads_path
   end
 
+  filter :id
+  filter :vertical
+  filter :last_name
+  filter :state
+  filter :email
+  filter :preexisting_conditions
+  filter :status
+  filter :created_at
+
   index do
     selectable_column
     id_column

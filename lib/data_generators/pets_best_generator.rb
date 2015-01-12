@@ -8,7 +8,7 @@ class PetsBestGenerator
     @lead = lead
   end
 
-  def generate
+  def generate(exclusive)
     promocode = "PIOEL"
 
     query = {
