@@ -30,14 +30,8 @@ class AdminsController < ApplicationController
    		SendDataWorker.new.perform(lead.id)
 
    		# Check Responses table and return with JSON response
-      response = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id).try(:first)
-      puts response
-      unless response.nil?
-        # Update lead
-        # lead.times_sold = lead.times_sold.to_i + 1
-        # lead.total_sale_amount = lead.total_sale_amount.to_i + response.price
-        # lead.update_attributes :status => Lead::SOLD
-
+      response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
+      if !response_list.nil? && response_list.length != 0
         return true
       end
    	end

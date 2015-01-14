@@ -18,6 +18,7 @@ class ClientsVertical < ActiveRecord::Base
   PET_PREMIUM   = "pet_premium"
   PET_FIRST     = "pet_first"
   PETS_BEST     = "pets_best"
+  HEALTHY_PAWS  = "healthy_paws"
   
   def refresh_queue
     self.vertical.update_attributes(next_client: nil)
