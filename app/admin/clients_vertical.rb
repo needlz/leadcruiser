@@ -4,7 +4,7 @@ ActiveAdmin.register ClientsVertical do
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
-  permit_params :integration_name, :official_name, :active, :weight, :exclusive, :fixed_price, :email, :phone_number,
+  permit_params :vertical_id, :integration_name, :official_name, :active, :weight, :exclusive, :fixed_price, :email, :phone_number,
                 :website_url, :request_type, :service_url, :logo, :description, :display, :sort_order
   #
   # or
@@ -20,6 +20,7 @@ ActiveAdmin.register ClientsVertical do
   index do
     selectable_column
     id_column
+    column :vertical_id
     column :integration_name
     column :official_name
     column :active
@@ -48,6 +49,7 @@ ActiveAdmin.register ClientsVertical do
 
   form :html => { :enctype => "multipart/form-data" } do |f|
     f.inputs "Details", :multipart => true do
+      f.input :vertical
       f.input :integration_name
       f.input :official_name
       f.input :active
