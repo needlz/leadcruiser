@@ -22,7 +22,7 @@ class HealthyPawsGenerator
     query["8"]  = lead.email
     query["31"] = partner_source
 
-    if exclusive?
+    if exclusive
       query["32"] = "Exclusive"     
     else
       query["32"] = "Shared"
