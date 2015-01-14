@@ -133,80 +133,6 @@ class SendDataWorker
         break
       end
     end
-
-    ########################
-    # client_verticals = ClientsVertical.where(vertical_id: lead.vertical_id, active: true, exclusive: true)
-    
-    # response = nil
-    # sold = false
-    # count = 0    
-    # while !sold do
-    #   if count == client_verticals.count
-    #     break
-    #   end
-    #   builder = NextClientBuilder.new(lead, client_verticals)
-    #   @client = ClientsVertical.where(active: true, integration_name: builder.integration_name).first
-
-    #   purchase_order = check_purchase_order(lead, @client)
-    #   if purchase_order.nil?
-    #     # binding.pry
-    #     count += 1
-    #     next
-    #   end
-
-    #   provider = DataGeneratorProvider.new(lead, @client)
-    #   response = provider.send_data
-    #   puts response
-    #   # Check response message is success or failure.
-    #   unless response.nil?
-    #     rejection_reasons = nil
-    #     resp_model = Response.create(
-    #         response: response.to_s, 
-    #         lead_id: lead.id, 
-    #         client_name: @client.integration_name
-    #     )
-    #     if @client.integration_name == ClientsVertical::PET_PREMIUM
-    #       if response["Response"]["Result"]["Value"] == "BaeOK"
-    #         sold = true
-    #       else
-    #         rejection_reasons = response["Response"]["Result"]["Error"].to_s
-    #       end
-    #     elsif @client.integration_name == ClientsVertical::PET_FIRST
-    #       if response["Error"]["ErrorText"] == ""
-    #         sold = true
-    #       else
-    #         rejection_reasons = response["Error"]["ErrorText"].to_s
-    #       end
-    #     elsif @client.integration_name == ClientsVertical::PETS_BEST
-    #       if response["Status"] == "Success" and response["Message"].nil?
-    #         sold = true
-    #       else
-    #         rejection_reasons = response["Message"].to_s
-    #       end
-    #     end
-
-    #     if sold && !resp_model.nil?
-    #       resp_model.update_attributes :price => purchase_order.price, :purchase_order => purchase_order
-    #       break
-    #     elsif !sold && !resp_model.nil?
-    #       resp_model.update_attributes :rejection_reasons => rejection_reasons
-    #     end
-    #   end
-
-    #   count += 1
-    # end
-
-    # if sold
-    #   purchase_order.update_attributes :leads_count_sold => purchase_order.leads_count_sold + 1,
-    #                                    :daily_leads_count => purchase_order.daily_leads_count + 1
-      
-    #   if @client.integration_name == "pet_first"
-    #     ResponsePetfirstWorker.perform_async(lead_id)
-    #     # ResponsePetfirstWorker.new.perform(lead_id)
-    #   end
-    # end
-    ###############################################
-
   end
 
   private
@@ -216,15 +142,23 @@ class SendDataWorker
     purchase_order.update_attributes :leads_count_sold => purchase_order.leads_count_sold + 1,
                                      :daily_leads_count => purchase_order.daily_leads_count + 1
 
-    if client.integration_name == "pet_first"
+    if client.integration_name == "pet_first" && purchase_order.exclusive
       ResponsePetfirstWorker.perform_async(lead.id)
-      ResponsePetfirstWorker.new.perform(lead.id)
+      # ResponsePetfirstWorker.new.perform(lead.id)
     end
   end
 
   def check_response(lead, response, client, purchase_order, exclusive_selling=false)
     sold = false
     unless response.nil?
+      if client.integration_name == ClientsVertical::HEALTHY_PAWS
+        start_pos = response.index("<pre>")
+        end_pos = response.index("</pre>")
+        unless start_pos.nil?
+          response = response[start_pos+6..end_pos-2]
+        end
+      end
+
       rejection_reasons = nil
       resp_model = Response.create(
           response: response.to_s, 
@@ -249,6 +183,13 @@ class SendDataWorker
         else
           rejection_reasons = response["Message"].to_s
         end
+      elsif client.integration_name == ClientsVertical::HEALTHY_PAWS
+        if response == "SUCCESS"
+          sold = true
+        else
+          rejection_reasons = response
+          sold = false
+        end
       else
         if !response["success"].nil? && response["success"]
           sold = true
@@ -272,9 +213,6 @@ class SendDataWorker
         # Record transaction history
         po_history = PurchaseOrder.find purchase_order[:id]
         record_transaction lead.id, client.id, resp_model.purchase_order_id, po_history.price, po_history.weight, true, exclusive_selling, nil, resp_model.id
-
-        # Send response email
-        SendEmailWorker.perform_async(resp_model.id)
 
         sold = true        
       elsif !sold && !resp_model.nil?

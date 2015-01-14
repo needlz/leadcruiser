@@ -2,11 +2,10 @@ class UserMailer
 
   include MandrillMailer
 
-  def lead_creating(response)
-    lead = response.lead
-    template 'lead-was-created'
+  def lead_creating(response_list, lead)
+    template 'lead-was-sold'
     subject = "Pet-Insurance.org #{env_field} New Lead - ID: #{lead.id} - #{lead.created_at}"
-    set_template_values(set_lead_params(lead, response))
+    set_template_values(set_lead_params(lead, response_list))
 
     mail to: [wrap_recipient(ENV["RECIPIENT_EMAIL"], ENV["RECIPIENT_NAME"], "to"),
               wrap_recipient(ENV["RECIPIENT_BCC_EMAIL"], ENV["RECIPIENT_BCC_NAME"], "bcc")], subject:subject
@@ -14,9 +13,9 @@ class UserMailer
 
   private
 
-  def set_lead_params(lead, response)
-    client = ClientsVertical.where('integration_name = ?', response.client_name).first
-    {
+  def set_lead_params(lead, response_list)
+    
+    body = {
      first_name: lead.first_name,
      last_name: lead.last_name,
      email: lead.email,
@@ -32,8 +31,6 @@ class UserMailer
      birth_year: lead.details_pets.first.birth_year,
      gender: lead.details_pets.first.gender,
      conditions: lead.details_pets.first.conditions.to_s,
-     client_name: client.official_name,
-     sold_price: response.price.to_s,
      session_hash: lead.try(:visitor).try(:session_hash),
      referring_url: lead.try(:visitor).try(:referring_url),
      landing_page: lead.try(:visitor).try(:landing_page),
@@ -45,6 +42,18 @@ class UserMailer
      utm_content: lead.try(:visitor).try(:utm_content),
      location: lead.try(:visitor).try(:location)
     }
+
+    total_revenue = 0
+    for i in 0..response_list.length - 1
+      client = ClientsVertical.find_by_integration_name(response_list[i].client_name)
+      body[("client_name"+(i+1).to_s).to_sym] = client.official_name
+      body[("sold_price"+(i+1).to_s).to_sym] = response_list[i].price.to_s
+
+      total_revenue += response_list[i].price
+    end
+    body[:total_revenue] = total_revenue.to_s
+    
+    body
   end
 
   def wrap_recipient(email, name, type)

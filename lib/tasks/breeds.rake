@@ -108,17 +108,52 @@ namespace :breeds do
           breed_id: cat_breed.id, 
           integration_name: 'pets_best', 
           name: row['action'].gsub("\u00A0", '')
-        ) if row['action'] != 'x' && !row['action'].nil?
+        ) if row['action'] != 'x' && !row['action'].nil? && row['action'] != '**Remove from our list**'
       end
     end
   end
 
   # Delete Pets Best breed mapping data
-  task :init_petsbest_cat => :environment do
+  task :init_petsbest => :environment do
     ClientCatBreedMapping.delete_all(['integration_name = ?', 'pets_best'])
     ClientDogBreedMapping.delete_all(['integration_name = ?', 'pets_best'])
   end
 
+  # Populate dog mapping data for Healthy Paws
+  task :load_healthypaws_dog_mapping => :environment do
+    require 'csv'
+    CSV.foreach( "var/healthy_paws_dog.csv", :headers => true) do |row|
+      dog_breed = DogBreed.find_by_name(row['our_list'])
+      unless dog_breed.nil?
+        ClientDogBreedMapping.create(
+          breed_id: dog_breed.id, 
+          integration_name: 'healthy_paws', 
+          name: row['action'].gsub("\u00A0", '')
+        ) if !row['action'].nil? && row['action'] != 'x' && row['action'] != '**Remove from our list**'
+      end
+    end
+  end
+
+  # Populate cat mapping data for Pets Best
+  task :load_healthypaws_cat_mapping => :environment do
+    require 'csv'
+    CSV.foreach( "var/healthy_paws_cat.csv", :headers => true) do |row|
+      cat_breed = CatBreed.find_by_name(row['our_list'])
+      unless cat_breed.nil?
+        ClientCatBreedMapping.create(
+          breed_id: cat_breed.id, 
+          integration_name: 'healthy_paws', 
+          name: row['action'].gsub("\u00A0", '')
+        ) if !row['action'].nil? && row['action'] != 'x' && row['action'] != '**Remove from our list**'
+      end
+    end
+  end
+
+  # Delete Pets Best breed mapping data
+  task :init_healthypaws => :environment do
+    ClientCatBreedMapping.delete_all(['integration_name = ?', 'healthy_paws'])
+    ClientDogBreedMapping.delete_all(['integration_name = ?', 'healthy_paws'])
+  end
 
   task :remove_tables => :environment do
     DogBreed.destroy_all

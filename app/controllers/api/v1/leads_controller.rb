@@ -2,9 +2,7 @@ require 'data_generators/pet_premium_generator'
 require 'data_generators/pet_first_generator'
 require 'data_generators/hartville_generator'
 require 'data_generators/pets_best_generator'
-require 'data_generators/test_success1_generator'
-require 'data_generators/test_success2_generator'
-require 'data_generators/test_failure_generator'
+require 'data_generators/healthy_paws_generator'
 require 'next_client_builder'
 require 'data_generator_provider'
 require 'workers/send_data_worker.rb'
@@ -34,6 +32,9 @@ class API::V1::LeadsController  < ActionController::API
       # Check Responses table and return with JSON response
       response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
       if !response_list.nil? && response_list.length != 0
+        # Send email to administrator
+        SendEmailWorker.perform_async(response_list, lead)
+
         # Concatenate JSON Response of other clients list
         sold_client_name_list = []
         sold_clients = []
@@ -51,6 +52,9 @@ class API::V1::LeadsController  < ActionController::API
             redirect_url = cv.service_url + "/?" + resp_json["OriginalQuerystring"]
             redirect_url["aqr=true"] = "aqr=false"
             redirect_url["Json=true"] = "Json=false"
+          elsif cv.integration_name == ClientsVertical::HEALTHY_PAWS
+            redirect_url += "/quote/retrievequote?sessionid="
+            redirect_url += lead.email
           end
           sold_clients << JSON[cv_json(cv, redirect_url)]
         end

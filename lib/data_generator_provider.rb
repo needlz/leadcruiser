@@ -51,6 +51,8 @@ class DataGeneratorProvider
     ########## True code ##################
     if client.integration_name == ClientsVertical::PETS_BEST
       return HTTParty.get request_url, :query => data_to_send(exclusive)
+    elsif client.integration_name == ClientsVertical::HEALTHY_PAWS
+      return HTTParty.get request_url, :query => data_to_send(exclusive), :headers => request_header
     else
       return HTTParty.post request_url,
                     :body => data_to_send(exclusive),
