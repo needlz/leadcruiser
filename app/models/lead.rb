@@ -22,11 +22,6 @@ class Lead < ActiveRecord::Base
   SOLD        = "sold"
   NO_POS      = "No Matching POs"
 
-  def send_email
-    SendEmailWorker.perform_async(self.id)
-    # SendEmailWorker.new.perform(self.id)
-  end
-
   def latest_response
     Response.where('lead_id = ?', self.id).order(id: :desc).try(:first)
   end

@@ -32,6 +32,9 @@ class API::V1::LeadsController  < ActionController::API
       # Check Responses table and return with JSON response
       response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
       if !response_list.nil? && response_list.length != 0
+        # Send email to administrator
+        SendEmailWorker.perform_async(response_list, lead)
+
         # Concatenate JSON Response of other clients list
         sold_client_name_list = []
         sold_clients = []

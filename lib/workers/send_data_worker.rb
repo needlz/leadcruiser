@@ -214,9 +214,6 @@ class SendDataWorker
         po_history = PurchaseOrder.find purchase_order[:id]
         record_transaction lead.id, client.id, resp_model.purchase_order_id, po_history.price, po_history.weight, true, exclusive_selling, nil, resp_model.id
 
-        # Send response email
-        SendEmailWorker.perform_async(resp_model.id)
-
         sold = true        
       elsif !sold && !resp_model.nil?
         resp_model.update_attributes :rejection_reasons => rejection_reasons
