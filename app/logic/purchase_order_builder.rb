@@ -19,7 +19,8 @@ class PurchaseOrderBuilder
 		@exclusive_pos = purchase_order_list(true)
 		@exclusive_price_keys = []
 		@exclusive_pos.keys.each do |key|
-			@exclusive_price_keys << key.to_i
+
+			@exclusive_price_keys << number_with_precision(key, :precision => 1).to_f
 		end
 		@exclusive_price_keys = @exclusive_price_keys.sort {|a,b| b <=> a}
 
@@ -27,7 +28,7 @@ class PurchaseOrderBuilder
 		@shared_pos = purchase_order_list(false)
 		@shared_price_keys = []
 		@shared_pos.keys.each do |key|
-			@shared_price_keys << key.to_i
+			@shared_price_keys << number_with_precision(key, :precision => 1).to_f
 		end
 		@shared_price_keys = @shared_price_keys.sort {|a,b| b <=> a}
 
@@ -50,7 +51,7 @@ class PurchaseOrderBuilder
 				return nil
 			end
 			highest_price = number_with_precision(@exclusive_price_keys[0], :precision => 1)
-			same_price_po_list = @exclusive_pos[highest_price]
+			same_price_po_list = @exclusive_pos[highest_price.to_s]
 			# Select randomized PO
 			random = rand(0..same_price_po_list.length-1)
 			same_price_po_list[random]
@@ -173,7 +174,7 @@ class PurchaseOrderBuilder
 						returned_pos.push random_po
 					end
 
-					if returned_pos.length == @times_sold
+					if returned_pos.length == limit
 						return returned_pos
 					end
 				end
@@ -236,14 +237,17 @@ class PurchaseOrderBuilder
           next
         end
 
-        real_price = (po.price + po.weight.to_i).to_s
+        if po.weight.nil?
+        	po.weight = 0
+        end
+        real_price = (po.price + po.weight).to_s
         if available_pos[real_price].nil?
         	available_pos[real_price] = []
         end
        	available_pos[real_price] << {
         	:id => po.id,
         	:client_id => po.client_id,
-        	:real_price => po.price + po.weight.to_i
+        	:real_price => po.price + po.weight
         }
 
         if exclusive

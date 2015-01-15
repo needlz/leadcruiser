@@ -46,7 +46,7 @@ class SendDataWorker
           shared_pos_price_sum += current_shared_pos[i][:real_price]
         end
       end
-      
+
       exclusive_price = 0
       unless exclusive_po.nil?
         exclusive_price = exclusive_po[:real_price]
@@ -107,7 +107,6 @@ class SendDataWorker
           new_shared_pos = []
           while failed_count != 0
             new_shared_pos = po_builder.next_shared_pos(current_shared_po, used_shared_po_id_list, failed_count)
-
             if new_shared_pos.length == 0
               break
             end
@@ -207,7 +206,10 @@ class SendDataWorker
 
         # Update lead
         lead.times_sold = lead.times_sold.to_i + 1
-        lead.total_sale_amount = lead.total_sale_amount.to_i + purchase_order[:real_price]
+        if lead.total_sale_amount.nil?
+          lead.total_sale_amount = 0
+        end
+        lead.total_sale_amount = lead.total_sale_amount + purchase_order[:real_price]
         lead.update_attributes :status => Lead::SOLD
 
         # Record transaction history
@@ -295,7 +297,7 @@ class SendDataWorker
   def record_transaction(
     lead_id, client_id=nil, po_id=nil, price=nil, weight=nil, success=false, 
     exclusive_selling=nil, reason=nil, response_id=nil)
-
+    puts "---------------------------------------------" + price.to_s
     unless lead_id.nil?
       TransactionAttempt.create(
         lead_id: lead_id,
