@@ -240,14 +240,14 @@ class PurchaseOrderBuilder
         if po.weight.nil?
         	po.weight = 0
         end
-        real_price = (po.price + po.weight.to_i).to_s
+        real_price = (po.price + po.weight).to_s
         if available_pos[real_price].nil?
         	available_pos[real_price] = []
         end
        	available_pos[real_price] << {
         	:id => po.id,
         	:client_id => po.client_id,
-        	:real_price => po.price + po.weight.to_i
+        	:real_price => po.price + po.weight
         }
 
         if exclusive
