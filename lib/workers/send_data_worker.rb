@@ -46,7 +46,7 @@ class SendDataWorker
           shared_pos_price_sum += current_shared_pos[i][:real_price]
         end
       end
-      
+
       exclusive_price = 0
       unless exclusive_po.nil?
         exclusive_price = exclusive_po[:real_price]
@@ -107,7 +107,6 @@ class SendDataWorker
           new_shared_pos = []
           while failed_count != 0
             new_shared_pos = po_builder.next_shared_pos(current_shared_po, used_shared_po_id_list, failed_count)
-
             if new_shared_pos.length == 0
               break
             end
