@@ -206,7 +206,10 @@ class SendDataWorker
 
         # Update lead
         lead.times_sold = lead.times_sold.to_i + 1
-        lead.total_sale_amount = lead.total_sale_amount.to_i + purchase_order[:real_price]
+        if lead.total_sale_amount.nil?
+          lead.total_sale_amount = 0
+        end
+        lead.total_sale_amount = lead.total_sale_amount + purchase_order[:real_price]
         lead.update_attributes :status => Lead::SOLD
 
         # Record transaction history
