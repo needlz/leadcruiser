@@ -2,18 +2,21 @@ class UserMailer
 
   include MandrillMailer
 
-  def lead_creating(response_list, lead)
-    template 'lead-was-sold'
-    subject = "Pet-Insurance.org #{env_field} New Lead - ID: #{lead.id} - #{lead.created_at}"
-    set_template_values(set_lead_params(lead, response_list))
+  def lead_creating(response_id_list, lead_id)
+    lead = Lead.find(lead_id)
+    unless lead.nil?
+      template 'lead-was-sold'
+      subject = "Pet-Insurance.org #{env_field} New Lead - ID: #{lead.id} - #{lead.created_at}"
+      set_template_values(set_lead_params(lead, response_id_list))
 
-    mail to: [wrap_recipient(ENV["RECIPIENT_EMAIL"], ENV["RECIPIENT_NAME"], "to"),
-              wrap_recipient(ENV["RECIPIENT_BCC_EMAIL"], ENV["RECIPIENT_BCC_NAME"], "bcc")], subject:subject
+      mail to: [wrap_recipient(ENV["RECIPIENT_EMAIL"], ENV["RECIPIENT_NAME"], "to"),
+                wrap_recipient(ENV["RECIPIENT_BCC_EMAIL"], ENV["RECIPIENT_BCC_NAME"], "bcc")], subject:subject
+    end
   end
 
   private
 
-  def set_lead_params(lead, response_list)
+  def set_lead_params(lead, response_id_list)
     
     body = {
      first_name: lead.first_name,
@@ -44,16 +47,23 @@ class UserMailer
     }
 
     total_revenue = 0
-    for i in 0..response_list.length - 1
-      client = ClientsVertical.find_by_integration_name(response_list[i].client_name)
-      body[("client_name"+(i+1).to_s).to_sym] = client.official_name
-      body[("sold_price"+(i+1).to_s).to_sym] = response_list[i].price.to_s
+    for i in 0..9
+      if response_id_list[i].nil?
+        body[("client_name"+(i+1).to_s).to_sym] = nil
+        body[("sold_price"+(i+1).to_s).to_sym] = nil
+      else
+        response = Response.find(response_id_list[i])
+        client = ClientsVertical.find_by_integration_name(response.try(:client_name))
 
-      total_revenue += response_list[i].price
+        body[("client_name"+(i+1).to_s).to_sym] = client.official_name
+        body[("sold_price"+(i+1).to_s).to_sym] = response.price.to_s
+
+        total_revenue += response.price
+      end
     end
     body[:total_revenue] = total_revenue.to_s
     
-    body
+    return body
   end
 
   def wrap_recipient(email, name, type)
