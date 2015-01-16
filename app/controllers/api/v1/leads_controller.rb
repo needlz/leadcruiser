@@ -26,14 +26,20 @@ class API::V1::LeadsController  < ActionController::API
         render json: { errors: "The email address of this lead was duplicated", :other_client => all_client_list.to_json}, status: :unprocessable_entity and return
       end
 
-      AutoResponseThankWorker.perform_async(lead.email, lead.vertical_id)
+      AutoResponseThankWorker.perform_async(lead.email)
       SendDataWorker.new.perform(lead.id)
 
       # Check Responses table and return with JSON response
       response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
       if !response_list.nil? && response_list.length != 0
+
         # Send email to administrator
-        SendEmailWorker.perform_async(response_list, lead)
+        response_id_list = []
+        for i in 0..response_list.length - 1
+          response_id_list << response_list[i].id
+        end
+        SendEmailWorker.perform_async(response_id_list, lead.id)
+        # SendEmailWorker.new.perform(response_list, lead)
 
         # Concatenate JSON Response of other clients list
         sold_client_name_list = []
