@@ -1,5 +1,7 @@
 require 'data_generators/pet_premium_generator'
 require 'data_generators/pet_first_generator'
+require 'data_generators/pets_best_generator'
+require 'data_generators/healthy_paws_generator'
 require 'next_client_builder'
 require 'data_generator_provider'
 require 'workers/send_data_worker.rb'
@@ -29,9 +31,15 @@ class AdminsController < ApplicationController
    	else
    		SendDataWorker.new.perform(lead.id)
 
-   		# Check Responses table and return with JSON response
       response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
       if !response_list.nil? && response_list.length != 0
+      	# Send email to administrator
+        response_id_list = []
+        for i in 0..response_list.length - 1
+          response_id_list << response_list[i].id
+        end
+        SendEmailWorker.perform_async(response_id_list, lead.id)
+
         return true
       end
    	end
