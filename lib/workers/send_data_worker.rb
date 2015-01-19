@@ -1,10 +1,8 @@
 require 'workers/response_petfirst_worker.rb'
 require 'workers/send_email_worker.rb'
-require 'benchmark'
 
 class SendDataWorker
-  include Sidekiq::Worker
-  sidekiq_options queue: "high"
+  include ActionView::Helpers::NumberHelper
 
   attr_accessor :client
 
@@ -68,9 +66,8 @@ class SendDataWorker
         response = provider.send_data
         finish = Time.now
         diff = finish - start
-        binding.pry
 
-        sold = check_response(lead, response, client, exclusive_po, true)
+        sold = check_response(lead, response, client, exclusive_po, true, diff)
         used_exclusive_po_id_list.push exclusive_po[:id]
         current_exclusive_po = exclusive_po
 
@@ -90,9 +87,8 @@ class SendDataWorker
           response = provider.send_data(false)
           finish = Time.now
           diff = finish - start
-          binding.pry
           
-          sold = check_response(lead, response, client, current_shared_pos[i])
+          sold = check_response(lead, response, client, current_shared_pos[i], diff)
           used_shared_po_id_list.push current_shared_pos[i][:id]
           current_shared_po = current_shared_pos[i]
           if !sold
@@ -131,9 +127,8 @@ class SendDataWorker
               response = provider.send_data(false)
               finish = Time.now
               diff = finish - start
-              binding.pry
 
-              sold = check_response(lead, response, client, new_shared_pos[i])
+              sold = check_response(lead, response, client, new_shared_pos[i], diff)
 
               used_shared_po_id_list.push new_shared_pos[i][:id]
               current_shared_po = new_shared_pos[i]
@@ -165,9 +160,27 @@ class SendDataWorker
     end
   end
 
-  def check_response(lead, response, client, purchase_order, exclusive_selling=false)
+  def check_response(lead, response, client, purchase_order, exclusive_selling=false, response_time)
+    response_time = number_with_precision(response_time, :precision => 2)
     sold = false
     unless response.nil?
+      # Request timeout
+      if response == "Timeout"
+        resp_model = Response.create(
+          rejection_reasons: response, 
+          lead_id: lead.id, 
+          client_name: client.integration_name,
+          response_time: response_time
+        )
+
+        # Record transaction history
+        po_history = PurchaseOrder.find purchase_order[:id]
+        record_transaction lead.id, client.id, purchase_order[:id], po_history.price, po_history.weight, false, exclusive_selling, response, resp_model.id
+
+        return sold
+      end
+
+      # If the client is Healthy Paws, remove HTML tags from the original reponses
       if client.integration_name == ClientsVertical::HEALTHY_PAWS
         start_pos = response.index("<pre>")
         end_pos = response.index("</pre>")
@@ -180,7 +193,8 @@ class SendDataWorker
       resp_model = Response.create(
           response: response.to_s, 
           lead_id: lead.id, 
-          client_name: client.integration_name
+          client_name: client.integration_name,
+          response_time: response_time
       )
       if client.integration_name == ClientsVertical::PET_PREMIUM
         if response["Response"]["Result"]["Value"] == "BaeOK"
@@ -247,7 +261,7 @@ class SendDataWorker
       
       # Record transaction history
       po_history = PurchaseOrder.find purchase_order[:id]
-      record_transaction lead.id, client.id, purchase_order[:id], po_history.price, po_history.weight, false, exclusive_selling, NIL_RESPONSE, nil      
+      record_transaction lead.id, client.id, purchase_order[:id], po_history.price, po_history.weight, false, exclusive_selling, NIL_RESPONSE, nil
     end    
 
     sold

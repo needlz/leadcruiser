@@ -55,7 +55,6 @@ class DataGeneratorProvider
                     :query => data_to_send(exclusive), 
                     :timeout => client.timeout
     elsif client.integration_name == ClientsVertical::HEALTHY_PAWS
-      binding.pry
       response = HTTParty.get request_url, 
                     :query => data_to_send(exclusive), 
                     :headers => request_header,
