@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150115215618) do
+ActiveRecord::Schema.define(version: 20150116214211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 20150115215618) do
     t.text     "description"
     t.integer  "sort_order"
     t.boolean  "display",           default: true
+    t.integer  "timeout",           default: 20
   end
 
   create_table "details_pets", force: true do |t|
@@ -194,6 +195,7 @@ ActiveRecord::Schema.define(version: 20150115215618) do
     t.string   "client_name"
     t.float    "price"
     t.integer  "purchase_order_id"
+    t.float    "response_time"
   end
 
   create_table "sites", force: true do |t|

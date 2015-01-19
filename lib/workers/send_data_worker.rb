@@ -1,5 +1,6 @@
 require 'workers/response_petfirst_worker.rb'
 require 'workers/send_email_worker.rb'
+require 'benchmark'
 
 class SendDataWorker
   include Sidekiq::Worker
@@ -63,7 +64,12 @@ class SendDataWorker
         client = ClientsVertical.where(active: true, id: exclusive_po[:client_id]).try(:first)
         provider = DataGeneratorProvider.new(lead, client)
 
+        start = Time.now
         response = provider.send_data
+        finish = Time.now
+        diff = finish - start
+        binding.pry
+
         sold = check_response(lead, response, client, exclusive_po, true)
         used_exclusive_po_id_list.push exclusive_po[:id]
         current_exclusive_po = exclusive_po
@@ -79,7 +85,13 @@ class SendDataWorker
         for i in 0..current_shared_pos.length - 1
           client = ClientsVertical.where(active:true, id: current_shared_pos[i][:client_id]).try(:first)
           provider = DataGeneratorProvider.new(lead, client)
+
+          start = Time.now
           response = provider.send_data(false)
+          finish = Time.now
+          diff = finish - start
+          binding.pry
+          
           sold = check_response(lead, response, client, current_shared_pos[i])
           used_shared_po_id_list.push current_shared_pos[i][:id]
           current_shared_po = current_shared_pos[i]
@@ -114,7 +126,8 @@ class SendDataWorker
             for i in 0..new_shared_pos.length - 1
               client = ClientsVertical.where(active:true, id: new_shared_pos[i][:client_id]).try(:first)
               provider = DataGeneratorProvider.new(lead, client)
-              response = provider.send_data(false)
+              excution_time = Benchmark.measure { response = provider.send_data(false) }
+              binding.pry
               sold = check_response(lead, response, client, new_shared_pos[i])
 
               used_shared_po_id_list.push new_shared_pos[i][:id]
