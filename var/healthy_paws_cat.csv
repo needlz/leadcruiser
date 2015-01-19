@@ -1,110 +1,110 @@
-healthy_paws,our_list,action
-Abyssinian,Abyssinian,x
-American Bobtail,Alley Cat,**Remove from our list**
-American Curl,American Bobtail,x
-American Domestic,American Bobtail Shorthair,American Bobtail
-American Shorthair,American Curl,x
-American Wirehair,American Curl Longhair,American Curl
-Angora,American Curl Shorthair,American Curl
-Ashera,American Shorthair,x
-Balinese,American Shorthair (purebred),American Shorthair
-Bengal,American Wirehair (purebred),x
-Birman,Angora,x
-Bombay,Ashera,x
-British Longhair,Balinese,x
-British Shorthair,Bengal,x
-Burmese,Bengalese,**Remove from our list**
-Burmilla,Birman,x
-California Spangled,Bombay,x
-Chantilly / Tiffany,British Longhair,x
-Chartreux,British Shorthair,x
-Chausie,Burmese,x
-Chinchilla,Burmilla,x
-Colorpoint Shorthair,Calico,**Remove from our list**
-Cornish Rex,California Spangled,x
-Cymric,Cameo Longhair,**Remove from our list**
-Devon Rex,Canadian Hairless (Sphynx),Sphynx
-Domestic Long Hair,Chartreux,x
-Domestic Medium Hair,Chausie,x
-Domestic Short Hair,Chinchilla,x
-Donskoy,Colorpoint,**Remove from our list**
-Dutch Rex,Colorpoint Longhair,**Remove from our list**
-Egyptian Mau,Colorpoint Shorthair,x
-European Burmese,Cornish Rex,x
-European Shorthair,Cymric,x
-Exotic,Devon Rex,x
-German Rex,Domestic Longhair,Domestic Long Hair
-Habari,Domestic Mediumhair,Domestic Medium Hair
-Havana Brown,Domestic Shorthair,Domestic Short Hair
-Highlander,Donskoy,x
-Himalayan,Dwarf Cat,Munchkin
-Japanese Bobtail,Egyptian Mau,x
-Javanese,European Burmese,x
-Kashmir,European Shorthair,x
-Korat,Exotic,x
-La Perm,Exotic Longhair,x
-Maine Coon,Exotic Shorthair,x
-Manx,Habari,x
-Mixed Breed,Havana Brown,x
-Munchkin,Highland Fold,Scottish Fold
-Nebelung,Highlander,x
-Norwegian Forest Cat,Highlander Shorthair,x
-Ocicat,Himalayan,x
-Ojos Azules,Himalayan Blue Point,x
-Oriental,Himalayan Flame Point,x
-Persian,Himalayan Lilac Point,x
-Peterbald,Himalayan Seal Point,x
-Pixiebob,Japanese Bobtail,x
-Ragamuffin,Japanese Bobtail Longhair,x
-Ragdoll,Javanese,x
-Russian Blue,Kashmir,x
-Safari,Korat,x
-Savannah,Kurilian Bobtail,**Remove from our list**
-Scottish Fold,Kurilian Bobtail Long Hair,**Remove from our list**
-Selkirk Rex,LaPerm,La Perm
-Serengeti,LaPerm Shorthair,La Perm
-Seychellois,Maine Coon,x
-Siamese,Manx,x
-Siberian,Minskin,**Remove from our list**
-Singapura,Moggie,**Remove from our list**
-Snowshoe,Munchkin,x
-Sokoke Forest,Munchkin Longhair,x
-Somali,Nebelung,x
-Sphynx,Norwegian Forest Cat,x
-Thai,Ocicat,x
-Tonkinese,Ojos Azules,x
-Toyger,Ojos Azules Longhair,x
-Turkish Angora,Oriental,x
-Turkish Van,Oriental Colorpoint,x
-York Chocolate,Oriental Longhair,x
-,Oriental Shorthair,x
-,Other Hybrid,Mixed Breed
-,Persian,x
-,Peterbald,x
-,Pixiebob,x
-,Pixiebob Longhair,x
-,Ragamuffin,x
-,Ragdoll,x
-,Russian Blue,x
-,Safari,x
-,Savannah,x
-,Scottish Fold,x
-,Scottish Fold Longhair,x
-,Selkirk Rex,x
-,Selkirk Rex Longhair,x
-,Serengeti,x
-,Seychellois,x
-,Siamese,x
-,Siberian,x
-,Singapura,x
-,Snowshoe,x
-,Sokoke,Sokoke Forest
-,Somali,x
-,Sphynx,x
-,Tabby,**Remove from our list**
-,Thai,x
-,Tiffany,Chantilly / Tiffany
-,Tonkinese,x
-,Toyger,x
-,Turkish Angora,x
-,Turkish Van,x
+our_list,action,healthy_paws_breed_id
+Abyssinian,x,2000
+Alley Cat,**Remove from our list**,
+American Bobtail,x,2001
+American Bobtail Shorthair,American Bobtail,2001
+American Curl,x,2002
+American Curl Longhair,American Curl,2002
+American Curl Shorthair,American Curl,2002
+American Shorthair,x,2004
+American Shorthair (purebred),American Shorthair,2004
+American Wirehair (purebred),x,2005
+Angora,x,2006
+Ashera,x,2007
+Balinese,x,2008
+Bengal,x,2009
+Bengalese,**Remove from our list**,
+Birman,x,2010
+Bombay,x,2011
+British Longhair,x,2012
+British Shorthair,x,2013
+Burmese,x,2014
+Burmilla,x,2015
+Calico,**Remove from our list**,
+California Spangled,x,2016
+Cameo Longhair,**Remove from our list**,
+Canadian Hairless (Sphynx),Sphynx,2067
+Chartreux,x,2018
+Chausie,x,2019
+Chinchilla,x,2020
+Colorpoint,**Remove from our list**,
+Colorpoint Longhair,**Remove from our list**,
+Colorpoint Shorthair,x,2021
+Cornish Rex,x,2022
+Cymric,x,2023
+Devon Rex,x,2024
+Domestic Longhair,Domestic Long Hair,318
+Domestic Mediumhair,Domestic Medium Hair,320
+Domestic Shorthair,Domestic Short Hair,319
+Donskoy,x,2025
+Dwarf Cat,Munchkin,2043
+Egyptian Mau,x,2027
+European Burmese,x,2028
+European Shorthair,x,2029
+Exotic,x,2030
+Exotic Longhair,x,2030
+Exotic Shorthair,x,2030
+Habari,x,2032
+Havana Brown,x,2033
+Highland Fold,Scottish Fold,2057
+Highlander,x,2034
+Highlander Shorthair,x,2034
+Himalayan,x,2035
+Himalayan Blue Point,x,2035
+Himalayan Flame Point,x,2035
+Himalayan Lilac Point,x,2035
+Himalayan Seal Point,x,2035
+Japanese Bobtail,x,2036
+Japanese Bobtail Longhair,x,2036
+Javanese,x,2037
+Kashmir,x,2038
+Korat,x,2039
+Kurilian Bobtail,**Remove from our list**,
+Kurilian Bobtail Long Hair,**Remove from our list**,
+LaPerm,La Perm,2040
+LaPerm Shorthair,La Perm,2040
+Maine Coon,x,2041
+Manx,x,2042
+Minskin,**Remove from our list**,
+Moggie,**Remove from our list**,
+Munchkin,x,2043
+Munchkin Longhair,x,2043
+Nebelung,x,2044
+Norwegian Forest Cat,x,2045
+Ocicat,x,2046
+Ojos Azules,x,2047
+Ojos Azules Longhair,x,2047
+Oriental,x,2048
+Oriental Colorpoint,x,2048
+Oriental Longhair,x,2048
+Oriental Shorthair,x,2048
+Other Hybrid,Mixed Breed,317
+Persian,x,2049
+Peterbald,x,2050
+Pixiebob,x,2051
+Pixiebob Longhair,x,2051
+Ragamuffin,x,2052
+Ragdoll,x,2053
+Russian Blue,x,2054
+Safari,x,2055
+Savannah,x,2056
+Scottish Fold,x,2057
+Scottish Fold Longhair,x,2057
+Selkirk Rex,x,2058
+Selkirk Rex Longhair,x,2058
+Serengeti,x,2059
+Seychellois,x,2060
+Siamese,x,2061
+Siberian,x,2062
+Singapura,x,2063
+Snowshoe,x,2064
+Sokoke,Sokoke Forest,2065
+Somali,x,2066
+Sphynx,x,2067
+Tabby,**Remove from our list**,
+Thai,x,2068
+Tiffany,Chantilly / Tiffany,2017
+Tonkinese,x,2069
+Toyger,x,2070
+Turkish Angora,x,2071
+Turkish Van,x,2072
