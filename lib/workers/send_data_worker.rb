@@ -126,8 +126,13 @@ class SendDataWorker
             for i in 0..new_shared_pos.length - 1
               client = ClientsVertical.where(active:true, id: new_shared_pos[i][:client_id]).try(:first)
               provider = DataGeneratorProvider.new(lead, client)
-              excution_time = Benchmark.measure { response = provider.send_data(false) }
+              
+              start = Time.now
+              response = provider.send_data(false)
+              finish = Time.now
+              diff = finish - start
               binding.pry
+
               sold = check_response(lead, response, client, new_shared_pos[i])
 
               used_shared_po_id_list.push new_shared_pos[i][:id]

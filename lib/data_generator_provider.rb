@@ -53,20 +53,22 @@ class DataGeneratorProvider
     if client.integration_name == ClientsVertical::PETS_BEST
       response = HTTParty.get request_url, 
                     :query => data_to_send(exclusive), 
-                    :timeout => 20
+                    :timeout => client.timeout
     elsif client.integration_name == ClientsVertical::HEALTHY_PAWS
+      binding.pry
       response = HTTParty.get request_url, 
                     :query => data_to_send(exclusive), 
                     :headers => request_header,
-                    :timeout => 20
+                    :timeout => client.timeout
     else
       response = HTTParty.post request_url,
                     :body => data_to_send(exclusive),
                     :headers => request_header,
-                    :timeout => 20
+                    :timeout => client.timeout
     end
+
     rescue Net::ReadTimeout, Net::OpenTimeout
-      response = "timeout"
+      response = "Timeout"
 
     response
   end
