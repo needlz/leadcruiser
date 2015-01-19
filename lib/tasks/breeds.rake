@@ -125,11 +125,23 @@ namespace :breeds do
     CSV.foreach( "var/healthy_paws_dog.csv", :headers => true) do |row|
       dog_breed = DogBreed.find_by_name(row['our_list'])
       unless dog_breed.nil?
-        ClientDogBreedMapping.create(
-          breed_id: dog_breed.id, 
-          integration_name: 'healthy_paws', 
-          name: row['action'].gsub("\u00A0", '')
-        ) if !row['action'].nil? && row['action'] != 'x' && row['action'] != '**Remove from our list**'
+        unless row['action'].nil?
+          if row['action'].downcase == 'x'
+            ClientDogBreedMapping.create(
+              breed_id: dog_breed.id, 
+              integration_name: 'healthy_paws', 
+              name: row['our_list'].gsub("\u00A0", ''),
+              client_breed_id: row['healthy_paws_breed_id']
+            )
+          elsif row['action'] != '**Remove from our list**'
+            ClientDogBreedMapping.create(
+              breed_id: dog_breed.id, 
+              integration_name: 'healthy_paws', 
+              name: row['action'].gsub("\u00A0", ''),
+              client_breed_id: row['healthy_paws_breed_id']
+            )
+          end
+        end
       end
     end
   end
@@ -140,11 +152,23 @@ namespace :breeds do
     CSV.foreach( "var/healthy_paws_cat.csv", :headers => true) do |row|
       cat_breed = CatBreed.find_by_name(row['our_list'])
       unless cat_breed.nil?
-        ClientCatBreedMapping.create(
-          breed_id: cat_breed.id, 
-          integration_name: 'healthy_paws', 
-          name: row['action'].gsub("\u00A0", '')
-        ) if !row['action'].nil? && row['action'] != 'x' && row['action'] != '**Remove from our list**'
+        unless row['action'].nil?
+          if row['action'].downcase == 'x'
+            ClientCatBreedMapping.create(
+              breed_id: cat_breed.id, 
+              integration_name: 'healthy_paws', 
+              name: row['our_list'].gsub("\u00A0", ''),
+              client_breed_id: row['healthy_paws_breed_id']
+            )
+          elsif row['action'] != '**Remove from our list**'
+            ClientCatBreedMapping.create(
+              breed_id: cat_breed.id, 
+              integration_name: 'healthy_paws', 
+              name: row['action'].gsub("\u00A0", ''),
+              client_breed_id: row['healthy_paws_breed_id']
+            )
+          end
+        end
       end
     end
   end

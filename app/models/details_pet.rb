@@ -25,6 +25,16 @@ class DetailsPet < ActiveRecord::Base
     mapping_breed || breed
   end
 
+  def breed_id_to_send(integration_name = nil)
+    pet_type = species.capitalize
+    breed_id = "#{pet_type}Breed".constantize.find_by_name(breed).try(:id)
+    mapping_breed = "Client#{pet_type}BreedMapping".constantize.where(integration_name: integration_name,
+                                                                      breed_id: breed_id)
+                                                                      .try(:first)
+                                                                      .try(:client_breed_id)
+    mapping_breed || breed
+  end
+
   def validate_same(other)
     result = breed == other.breed && pet_name.downcase == other.pet_name.downcase
     errors[:base] << I18n.t('pet_details_uniqueness_for_lead', breed: breed, pet_name: pet_name) if result

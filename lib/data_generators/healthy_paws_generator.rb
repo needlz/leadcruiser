@@ -34,7 +34,7 @@ class HealthyPawsGenerator
   def generate_pet_query (query)
     pet = lead.details_pets.try(:first)
     query["9"]  = pet.species.downcase
-    query["10"] = pet.breed_to_send('healthy_paws')
+    query["10"] = pet.breed_id_to_send('healthy_paws')
     query["11"] = pet.birth_month.to_s + "/" + pet.birth_year.to_s
     query["22"] = pet.gender[0, 1]
     query["23"] = pet.pet_name
