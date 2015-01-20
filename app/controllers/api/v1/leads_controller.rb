@@ -12,22 +12,23 @@ class API::V1::LeadsController  < ActionController::API
   def create
     error = "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
 
-
+    lead_params = permit_lead_params
     # Get state value from zipcode service
     query_param = {}
     query_param["zipcode"]    = lead_params[:zip]
     query_param["auth-id"]    = ENV["SMARTYSTREETS_AUTH_ID"]
     query_param["auth-token"] = ENV["SMARTYSTREETS_AUTH_TOKEN"]
-    
-    state_response = HTTParty.get "https://api.smartystreets.com/zipcode?", :query => query_param
 
+    state_response = HTTParty.get "https://api.smartystreets.com/zipcode?", :query => query_param
     unless state_response[0]["city_states"].nil?
-      lead_params[:state] = state_response[0]["city_states"][0]["state"]
+      binding.pry
+      lead_params[:state] = state_response[0]["city_states"][0]["state_abbreviation"]
       lead_params[:city] = state_response[0]["city_states"][0]["city"]
     end
 
     lead = Lead.new(lead_params)
-    pet = lead.details_pets.build(pet_params)
+    binding.pry
+    pet = lead.details_pets.build(permit_pet_params)
 
     # Check duplication for the lead sold
     duplicated = duplicated_lead(lead_params[:email], lead_params[:vertical_id])
@@ -144,14 +145,14 @@ class API::V1::LeadsController  < ActionController::API
     }
   end
 
-  def lead_params
+  def permit_lead_params
     params.fetch(:lead, {}).permit(:session_hash, :site_id, :form_id, :vertical_id, :leads_details_id,
                                  :first_name, :last_name, :address_1, :address_2, :city, :state, :zip,
                                  :day_phone, :evening_phone, :email, :best_time_to_call, :birth_date,
                                  :gender, :visitor_ip)
   end
 
-  def pet_params
+  def permit_pet_params
     params.fetch(:pet, {}).permit(:species, :spayed_or_neutered, :pet_name, :breed, :birth_day, :birth_month,
                                 :birth_year, :gender, :conditions)
   end
