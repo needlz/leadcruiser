@@ -21,13 +21,11 @@ class API::V1::LeadsController  < ActionController::API
 
     state_response = HTTParty.get "https://api.smartystreets.com/zipcode?", :query => query_param
     unless state_response[0]["city_states"].nil?
-      binding.pry
       lead_params[:state] = state_response[0]["city_states"][0]["state_abbreviation"]
       lead_params[:city] = state_response[0]["city_states"][0]["city"]
     end
 
     lead = Lead.new(lead_params)
-    binding.pry
     pet = lead.details_pets.build(permit_pet_params)
 
     # Check duplication for the lead sold
