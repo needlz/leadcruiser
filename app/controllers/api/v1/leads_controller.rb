@@ -12,6 +12,20 @@ class API::V1::LeadsController  < ActionController::API
   def create
     error = "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
 
+
+    # Get state value from zipcode service
+    query_param = {}
+    query_param["zipcode"]    = lead_params[:zip]
+    query_param["auth-id"]    = ENV["SMARTYSTREETS_AUTH_ID"]
+    query_param["auth-token"] = ENV["SMARTYSTREETS_AUTH_TOKEN"]
+    
+    state_response = HTTParty.get "https://api.smartystreets.com/zipcode?", :query => query_param
+
+    unless state_response[0]["city_states"].nil?
+      lead_params[:state] = state_response[0]["city_states"][0]["state"]
+      lead_params[:city] = state_response[0]["city_states"][0]["city"]
+    end
+
     lead = Lead.new(lead_params)
     pet = lead.details_pets.build(pet_params)
 
