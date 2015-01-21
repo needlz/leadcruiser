@@ -49,15 +49,27 @@ class DataGeneratorProvider
     # binding.pry
     
     ########## True code ##################
+    response = nil
     if client.integration_name == ClientsVertical::PETS_BEST
-      return HTTParty.get request_url, :query => data_to_send(exclusive)
+      response = HTTParty.get request_url, 
+                    :query => data_to_send(exclusive), 
+                    :timeout => client.timeout
     elsif client.integration_name == ClientsVertical::HEALTHY_PAWS
-      return HTTParty.get request_url, :query => data_to_send(exclusive), :headers => request_header
+      response = HTTParty.get request_url, 
+                    :query => data_to_send(exclusive), 
+                    :headers => request_header,
+                    :timeout => client.timeout
     else
-      return HTTParty.post request_url,
+      response = HTTParty.post request_url,
                     :body => data_to_send(exclusive),
-                    :headers => request_header
+                    :headers => request_header,
+                    :timeout => client.timeout
     end
+
+    rescue Net::ReadTimeout, Net::OpenTimeout
+      response = "Timeout"
+
+    response
   end
 
   private

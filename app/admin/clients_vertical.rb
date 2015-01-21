@@ -5,7 +5,7 @@ ActiveAdmin.register ClientsVertical do
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
   permit_params :vertical_id, :integration_name, :official_name, :active, :weight, :exclusive, :fixed_price, :email, :phone_number,
-                :website_url, :request_type, :service_url, :logo, :description, :display, :sort_order
+                :website_url, :request_type, :service_url, :logo, :description, :display, :sort_order, :timeout
   #
   # or
   #
@@ -32,6 +32,7 @@ ActiveAdmin.register ClientsVertical do
     column :website_url
     column :request_type
     column :service_url
+    column :timeout
     column :sort_order
     column "Thank you page" do |client|
       if client.display
@@ -61,6 +62,7 @@ ActiveAdmin.register ClientsVertical do
       f.input :website_url
       f.input :request_type
       f.input :service_url
+      f.input :timeout
       f.input :sort_order
       f.input :display
       f.input :description

@@ -35,6 +35,7 @@ ActiveAdmin.register Response do
     column :rejection_reasons
     column :price
     column :purchase_order_id
+    column :response_time
     column "Created At" do |response|
       unless response.created_at.nil?
         response.created_at.strftime("%Y-%m-%d %H:%M:%S")
