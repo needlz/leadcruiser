@@ -51,10 +51,27 @@ class SendDataWorker
         exclusive_price = exclusive_po[:real_price]
       end
 
-      # Compare the price
+      # Compare the price between exclusive and shared
       is_exclusive = true
       if shared_pos_price_sum > exclusive_price
         is_exclusive = false
+      elsif exclusive_price > shared_pos_price_sum
+        is_exclusive = true
+      else
+        # Run round-robin rotation
+        vt = lead.vertical
+        if vt.next_client.nil?
+          is_exclusive = true
+          lead.vertical.update_attributes(:next_client => "Shared")
+        else
+          if vt.next_client == "Exclusive"
+            is_exclusive = true
+            lead.vertical.update_attributes(:next_client => "Shared")
+          else
+            is_exclusive = false
+            lead.vertical.update_attributes(:next_client => "Exclusive")
+          end
+        end
       end
 
       # Exclusive selling is selected by price
