@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150123192353) do
+ActiveRecord::Schema.define(version: 20150126164510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,24 @@ ActiveRecord::Schema.define(version: 20150123192353) do
     t.integer  "site_id"
     t.integer  "page_id"
     t.integer  "partner_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "clicks_purchase_orders", force: true do |t|
+    t.integer  "clients_vertical_id"
+    t.integer  "site_id"
+    t.integer  "page_id"
+    t.string   "redirect_url"
+    t.float    "price"
+    t.float    "weight"
+    t.boolean  "active"
+    t.integer  "total_limit"
+    t.integer  "daily_limit"
+    t.integer  "total_count",         default: 0
+    t.integer  "daily_count",         default: 0
+    t.date     "start_date"
+    t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

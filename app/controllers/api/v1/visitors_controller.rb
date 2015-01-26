@@ -18,4 +18,3 @@ class API::V1::VisitorsController < ActionController::API
   end
 
 end
-
