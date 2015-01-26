@@ -4,14 +4,16 @@ class API::V1::ClicksController < ActionController::API
     click_param = permit_click_params
     clients_vertical = ClientsVertical.find_by_integration_name(click_param[:client_name])
     click_param[:clients_vertical_id] = clients_vertical.id
+    click_param.delete("client_name")
 
     click = Click.new(click_param)
-    if click.nil?
-      render json: { errors: click.error_messages }, status: :unprocessable_entity
-    else
+    if click.save
       render json: { message: 'Click was captured successfully' }, status: :created
+    else
+      render json: { errors: click.error_messages }, status: :unprocessable_entity
     end
   end
+
 
   private
   def permit_click_params
