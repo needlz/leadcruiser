@@ -17,9 +17,7 @@ Rails.application.routes.draw do
       with_options only: :create do |option|
         option.resources :leads
         option.resources :visitors
-        option.resources :test_failure
-        option.resources :test1_success
-        option.resources :test2_success
+        option.resources :clicks
       end
     end
   end
