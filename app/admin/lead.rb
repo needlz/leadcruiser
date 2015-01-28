@@ -69,7 +69,7 @@ ActiveAdmin.register Lead do
     end
     column "Created At" do |lead|
       unless lead.created_at.nil?
-        lead.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        lead.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M:%S")
       end
     end
 

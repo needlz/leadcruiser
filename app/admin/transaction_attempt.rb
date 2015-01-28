@@ -46,7 +46,7 @@ ActiveAdmin.register TransactionAttempt do
     column :response_id
     column "Created At" do |response|
       unless response.created_at.nil?
-        response.created_at.strftime("%Y-%m-%d %H:%M:%S")
+        response.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M:%S")
       end
     end
   end
