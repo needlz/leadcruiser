@@ -1,5 +1,7 @@
 ActiveAdmin.register PurchaseOrder do
 
+  menu priority: 3
+
   permit_params :vertical_id, :client_id, :weight, :exclusive, :states, :preexisting_conditions, :price, 
                 :status, :active, :leads_max_limit, :leads_daily_limit, :start_date, :end_date
 

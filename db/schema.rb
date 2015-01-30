@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150119162313) do
+ActiveRecord::Schema.define(version: 20150128151120) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,34 @@ ActiveRecord::Schema.define(version: 20150119162313) do
 
   create_table "cat_breeds", force: true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "clicks", force: true do |t|
+    t.integer  "visitor_id"
+    t.integer  "clients_vertical_id"
+    t.integer  "site_id"
+    t.integer  "page_id"
+    t.integer  "partner_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "clicks_purchase_orders", force: true do |t|
+    t.integer  "clients_vertical_id"
+    t.integer  "site_id"
+    t.integer  "page_id"
+    t.string   "redirect_url"
+    t.float    "price"
+    t.float    "weight"
+    t.boolean  "active"
+    t.integer  "total_limit"
+    t.integer  "daily_limit"
+    t.integer  "total_count",         default: 0
+    t.integer  "daily_count",         default: 0
+    t.date     "start_date"
+    t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -211,6 +239,20 @@ ActiveRecord::Schema.define(version: 20150119162313) do
   create_table "states", force: true do |t|
     t.string "name"
     t.string "code"
+  end
+
+  create_table "tracking_pages", force: true do |t|
+    t.string   "page_name"
+    t.integer  "display_order"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tracking_sites", force: true do |t|
+    t.string   "site_name"
+    t.integer  "display_order"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "transaction_attempts", force: true do |t|

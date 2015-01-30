@@ -1,13 +1,20 @@
 ActiveAdmin.register AdminUser do
+
+  menu priority: 2
+
   permit_params :email, :password, :password_confirmation
 
   index do
     selectable_column
     id_column
     column :email
-    column :current_sign_in_at
+    column "Signed at" do |admin|
+      admin.current_sign_in_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
+    end
     column :sign_in_count
-    column :created_at
+    column "Created Date" do |admin|
+      admin.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
+    end
     actions
   end
 

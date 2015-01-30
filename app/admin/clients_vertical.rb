@@ -1,5 +1,6 @@
 ActiveAdmin.register ClientsVertical do
 
+  menu priority: 3
 
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
@@ -44,7 +45,11 @@ ActiveAdmin.register ClientsVertical do
     column "Logo" do |client|
       link_to(image_tag(client.logo.url(:thumb), :height => '30'))
     end
-    column :created_at
+    column "created_at" do |client|
+      unless client.created_at.nil?
+        client.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
+      end
+    end
     actions
   end
 
