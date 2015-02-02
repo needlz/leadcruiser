@@ -5,6 +5,6 @@ unless Rails.env.test?
       address:   'smtp.mandrillapp.com',
       port:      587,
       user_name: 'rnatsch@gmail.com',
-      password:  'presidio1presidio'
+      password:  'qwerty12345678'
   }
 end
