@@ -14,6 +14,8 @@ class API::V1::ClicksController < ActionController::API
         po.daily_count += 1
         po.total_count += 1
         po.save
+      else
+        render json: { errors: 'No purchase orders for this client' }, status: :unprocessable_entity  
       end
 
       render json: { message: 'Click was captured successfully' }, status: :created
@@ -29,6 +31,9 @@ class API::V1::ClicksController < ActionController::API
   end
 
   def check_purchase_order(po)
+    if po.nil?
+      return false
+
     # Check Maximum limit
     if !po.total_limit.nil? and po.total_count >= po.total_limit
       return false
