@@ -18,6 +18,7 @@ Rails.application.routes.draw do
         option.resources :leads
         option.resources :visitors
         option.resources :clicks
+        option.resources :clients
       end
     end
   end
