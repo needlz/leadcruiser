@@ -15,12 +15,12 @@ class API::V1::ClicksController < ActionController::API
         po.total_count += 1
         po.save
       else
-        render json: { errors: 'No purchase orders for this client' }, status: :unprocessable_entity  
+        render json: { errors: 'No purchase orders for this client' }, status: :unprocessable_entity and return
       end
 
-      render json: { message: 'Click was captured successfully' }, status: :created
+      render json: { message: 'Click was captured successfully' }, status: :created and return
     else
-      render json: { errors: click.error_messages }, status: :unprocessable_entity
+      render json: { errors: click.error_messages }, status: :unprocessable_entity and return
     end
   end
 
