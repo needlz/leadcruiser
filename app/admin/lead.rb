@@ -56,6 +56,7 @@ ActiveAdmin.register Lead do
       end
       client_list
     end
+    column :disposition
     column "Created At" do |lead|
       unless lead.created_at.nil?
         lead.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M:%S")

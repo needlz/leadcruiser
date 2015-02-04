@@ -33,10 +33,22 @@ class API::V1::LeadsController  < ActionController::API
 
     if lead.save
 
+      # If it is duplicated, it would not be sold
       if duplicated
         lead.update_attributes(:status => Lead::DUPLICATED)
-
         render json: { errors: "The email address of this lead was duplicated", :other_client => all_client_list.to_json}, status: :unprocessable_entity and return
+      end
+
+      # Testing dispotiion, Test No Sale
+      if lead.first_name == Lead::TEST_TERM && lead.last_name == Lead::TEST_TERM
+        lead.update_attributes(:disposition => Lead::TEST_NO_SALE)
+        SendEmailWorker.perform_async(nil, lead.id)
+        render json: { errors: Lead::TEST_NO_SALE, :other_client => all_client_list.to_json}, status: :unprocessable_entity and return
+      end
+
+      # Testing dispotiion, Test Sale
+      if lead.first_name == "Erik" && lead.last_name == "Needham"
+        lead.update_attributes(:disposition => Lead::TEST_SALE)
       end
 
       AutoResponseThankWorker.perform_async(lead.email)

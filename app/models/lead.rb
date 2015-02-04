@@ -21,6 +21,9 @@ class Lead < ActiveRecord::Base
   DUPLICATED  = "duplicated"
   SOLD        = "sold"
   NO_POS      = "No Matching POs"
+  TEST_NO_SALE = "Test No Sale"
+  TEST_SALE   = "Test Sale"
+  TEST_TERM   = "test"
 
   def latest_response
     Response.where('lead_id = ?', self.id).order(id: :desc).try(:first)
