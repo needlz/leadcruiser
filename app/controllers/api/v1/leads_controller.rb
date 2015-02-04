@@ -48,7 +48,7 @@ class API::V1::LeadsController  < ActionController::API
 
       # Testing dispotiion, Test Sale
       if lead.first_name == "Erik" && lead.last_name == "Needham"
-        lead.update_attributes(:disposition => Lead::TEST_SALE)
+        lead.update_attribute(:disposition, Lead::TEST_SALE)
       end
 
       AutoResponseThankWorker.perform_async(lead.email)
