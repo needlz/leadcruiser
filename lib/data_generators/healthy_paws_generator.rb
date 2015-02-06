@@ -13,7 +13,7 @@ class HealthyPawsGenerator
 
     query = {}
     query["1"]  = lead.first_name
-    query["2"]  = lead.first_name
+    query["2"]  = lead.last_name
     query["3"]  = lead.address_1.nil? ? "" : lead.address_1
     query["4"]  = lead.city || lead.try(:zip_code).try(:primary_city) || ''
     query["5"]  = lead.state || lead.try(:zip_code).try(:state) || ''
