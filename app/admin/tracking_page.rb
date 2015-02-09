@@ -22,6 +22,18 @@ ActiveAdmin.register TrackingPage do
     actions
   end
 
+  form  do |f|
+    f.inputs "Tracking Pages" do
+      f.input :clients_vertical_id, 
+              :as => :select,
+              :collection => ClientsVertical.select(:integration_name, :id).uniq.pluck(:integration_name, :id)
+      f.input :link
+      f.input :display_order
+    end
+
+    f.actions
+  end
+
   show do
     attributes_table do
       row :id
