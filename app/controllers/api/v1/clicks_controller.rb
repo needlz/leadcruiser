@@ -3,33 +3,34 @@ class API::V1::ClicksController < ActionController::API
 
   def create
     click_param = permit_click_params
-    clients_vertical = ClientsVertical.find_by_integration_name(click_param[:client_name])
-    click_param[:clients_vertical_id] = clients_vertical.id
-    click_param.delete("client_name")
 
     click = Click.new(click_param)
     if click.save
-      # Check purchase order and update
-      # If page_id is null, it means clicking on the thank you page.
-      # If else, clicking on popup page
-      if click_param[:page_id].nil?
-        po_list = ClicksPurchaseOrder.where('clients_vertical_id = ? and page_id IS NULL  and active = true', click.clients_vertical_id)
+      # Check duplication of click by visitor_ip and purchase_order_id
+      isSold = Click.where(:created_at => Time.zone.now.beginning_of_day..Time.zone.now.end_of_day)
+                    .where(:status => Click::SOLD)
+                    .where(:clients_vertical_id => click.clients_vertical_id )
+                    .where(:visitor_ip => click.visitor_ip).first
 
-        # Sort by price + weight
-        po_list.each do |po|
-          po.price = po.weight.to_f + po.price.to_f
+      if isSold.nil? # This click is first time today
+        click.update_attribute(:status, Click::SOLD)
+
+        # Check purchase order and update
+        # If page_id is null, it means clicking on the thank you page.
+        # If else, clicking on popup page
+        unless permit_click_params[:clicks_purchase_order_id].nil?
+          po = ClicksPurchaseOrder.find_by_id permit_click_params[:clicks_purchase_order_id]
+
+          if check_purchase_order(po)
+            po.daily_count += 1
+            po.total_count += 1
+            po.save
+          else
+            render json: { errors: 'No purchase orders for this client' }, status: :unprocessable_entity and return
+          end
         end
-        po_list = po_list.sort {|a,b| b <=> a}
-        available_po = po_list.try(:first)
-        binding.pry
-        if check_purchase_order(available_po)
-          available_po.daily_count += 1
-          available_po.total_count += 1
-          available_po.save
-        else
-          render json: { errors: 'No purchase orders for this client' }, status: :unprocessable_entity and return
-        end
-      else
+      else # This is not first today
+        click.update_attribute(:status, Click::DUPLICATED)        
       end
       
       render json: { message: 'Click was captured successfully' }, status: :created and return
@@ -41,7 +42,7 @@ class API::V1::ClicksController < ActionController::API
   private
   
   def permit_click_params
-    params.fetch(:click, {}).permit(:visitor_id, :client_name, :site_id, :page_id, :partner_id)
+    params.fetch(:click, {}).permit(:visitor_ip, :clients_vertical_id, :clicks_purchase_order_id, :site_id, :page_id, :partner_id)
   end
 
   def check_purchase_order(po)

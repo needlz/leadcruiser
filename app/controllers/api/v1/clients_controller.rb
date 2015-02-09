@@ -59,6 +59,7 @@ class API::V1::ClientsController < ActionController::API
   def client_po_to_json(click_po)
     client = click_po.clients_vertical
     {
+      :clients_vertical_id => client.id,
       :integration_name   => client.integration_name,
       :email              => client.email,
       :phone_number       => client.phone_number,
@@ -69,7 +70,7 @@ class API::V1::ClientsController < ActionController::API
       :sort_order         => client.sort_order,
       :display            => client.display,
       :page_id            => click_po.page_id,
-      :purchase_order_id  => click_po.id
+      :clicks_purchase_order_id  => click_po.id
     }
   end
 end

@@ -1,6 +1,9 @@
 class Click < ActiveRecord::Base
-	validates :visitor_id, presence: true
+	validates :visitor_ip, :clients_vertical_id, :clicks_purchase_order_id, presence: true
 
-	belongs_to :visitor
 	belongs_to :clients_vertical
+	belongs_to :clicks_purchase_order
+
+	SOLD = "sold"
+	DUPLICATED = "duplicated"
 end
