@@ -1,4 +1,5 @@
 class API::V1::ClicksController < ActionController::API
+  include ActionView::Helpers::NumberHelper
 
   def create
     click_param = permit_click_params
@@ -9,15 +10,28 @@ class API::V1::ClicksController < ActionController::API
     click = Click.new(click_param)
     if click.save
       # Check purchase order and update
-      po = ClicksPurchaseOrder.find_by_clients_vertical_id(click.clients_vertical_id)
-      if check_purchase_order(po)
-        po.daily_count += 1
-        po.total_count += 1
-        po.save
-      else
-        render json: { errors: 'No purchase orders for this client' }, status: :unprocessable_entity and return
-      end
+      # If page_id is null, it means clicking on the thank you page.
+      # If else, clicking on popup page
+      if click_param[:page_id].nil?
+        po_list = ClicksPurchaseOrder.where('clients_vertical_id = ? and page_id IS NULL  and active = true', click.clients_vertical_id)
 
+        # Sort by price + weight
+        po_list.each do |po|
+          po.price = po.weight.to_f + po.price.to_f
+        end
+        po_list = po_list.sort {|a,b| b <=> a}
+        available_po = po_list.try(:first)
+        binding.pry
+        if check_purchase_order(available_po)
+          available_po.daily_count += 1
+          available_po.total_count += 1
+          available_po.save
+        else
+          render json: { errors: 'No purchase orders for this client' }, status: :unprocessable_entity and return
+        end
+      else
+      end
+      
       render json: { message: 'Click was captured successfully' }, status: :created and return
     else
       render json: { errors: click.error_messages }, status: :unprocessable_entity and return

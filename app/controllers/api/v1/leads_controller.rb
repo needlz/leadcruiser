@@ -152,9 +152,9 @@ class API::V1::LeadsController  < ActionController::API
       :sort_order         => cv.sort_order,
       :display            => cv.display,
       :redirect_url       => redirect_url
-    }
+    }   
   end
-
+    
   def permit_lead_params
     params.fetch(:lead, {}).permit(:session_hash, :site_id, :form_id, :vertical_id, :leads_details_id,
                                  :first_name, :last_name, :address_1, :address_2, :city, :state, :zip,
@@ -162,10 +162,11 @@ class API::V1::LeadsController  < ActionController::API
                                  :gender, :visitor_ip)
   end
 
-  def permit_pet_params
+  def permit_pet_params   
     params.fetch(:pet, {}).permit(:species, :spayed_or_neutered, :pet_name, :breed, :birth_day, :birth_month,
                                 :birth_year, :gender, :conditions)
   end
 
 end
 
+    

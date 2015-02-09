@@ -2,19 +2,9 @@ ActiveAdmin.register ClientsVertical do
 
   menu priority: 3
 
-  # See permitted parameters documentation:
-  # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-  #
+
   permit_params :vertical_id, :integration_name, :official_name, :active, :weight, :exclusive, :fixed_price, :email, :phone_number,
                 :website_url, :request_type, :service_url, :logo, :description, :display, :sort_order, :timeout
-  #
-  # or
-  #
-  # permit_params do
-  #   permitted = [:permitted, :attributes]
-  #   permitted << :other if resource.something?
-  #   permitted
-  # end
 
   config.filters = false
 
