@@ -66,3 +66,4 @@ gem "pry", group: [:development, :staging]
 gem "letter_opener", group: :development
 gem 'figaro', git: 'git://github.com/laserlemon/figaro.git', branch: 'master'
 gem 'airbrake'
+gem 'bootstrap-sass'

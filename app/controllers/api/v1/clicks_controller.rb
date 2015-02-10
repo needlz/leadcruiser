@@ -7,11 +7,14 @@ class API::V1::ClicksController < ActionController::API
     click = Click.new(click_param)
     if click.save
       if click.page_id.nil? # User clicked deep_link
-        click.update_attribute(:status, Click::SOLD)
-
-        po = ClicksPurchaseOrder.find_by_id permit_click_params[:clicks_purchase_order_id]
+        po = ClicksPurchaseOrder.where('clients_vertical_id = ?', click.clients_vertical_id)
+                                .where('page_id IS NULL').first
 
         if check_purchase_order(po)
+          click.status = Click::SOLD
+          click.clicks_purchase_order_id = po.id
+          click.save
+
           po.daily_count += 1
           po.total_count += 1
           po.save

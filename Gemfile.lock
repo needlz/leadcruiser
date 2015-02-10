@@ -64,6 +64,8 @@ GEM
       json (~> 1.4)
       nokogiri (>= 1.4.4)
     bcrypt (3.1.9)
+    bootstrap-sass (3.2.0.1)
+      sass (~> 3.2)
     bourbon (3.2.3)
       sass (~> 3.2)
       thor
@@ -308,6 +310,7 @@ DEPENDENCIES
   activeadmin!
   airbrake
   aws-sdk
+  bootstrap-sass
   coffee-rails (~> 4.0.0)
   devise
   dotenv-rails
