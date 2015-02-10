@@ -8,6 +8,7 @@ require 'data_generator_provider'
 require 'workers/send_data_worker.rb'
 
 class API::V1::LeadsController  < ActionController::API
+  include ActionView::Helpers::NumberHelper
 
   def create
     error = "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
@@ -36,14 +37,14 @@ class API::V1::LeadsController  < ActionController::API
       # If it is duplicated, it would not be sold
       if duplicated
         lead.update_attributes(:status => Lead::DUPLICATED)
-        render json: { errors: "The email address of this lead was duplicated", :other_client => all_client_list.to_json}, status: :unprocessable_entity and return
+        render json: { errors: "The email address of this lead was duplicated", :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
       end
 
       # Testing dispotiion, Test No Sale
       if lead.first_name == Lead::TEST_TERM && lead.last_name == Lead::TEST_TERM
         lead.update_attribute(:disposition, Lead::TEST_NO_SALE)
         SendEmailWorker.perform_async(nil, lead.id)
-        render json: { errors: Lead::TEST_NO_SALE, :other_client => all_client_list.to_json}, status: :unprocessable_entity and return
+        render json: { errors: Lead::TEST_NO_SALE, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
       end
 
       # Testing dispotiion, Test Sale
@@ -89,13 +90,15 @@ class API::V1::LeadsController  < ActionController::API
           end
           sold_clients << JSON[cv_json(cv, redirect_url)]
         end
-        
-        other_cvs = ClientsVertical.where('integration_name NOT IN  (?) and display = true', sold_client_name_list).order(sort_order: :asc)
-        
+
+        # Get other client list by clicks_purchase_order        
+        clicks_purchase_order_builder = ClicksPurchaseOrderBuilder.new
+        all_clients_list = clicks_purchase_order_builder.po_available_clients
+
         other_clients = []
-        other_cvs.each do |other_cv|
-          if other_cv.display
-            other_clients << JSON[cv_json(other_cv, other_cv.website_url)]
+        all_clients_list.each do |cpo_client|
+          unless sold_client_name_list.include? cpo_client.clients_vertical.try(:integration_name)
+            other_clients << JSON[cpo_cv_json(cpo_client)]
           end
         end
 
@@ -106,10 +109,10 @@ class API::V1::LeadsController  < ActionController::API
         }, status: :created
       else
         lead.update_attributes :status => Lead::NO_POS
-        render json: { errors: error.gsub("[pets_name]", pet["pet_name"]) , :other_client => all_client_list.to_json}, status: :unprocessable_entity
+        render json: { errors: error.gsub("[pets_name]", pet["pet_name"]) , :other_client => all_po_client_list.to_json}, status: :unprocessable_entity
       end
     else
-      render json: { errors: error.gsub("[pets_name]", pet["pet_name"]), :other_client => all_client_list.to_json }, status: :unprocessable_entity
+      render json: { errors: error.gsub("[pets_name]", pet["pet_name"]), :other_client => all_po_client_list.to_json }, status: :unprocessable_entity
     end
   end
 
@@ -127,14 +130,14 @@ class API::V1::LeadsController  < ActionController::API
     return false
   end 
 
-  def all_client_list
-    other_cvs = ClientsVertical.where('display = true').order(sort_order: :asc)
+  def all_po_client_list
+    clicks_purchase_order_builder = ClicksPurchaseOrderBuilder.new
+
+    all_cpo_clients = clicks_purchase_order_builder.po_available_clients
     
     other_clients = []
-    other_cvs.each do |other_cv|
-      if other_cv.display
-        other_clients << JSON[cv_json(other_cv)]
-      end
+    all_cpo_clients.each do |other_cv|
+      other_clients << JSON[cpo_cv_json(other_cv)]
     end
 
     return other_clients
@@ -142,6 +145,7 @@ class API::V1::LeadsController  < ActionController::API
 
   def cv_json(cv, redirect_url=nil)
     {
+      :clients_vertical_id => cv.id,
       :integration_name   => cv.integration_name,
       :email              => cv.email,
       :phone_number       => cv.phone_number,
@@ -152,6 +156,24 @@ class API::V1::LeadsController  < ActionController::API
       :sort_order         => cv.sort_order,
       :display            => cv.display,
       :redirect_url       => redirect_url
+    }   
+  end
+
+  def cpo_cv_json(po_cv)
+    client = po_cv.clients_vertical
+    {
+      :clients_vertical_id => client.id,
+      :integration_name   => client.integration_name,
+      :email              => client.email,
+      :phone_number       => client.phone_number,
+      :website_url        => po_cv.tracking_page.link,
+      :official_name      => client.official_name,
+      :description        => client.description,
+      :logo_url           => client.logo.url,
+      :sort_order         => client.sort_order,
+      :display            => client.display,
+      :page_id            => po_cv.page_id,
+      :clicks_purchase_order_id  => po_cv.id
     }   
   end
     

@@ -6,19 +6,31 @@ class API::V1::ClicksController < ActionController::API
 
     click = Click.new(click_param)
     if click.save
-      # Check duplication of click by visitor_ip and purchase_order_id
-      isSold = Click.where(:created_at => Time.zone.now.beginning_of_day..Time.zone.now.end_of_day)
-                    .where(:status => Click::SOLD)
-                    .where(:clients_vertical_id => click.clients_vertical_id )
-                    .where(:visitor_ip => click.visitor_ip).first
-
-      if isSold.nil? # This click is first time today
+      if click.page_id.nil? # User clicked deep_link
         click.update_attribute(:status, Click::SOLD)
 
-        # Check purchase order and update
-        # If page_id is null, it means clicking on the thank you page.
-        # If else, clicking on popup page
-        unless permit_click_params[:clicks_purchase_order_id].nil?
+        po = ClicksPurchaseOrder.find_by_id permit_click_params[:clicks_purchase_order_id]
+
+        if check_purchase_order(po)
+          po.daily_count += 1
+          po.total_count += 1
+          po.save
+        else
+          render json: { errors: 'No purchase orders for this client' }, status: :unprocessable_entity and return
+        end
+      else
+        # Check duplication of click by visitor_ip and purchase_order_id
+        isSold = Click.where(:created_at => Time.zone.now.beginning_of_day..Time.zone.now.end_of_day)
+                      .where(:status => Click::SOLD)
+                      .where(:clients_vertical_id => click.clients_vertical_id )
+                      .where(:visitor_ip => click.visitor_ip).first
+
+        if isSold.nil? # This click is first time today
+          click.update_attribute(:status, Click::SOLD)
+
+          # Check purchase order and update
+          # If page_id is null, it means clicking on the thank you page.
+          # If else, clicking on popup page
           po = ClicksPurchaseOrder.find_by_id permit_click_params[:clicks_purchase_order_id]
 
           if check_purchase_order(po)
@@ -28,15 +40,15 @@ class API::V1::ClicksController < ActionController::API
           else
             render json: { errors: 'No purchase orders for this client' }, status: :unprocessable_entity and return
           end
+        else # This is not first today
+          click.update_attribute(:status, Click::DUPLICATED)        
         end
-      else # This is not first today
-        click.update_attribute(:status, Click::DUPLICATED)        
       end
-      
-      render json: { message: 'Click was captured successfully' }, status: :created and return
     else
       render json: { errors: click.error_messages }, status: :unprocessable_entity and return
     end
+
+    render json: { message: 'Click was captured successfully' }, status: :created and return
   end
 
   private

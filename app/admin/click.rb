@@ -11,6 +11,7 @@ ActiveAdmin.register Click do
       click.clients_vertical.try(:integration_name)
     end
     column :clicks_purchase_order_id
+    column :page_id
     column :status
     column "Price" do |click|
       if click.status == Click::SOLD
