@@ -1,0 +1,39 @@
+.content.text-center{:style => "margin-top:100px;"}
+  .col-md-12
+    .col-md-2
+      = link_to 'Back', clicks_reports_path, class: "btn btn-link", style: "margin-top: 30px"
+    .col-md-8
+      .h2 Clicks Reports by Visitor - #{@clients_vertical.official_name}
+    .col-md-2{:style => "margin-top:30px"}
+      Export to XLS
+      = link_to image_tag("excel-icon.png",  alt: t('reports.excel_icon_alt'), width: 25, height: 25),
+       reports_path(format: 'xls', firstDate: params[:firstDate], secondDate: params[:secondDate]),
+       class: 'excel-icon'
+  .col-md-12{:style=>"margin-bottom:20px"}
+    .table-responsive
+      %table.table.table-hover
+        %thead
+          %tr
+            %th Visitor IP
+            %th Date
+            %th Sold Clicks
+            %th Duplicated Clicks
+            %th Total Price
+        - if @visitor_clicks.length > 0
+          %tbody
+            - @visitor_clicks.each do |vc|
+              %tr
+                %td= vc["ip"]
+                %td= vc["date"]
+                %td= vc["sold_clicks"]
+                %td= vc["duplicated_clicks"]
+                %td= vc["total_price"]
+        - else
+          %tbody
+            %tr
+              %td.text-center{"colspan" => 5} No records
+  .col-md-12
+    
+
+:javascript
+  Pagination.initialize();

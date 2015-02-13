@@ -1,0 +1,34 @@
+.content.text-center{:style => "margin-top:100px;"}
+  .col-md-12
+    .col-md-2
+    .col-md-8
+      .h2 Clicks Reports by Clients
+    .col-md-2{:style => "margin-top:30px"}
+      Export to XLS
+      = link_to image_tag("excel-icon.png",  alt: t('reports.excel_icon_alt'), width: 25, height: 25),
+       reports_path(format: 'xls', firstDate: params[:firstDate], secondDate: params[:secondDate]),
+       class: 'excel-icon'
+  .col-md-12{:style=>"margin-bottom:20px"}
+    .table-responsive
+      %table.table.table-hover
+        %thead
+          %tr
+            %th Vertical ID
+            %th Client Name
+            %th Total Clicks
+            %th Sold Clicks
+            %th Total Price
+        %tbody
+          - @clients_verticals_clicks.each do |cvc|
+            %tr
+              %td= cvc["vertical_id"]
+              %td
+                =link_to cvc["integration_name"], clicks_reports_by_client_path(cvc["clients_vertical_id"])
+              %td= cvc["total_clicks"]
+              %td= cvc["sold_clicks"]
+              %td= cvc["total_price"]
+  .col-md-12
+    
+
+:javascript
+  Pagination.initialize();

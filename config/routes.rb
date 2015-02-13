@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   mount Sidekiq::Web => '/sidekiq'
 
   get 'reports/refresh', :to => 'reports#refresh'
+  get 'clicks_reports/:clients_vertical_id/by_client', :to => 'clicks_reports#by_client', :as => 'clicks_reports_by_client'
   namespace :api do
     namespace :v1 do
       with_options only: :create do |option|
