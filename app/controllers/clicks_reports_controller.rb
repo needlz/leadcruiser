@@ -59,7 +59,7 @@ class ClicksReportsController < ApplicationController
     # @ready_pagination = WillPaginate::Collection.create(3, 30, clients_verticals_clicks.length) do |pager|
     #   pager.replace clients_verticals_clicks
     # end
-    @clients_verticals_clicks_paging = @clients_verticals_clicks.paginate(:page => params[:page], :per_page => 10)
+    @clients_verticals_clicks_paging = @clients_verticals_clicks.paginate(:page => params[:page] || 1, :per_page => 10)
     #@clients_verticals_clicks = @ready_pagination.paginate(:page => params[:page], :per_page => 3)
     respond_to do |format|
       format.any(:html, :js) do
@@ -142,7 +142,7 @@ class ClicksReportsController < ApplicationController
       end
     end
 
-    @visitor_clicks_paging = @visitor_clicks.paginate(:page => params[:page], :per_page => 30)
+    @visitor_clicks_paging = @visitor_clicks.paginate(:page => params[:page] || 1, :per_page => 30)
 
     respond_to do |format|
       format.any(:html, :js) do
