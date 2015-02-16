@@ -345,5 +345,4 @@ DEPENDENCIES
   thin
   timecop
   uglifier (>= 1.3.0)
-  will_paginate (~> 3.0)
   will_paginate-bootstrap

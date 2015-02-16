@@ -5,14 +5,32 @@ class ClicksReportsController < ApplicationController
   def index
     clients_verticals = ClientsVertical.where('active = true').order(:vertical_id)
 
+    date_from = nil
+    date_to = nil
+    unless params[:date].nil?
+      date_from = params[:date]["from_date"]
+      date_to = params[:date]["to_date"]
+    else
+      date_from = params["from_date"]
+      date_to = params["to_date"]
+    end
+    if date_from.nil? || date_from == ""
+      date_from = "0001-01-01"
+    end
+
+    if date_to.nil? || date_to == ""
+      date_to = "9999-12-31"
+    end
+
     @clients_verticals_clicks = []
     clients_verticals.each do |cv|
       clicks = Click.where('clients_vertical_id = ?', cv.id)
+                    .where(:created_at => date_from.to_date.in_time_zone("Pacific Time (US & Canada)").beginning_of_day..date_to.to_date.in_time_zone("Pacific Time (US & Canada)").end_of_day)
       
       total_info = {}
       total_clicks = 0
       sold_clicks = 0
-      total_price =0
+      total_price = 0
       clicks.each do |ck|
         total_clicks += 1;
         if ck.status == Click::SOLD
@@ -37,11 +55,43 @@ class ClicksReportsController < ApplicationController
 
       @clients_verticals_clicks.push total_info
     end
+
+    # @ready_pagination = WillPaginate::Collection.create(3, 30, clients_verticals_clicks.length) do |pager|
+    #   pager.replace clients_verticals_clicks
+    # end
+    @clients_verticals_clicks_paging = @clients_verticals_clicks.paginate(:page => params[:page], :per_page => 10)
+    #@clients_verticals_clicks = @ready_pagination.paginate(:page => params[:page], :per_page => 3)
+    respond_to do |format|
+      format.any(:html, :js) do
+        @clients_verticals_clicks_paging
+      end
+      format.xls do
+        @clients_verticals_clicks
+      end
+    end
   end
 
   def by_client
+    date_from = nil
+    date_to = nil
+    unless params[:date].nil?
+      date_from = params[:date]["from_date"]
+      date_to = params[:date]["to_date"]
+    else
+      date_from = params["from_date"]
+      date_to = params["to_date"]
+    end
+    if date_from.nil? || date_from == ""
+      date_from = "0001-01-01"
+    end
+
+    if date_to.nil? || date_to == ""
+      date_to = "9999-12-31"
+    end
+
     @clients_vertical = ClientsVertical.find params["clients_vertical_id"]
     visitor_ip_list = Click.where('clients_vertical_id = ?', params["clients_vertical_id"])
+                            .where(:created_at => date_from.to_date.in_time_zone("Pacific Time (US & Canada)").beginning_of_day..date_to.to_date.in_time_zone("Pacific Time (US & Canada)").end_of_day)
                             .group('visitor_ip')
                             .order('visitor_ip')
                             .select("visitor_ip")
@@ -49,6 +99,7 @@ class ClicksReportsController < ApplicationController
     @visitor_clicks = []
     visitor_ip_list.each do |visitor|
       click_list = Click.where('clients_vertical_id = ? and visitor_ip = ?', params["clients_vertical_id"], visitor.visitor_ip)
+                        .where(:created_at => date_from.to_date.in_time_zone("Pacific Time (US & Canada)").beginning_of_day..date_to.to_date.in_time_zone("Pacific Time (US & Canada)").end_of_day)
                         .order(created_at: :desc)
 
       # group by date (clicks per date, price per date)                        
@@ -88,6 +139,17 @@ class ClicksReportsController < ApplicationController
         visitor_click["duplicated_clicks"] = duplicated_clicks
         visitor_click["total_price"] = "%.2f" % sold_price
         @visitor_clicks << visitor_click
+      end
+    end
+
+    @visitor_clicks_paging = @visitor_clicks.paginate(:page => params[:page], :per_page => 30)
+
+    respond_to do |format|
+      format.any(:html, :js) do
+        @visitor_clicks_paging
+      end
+      format.xls do
+        @visitor_clicks
       end
     end
   end

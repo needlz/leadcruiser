@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:o="urn:schemas-microsoft-com:office:office"
+          xmlns:x="urn:schemas-microsoft-com:office:excel"
+          xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+          xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Clicks">
+    <Table>
+      <Row>
+        <Cell><Data ss:Type="String">Vertical ID</Data></Cell>
+        <Cell><Data ss:Type="String">Client Name</Data></Cell>
+        <Cell><Data ss:Type="String">Total Clicks</Data></Cell>
+        <Cell><Data ss:Type="String">Sold Clicks</Data></Cell>
+        <Cell><Data ss:Type="String">Total Price</Data></Cell>
+        <Cell><Data ss:Type="String">From Date</Data></Cell>
+        <Cell><Data ss:Type="String">To Date</Data></Cell>
+      </Row>
+      <% @clients_verticals_clicks.each do |click| %>
+        <Row>
+          <Cell><Data ss:Type="String"><%= click["vertical_id"] %></Data></Cell>
+          <Cell><Data ss:Type="String"><%= click["integration_name"] %></Data></Cell>
+          <Cell><Data ss:Type="String"><%= click["total_clicks"] %></Data></Cell>
+          <Cell><Data ss:Type="String"><%= click["sold_clicks"] %></Data></Cell>
+          <Cell><Data ss:Type="String"><%= click["total_price"] %></Data></Cell>
+          <Cell><Data ss:Type="Date"><%= params["from_date"] %></Data></Cell>
+          <Cell><Data ss:Type="Date"><%= params["to_date"] %></Data></Cell>
+        </Row>
+      <% end %>
+    </Table>
+  </Worksheet>
+</Workbook>
+

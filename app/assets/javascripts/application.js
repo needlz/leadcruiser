@@ -19,4 +19,5 @@
 //= require jquery.flot.pie
 //= require jquery.flot.time
 //= require date.format
+//= require jquery.datetimepicker
 //= require_tree .
