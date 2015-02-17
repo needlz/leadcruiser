@@ -10,6 +10,9 @@ class PetsBestGenerator
 
   def generate(exclusive)
     promocode = "PIOEL"
+    unless exclusive
+      promocode = "PIOSL"
+    end
 
     query = {
       :ci => promocode,
