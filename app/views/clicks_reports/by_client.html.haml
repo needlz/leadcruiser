@@ -2,45 +2,23 @@
   .col-md-12
     .h2 Clicks Reports by Visitor - #{@clients_vertical.official_name}
   .col-md-12
-    = form_for :date, method: :get do |f|
+    = form_for :date, method: :get, :html => {:class => "form-inline"} do |f|
       .col-md-2.col-sm-2.text-left
         = link_to 'Back', clicks_reports_path, class: "btn btn-link"
-      .col-md-8.col-sm-8.text-right
-        .col-md-5.col-sm-5
-          View:
-          = f.text_field :from_date, :value => params[:date].nil? ? "" : params[:date]["from_date"]
-        .col-md-5.col-sm-5.text-right
-          To:
-          = f.text_field :to_date, :value => params[:date].nil? ? "" : params[:date]["to_date"]
-        .col-md-2.col-sm-2.text-left
+      .col-md-8.col-sm-8
+        .form-group
+          %label From:
+          = f.text_field :from_date, :value => params[:date].nil? ? "" : params[:date]["from_date"], class: "form-control"
+        .form-group
+          %label To:
+          = f.text_field :to_date, :value => params[:date].nil? ? "" : params[:date]["to_date"], class: "form-control"
+        .form-group
           = f.submit 'View', class: "btn btn-default btn-block"
-      .col-md-2.col-sm-2
-        = link_to "Export", clicks_reports_by_client_path(format: 'xls', from_date: params[:date].nil? ? "" : params[:date]["from_date"], to_date: params[:date].nil? ? "" : params[:date]["to_date"]), class: 'btn btn-default'
+        .form-group
+          = link_to "Export XLS", clicks_reports_by_client_path(format: 'xls', from_date: params[:date].nil? ? "" : params[:date]["from_date"], to_date: params[:date].nil? ? "" : params[:date]["to_date"]), class: 'btn btn-default'
   .col-md-12{:style=>"margin-bottom:20px"}
-    .table-responsive
-      %table.table.table-hover
-        %thead
-          %tr
-            %th Visitor IP
-            %th Date
-            %th Sold Clicks
-            %th Duplicated Clicks
-            %th Total Price
-        - if @visitor_clicks.length > 0
-          %tbody
-            - @visitor_clicks.each do |vc|
-              %tr
-                %td= vc["ip"]
-                %td= vc["date"]
-                %td= vc["sold_clicks"]
-                %td= vc["duplicated_clicks"]
-                %td= vc["total_price"]
-        - else
-          %tbody
-            %tr
-              %td.text-center{"colspan" => 5} No records
-.col-md-12
-  = will_paginate @visitor_clicks_paging, renderer: BootstrapPagination::Rails
+    .table-responsive.clicks_reports_by_visitor
+      = render 'visitor'
 
 :javascript
   $(document).ready(function () {

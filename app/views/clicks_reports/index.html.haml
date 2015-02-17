@@ -1,43 +1,25 @@
 .content.text-center{:style => "margin-top:100px;"}
-  = form_for :date, method: :get do |f|
+  = form_for :date, method: :get, :html => {:class => "form-inline"} do |f|
     .col-md-12
       .h2 Clicks Reports by Clients
     .col-md-12
       .col-md-2.col-sm-2.text-left
         = link_to 'Back', root_path, class: "btn btn-link"
       .col-md-8.col-sm-8
-        .col-md-5.col-sm-5
-          View:
-          = f.text_field :from_date, :value => params[:date].nil? ? "" : params[:date]["from_date"]
-        .col-md-5.col-sm-5
-          To:
-          = f.text_field :to_date, :value => params[:date].nil? ? "" : params[:date]["to_date"]
-        .col-md-2.col-sm-2
+        .form-group
+          %label From:
+          = f.text_field :from_date, :value => params[:date].nil? ? "" : params[:date]["from_date"], class: "form-control"
+        .form-group
+          %label To:
+          = f.text_field :to_date, :value => params[:date].nil? ? "" : params[:date]["to_date"], class: "form-control"
+        .form-group
           = f.hidden_field :output
           = f.submit 'View', class: "btn btn-default btn-block"
-      .col-md-2.col-sm-2
-        = link_to "Export", clicks_reports_path(format: 'xls', from_date: params[:date].nil? ? "" : params[:date]["from_date"], to_date: params[:date].nil? ? "" : params[:date]["to_date"]), class: 'btn btn-default'
+        .form-group
+          = link_to "Export XLS", clicks_reports_path(format: 'xls', from_date: params[:date].nil? ? "" : params[:date]["from_date"], to_date: params[:date].nil? ? "" : params[:date]["to_date"]), class: 'btn btn-default'
     .col-md-12{:style=>"margin-bottom:20px"}
-      .table-responsive
-        %table.table.table-hover
-          %thead
-            %tr
-              %th Vertical ID
-              %th Client Name
-              %th Total Clicks
-              %th Sold Clicks
-              %th Total Price
-          %tbody
-            - @clients_verticals_clicks_paging.each do |cvc|
-              %tr
-                %td= cvc["vertical_id"]
-                %td
-                  =link_to cvc["integration_name"], clicks_reports_by_client_path(cvc["clients_vertical_id"])
-                %td= cvc["total_clicks"]
-                %td= cvc["sold_clicks"]
-                %td= cvc["total_price"]
-.col-md-12
-  = will_paginate @clients_verticals_clicks_paging, renderer: BootstrapPagination::Rails
+      .table-responsive.clicks_reports_by_client
+        = render 'main'
 
 :javascript
   function setOutputFormat() {

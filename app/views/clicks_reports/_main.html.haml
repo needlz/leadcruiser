@@ -1,0 +1,20 @@
+%table.table.table-hover.table-bordered
+  %thead
+    %tr.info
+      %th{:style => "text-align:center;"} Vertical ID
+      %th{:style => "text-align:center;"} Client Name
+      %th{:style => "text-align:center;"} Total Clicks
+      %th{:style => "text-align:center;"} Sold Clicks
+      %th{:style => "text-align:center;"} Total Price
+  %tbody
+    - @clients_verticals_clicks_paging.each do |cvc|
+      %tr
+        %td= cvc["vertical_id"]
+        %td
+          =link_to cvc["integration_name"], clicks_reports_by_client_path(cvc["clients_vertical_id"])
+        %td= cvc["total_clicks"]
+        %td= cvc["sold_clicks"]
+        %td= cvc["total_price"]
+
+.col-md-12
+  = will_paginate @clients_verticals_clicks_paging, :renderer => BootstrapPagination::Rails
