@@ -13,7 +13,7 @@
       </Row>
       <% @leads.each do |lead| %>
           <Row>
-            <Cell><Data ss:Type="String"><%= lead.created_at %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= UTCToPST(lead.created_at) %></Data></Cell>
             <Cell><Data ss:Type="Number"><%= lead.id %></Data></Cell>
             <Cell><Data ss:Type="String"><%= lead.details_pets.first.pet_name %></Data></Cell>
             <Cell><Data ss:Type="String"><%= lead.details_pets.first.species %></Data></Cell>

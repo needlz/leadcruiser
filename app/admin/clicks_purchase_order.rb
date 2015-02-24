@@ -36,14 +36,10 @@ ActiveAdmin.register ClicksPurchaseOrder do
       end
     end
     column "Created Date" do |po|
-      unless po.created_at.nil?
-        po.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
-      end
+      UTCToPST(po.created_at)
     end
     column "Updated Date" do |po|
-      unless po.updated_at.nil?
-        po.updated_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
-      end
+      UTCToPST(po.updated_at)
     end
 
     actions
