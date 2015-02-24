@@ -57,9 +57,7 @@ ActiveAdmin.register Lead do
       client_list
     end
     column "Created At" do |lead|
-      unless lead.created_at.nil?
-        lead.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M:%S")
-      end
+      UTCToPST(lead.created_at)
     end
 
     actions :defaults => false do |post|
