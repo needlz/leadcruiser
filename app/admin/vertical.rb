@@ -21,14 +21,10 @@ ActiveAdmin.register Vertical do
     column :name
     column :times_sold
     column "Created At" do |v|
-      unless v.created_at.nil?
-        v.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
-      end
+      UTCToPST(v.created_at)
     end
     column "Updated At" do |v|
-      unless v.updated_at.nil?
-        v.updated_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
-      end
+      UTCToPST(v.updated_at)
     end
     actions
   end

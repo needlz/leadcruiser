@@ -36,9 +36,7 @@ ActiveAdmin.register ClientsVertical do
       link_to(image_tag(client.logo.url(:thumb), :height => '30'))
     end
     column "created_at" do |client|
-      unless client.created_at.nil?
-        client.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
-      end
+      UTCToPST(client.created_at)
     end
     actions
   end
