@@ -56,6 +56,7 @@ ActiveAdmin.register Lead do
       end
       client_list
     end
+    column :disposition
     column "Created At" do |lead|
       UTCToPST(lead.created_at)
     end

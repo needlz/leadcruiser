@@ -21,6 +21,9 @@ class Lead < ActiveRecord::Base
   DUPLICATED  = "duplicated"
   SOLD        = "sold"
   NO_POS      = "No Matching POs"
+  TEST_NO_SALE = "Test No Sale"
+  TEST_SALE   = "Test Sale"
+  TEST_TERM   = "test"
 
   def latest_response
     Response.where('lead_id = ?', self.id).order(id: :desc).try(:first)
@@ -28,6 +31,19 @@ class Lead < ActiveRecord::Base
 
   def sold_responses
     Response.where('lead_id = ? and price is not null', self.id).order(id: :desc)
+  end
+
+  def client_sold_to(client_name)
+    client = ClientsVertical.where('vertical_id = ? and integration_name = ?', self.vertical_id, client_name).try(:first)
+  end
+
+  def sold_po_price(purchase_order_id)
+    po = PurchaseOrder.find (purchase_order_id)
+    '%.2f' % (po.try(:price).to_f + po.try(:weight).to_f)
+  end
+
+  def sold_type
+    ta = TransactionAttempt.where('lead_id = ? and success = ?', self.id, true).try(:first)
   end
 
   private

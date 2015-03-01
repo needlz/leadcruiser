@@ -1,0 +1,23 @@
+%table.table.table-hover.table-bordered
+  %thead
+    %tr.info
+      %th{:style => "text-align:center;"} Visitor IP
+      %th{:style => "text-align:center;"} Date
+      %th{:style => "text-align:center;"} Sold Clicks
+      %th{:style => "text-align:center;"} Duplicated Clicks
+      %th{:style => "text-align:center;"} Total Price
+  - if @visitor_clicks_paging.length > 0
+    %tbody
+      - @visitor_clicks_paging.each do |vc|
+        %tr
+          %td= vc["ip"]
+          %td= vc["date"]
+          %td= vc["sold_clicks"]
+          %td= vc["duplicated_clicks"]
+          %td= vc["total_price"]
+  - else
+    %tbody
+      %tr
+        %td.text-center{"colspan" => 5} No records
+.col-md-12
+  = will_paginate @visitor_clicks_paging, :renderer => BootstrapPagination::Rails

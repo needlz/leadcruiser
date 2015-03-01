@@ -6,18 +6,23 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'reports#index'
+  # root 'visitors#home'
+  
   resources :reports, only: :index
+  resources :clicks_reports, only: :index
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 
   get 'reports/refresh', :to => 'reports#refresh'
+  get 'clicks_reports/:clients_vertical_id/by_client', :to => 'clicks_reports#by_client', :as => 'clicks_reports_by_client'
   namespace :api do
     namespace :v1 do
       with_options only: :create do |option|
         option.resources :leads
         option.resources :visitors
         option.resources :clicks
+        option.resources :clients
       end
     end
   end

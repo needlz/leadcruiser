@@ -12,7 +12,7 @@ class ReportsController < ApplicationController
         @leads = statistic.leads(params[:firstDate], params[:secondDate])
       end
     end
-   end
+  end
 
   def refresh
     render json: {

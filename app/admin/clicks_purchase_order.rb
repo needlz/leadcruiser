@@ -1,7 +1,7 @@
 ActiveAdmin.register ClicksPurchaseOrder do
 
   permit_params :clients_vertical_id, :weight, :price, :active, :total_limit, :daily_limit, 
-                :start_date, :end_date
+                :start_date, :end_date, :redirect_url, :page_id
 
   filter :clients_vertical
   filter :price
@@ -15,8 +15,9 @@ ActiveAdmin.register ClicksPurchaseOrder do
     column "Clients Vertical" do |po|
       po.clients_vertical.try(:integration_name)
     end
-    column :site_id
-    column :page_id
+    column "Link" do |po|
+      po.tracking_page.try(:link)
+    end
     column :redirect_url
     column :price
     column :weight
@@ -50,8 +51,9 @@ ActiveAdmin.register ClicksPurchaseOrder do
       f.input :clients_vertical_id, 
               :as => :select,
               :collection => ClientsVertical.select(:integration_name, :id).uniq.pluck(:integration_name, :id)
-      f.input :site_id
-      f.input :page_id
+      f.input :page_id,
+              :as => :select,
+              :collection => TrackingPage.select(:link, :id).uniq.pluck(:link, :id)
       f.input :redirect_url
       f.input :price
       f.input :weight
