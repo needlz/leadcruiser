@@ -10,33 +10,62 @@
         %th= column_value
   %tbody
     - @leads.each do |lead|
-      %tr
-        %td= UTCToPST(lead.created_at)
-        %td= lead.id
-        %td= lead.details_pets.first.pet_name
-        %td= lead.details_pets.first.species
-        %td= "#{lead.details_pets.first.birth_month} #{ lead.details_pets.first.birth_year}"
-        %td= lead.try(:zip_code).try(:state)
-        %td= "#{lead.first_name} #{lead.last_name}"
-        %td= lead.email
-        %td= lead.day_phone
-        %td= lead.visitor_ip
-        %td= ''
-        %td
-          - unless lead.latest_response.nil?
-            = lead.latest_response.client_name
-        %td
-          - unless lead.latest_response.nil?
-            = lead.latest_response.price
-        %td
-          - unless lead.latest_response.nil?
-            = lead.latest_response.response
-        %td
-          - unless lead.visitor.nil?
-            = lead.visitor.landing_page
-        %td
-          - unless lead.visitor.nil?
-            = lead.visitor.keywords
+      - if lead.sold_responses.length == 0
+        %tr
+          %td= lead.id
+          %td= lead.visitor_ip
+          %td= lead.first_name
+          %td= lead.last_name
+          %td= lead.zip
+          %td= lead.state.nil? ? lead.zip_code.try(:state) : lead.state
+          %td= lead.email
+          %td= lead.details_pets.first.conditions? ? 'TRUE' : 'FALSE'
+          %td= lead.times_sold.nil? ? 0 : lead.times_sold
+          %td= '$0.00'
+          %td= ''
+          %td= ''
+          %td= UTCToPST(lead.created_at)
+          %td= "tel:" + lead.day_phone
+          %td= lead.details_pets.first.pet_name
+          %td= lead.details_pets.first.species
+          %td= lead.details_pets.first.breed
+          %td= lead.details_pets.first.spayed_or_neutered? ? 'TRUE' : 'FALSE'
+          %td= lead.details_pets.first.birth_month
+          %td= lead.details_pets.first.birth_year
+          %td= lead.details_pets.first.gender
+          %td= lead.visitor.nil? ? '' : lead.visitor.session_hash
+          %td= lead.visitor.nil? ? '' : lead.visitor.referring_url
+          %td= lead.visitor.nil? ? '' : lead.visitor.landing_page
+          %td= lead.visitor.nil? ? '' : lead.visitor.keywords
+      - else
+        - lead.sold_responses.each do |response|
+          %tr
+            %td= lead.id
+            %td= lead.visitor_ip
+            %td= lead.first_name
+            %td= lead.last_name
+            %td= lead.zip
+            %td= lead.state.nil? ? lead.zip_code.try(:state) : lead.state
+            %td= lead.email
+            %td= lead.details_pets.first.conditions? ? 'TRUE' : 'FALSE'
+            %td= lead.times_sold.nil? ? 0 : lead.times_sold
+            %td= '$' + lead.sold_po_price(response.purchase_order_id).to_s
+            %td= lead.client_sold_to(response.client_name).try(:official_name)
+            %td= lead.sold_type.exclusive_selling? ? 'Exclusive' : 'Shared'
+            %td= UTCToPST(lead.created_at)
+            %td= "tel:" + lead.day_phone
+            %td= lead.details_pets.first.pet_name
+            %td= lead.details_pets.first.species
+            %td= lead.details_pets.first.breed
+            %td= lead.details_pets.first.spayed_or_neutered? ? 'TRUE' : 'FALSE'
+            %td= lead.details_pets.first.birth_month
+            %td= lead.details_pets.first.birth_year
+            %td= lead.details_pets.first.gender
+            %td= lead.visitor.nil? ? '' : lead.visitor.session_hash
+            %td= lead.visitor.nil? ? '' : lead.visitor.referring_url
+            %td= lead.visitor.nil? ? '' : lead.visitor.landing_page
+            %td= lead.visitor.nil? ? '' : lead.visitor.keywords
+
 - if @leads.empty?
   .no-data
     = t('reports.lead.no_available_leads')
