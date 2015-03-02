@@ -31,4 +31,5 @@ ActiveAdmin.register Click do
       end
     end
   end
+  
 end
