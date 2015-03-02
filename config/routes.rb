@@ -5,8 +5,8 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'reports#index'
-  # root 'visitors#home'
+  # root 'reports#index'
+  root 'visitors#home'
   
   resources :reports, only: :index
   resources :clicks_reports, only: :index
