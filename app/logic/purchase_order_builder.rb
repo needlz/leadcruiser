@@ -247,6 +247,7 @@ class PurchaseOrderBuilder
        	available_pos[real_price] << {
         	:id => po.id,
         	:client_id => po.client_id,
+        	:price => po.price,
         	:real_price => po.price + po.weight
         }
 

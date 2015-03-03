@@ -94,7 +94,7 @@ en:
         year_of_birth: 'Year of Birth'
         gender: 'Gender'
         session_hash: 'Session Hash'
-        recurring_url: 'Recurring URL'
+        referring_url: 'Referring URL'
         landing_page: 'Landing Page'
         keyword: 'Keywords'
       no_available_leads: 'There are no available leads for this period. Please, try to choose other dates.'
