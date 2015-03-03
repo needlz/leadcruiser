@@ -258,7 +258,11 @@ class SendDataWorker
         if lead.total_sale_amount.nil?
           lead.total_sale_amount = 0
         end
-        lead.total_sale_amount = lead.total_sale_amount + purchase_order[:real_price]
+        
+        # Total sale amount of a lead should not include the weight into the calculation, should only be the sum of the PO price
+        # lead.total_sale_amount = lead.total_sale_amount + purchase_order[:real_price]
+        lead.total_sale_amount = lead.total_sale_amount + purchase_order[:price]
+
         lead.update_attributes :status => Lead::SOLD
 
         # Record transaction history
