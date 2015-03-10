@@ -23,6 +23,7 @@ Rails.application.routes.draw do
         option.resources :visitors
         option.resources :clicks
         option.resources :clients
+        option.resources :zipcodes
       end
     end
   end
