@@ -19,8 +19,7 @@ class PurchaseOrderBuilder
 		@exclusive_pos = purchase_order_list(true)
 		@exclusive_price_keys = []
 		@exclusive_pos.keys.each do |key|
-
-			@exclusive_price_keys << number_with_precision(key, :precision => 1).to_f
+			@exclusive_price_keys << number_with_precision(key, :precision => 2).to_f
 		end
 		@exclusive_price_keys = @exclusive_price_keys.sort {|a,b| b <=> a}
 
@@ -28,7 +27,7 @@ class PurchaseOrderBuilder
 		@shared_pos = purchase_order_list(false)
 		@shared_price_keys = []
 		@shared_pos.keys.each do |key|
-			@shared_price_keys << number_with_precision(key, :precision => 1).to_f
+			@shared_price_keys << number_with_precision(key, :precision => 2).to_f
 		end
 		@shared_price_keys = @shared_price_keys.sort {|a,b| b <=> a}
 
@@ -50,7 +49,7 @@ class PurchaseOrderBuilder
 			if @exclusive_price_keys.length == 0
 				return nil
 			end
-			highest_price = number_with_precision(@exclusive_price_keys[0], :precision => 1)
+			highest_price = number_with_precision(@exclusive_price_keys[0], :precision => 2)
 			same_price_po_list = @exclusive_pos[highest_price.to_s]
 			# Select randomized PO
 			random = rand(0..same_price_po_list.length-1)
@@ -69,7 +68,7 @@ class PurchaseOrderBuilder
 			end
 
 			for i in current_price_idx..@exclusive_price_keys.length-1
-				pr = number_with_precision(@exclusive_price_keys[i], :precision => 1)
+				pr = number_with_precision(@exclusive_price_keys[i], :precision => 2)
 				same_price_po_list = @exclusive_pos[pr]
 
 				rejected_po_count = 0
@@ -110,7 +109,7 @@ class PurchaseOrderBuilder
 			end
 			
 			for i in 0..@shared_price_keys.length-1
-				pr = number_with_precision(@shared_price_keys[i], :precision => 1)
+				pr = number_with_precision(@shared_price_keys[i], :precision => 2)
 				same_price_po_list = @shared_pos[pr]
 
 				same_price_po_list_temp = []
@@ -150,7 +149,7 @@ class PurchaseOrderBuilder
 			end
 
 			for i in current_price_idx..@shared_price_keys.length-1
-				pr = number_with_precision(@shared_price_keys[i], :precision => 1)
+				pr = number_with_precision(@shared_price_keys[i], :precision => 2)
 				same_price_po_list = @shared_pos[pr]
 
 				rejected_po_count = 0
@@ -240,15 +239,17 @@ class PurchaseOrderBuilder
         if po.weight.nil?
         	po.weight = 0
         end
-        real_price = (po.price + po.weight).to_s
+
+        real_price = number_with_precision(po.price + po.weight, :precision => 2)
+
         if available_pos[real_price].nil?
         	available_pos[real_price] = []
         end
-       	available_pos[real_price] << {
+       	available_pos[real_price.to_s] << {
         	:id => po.id,
         	:client_id => po.client_id,
         	:price => po.price,
-        	:real_price => po.price + po.weight
+        	:real_price => real_price.to_f
         }
 
         if exclusive
