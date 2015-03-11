@@ -182,9 +182,9 @@ class SendDataWorker
     sold = false
     unless response.nil?
       # Request timeout
-      if response == "Timeout"
+      if response == "Timeout" || response == "IOError"
         resp_model = Response.create(
-          rejection_reasons: response, 
+          rejection_reasons: 'Timeout', 
           lead_id: lead.id, 
           client_name: client.integration_name,
           response_time: response_time
@@ -304,7 +304,6 @@ class SendDataWorker
             state_filter_array[i] = state_filter_array[i].strip
           end
           if state_filter_array.length > 0 and !state_filter_array.include? state
-            # binding.pry
             next
           end
         end
@@ -312,30 +311,25 @@ class SendDataWorker
         # Check preexisting conditions
         pet = lead.details_pets.first
         if !po.preexisting_conditions.nil? and po.preexisting_conditions != pet.conditions
-          # binding.pry
           next
         end
 
         # Check Maximum leads limit
         if !po.leads_max_limit.nil? and po.leads_count_sold >= po.leads_max_limit
-          # binding.pry
           next
         end
 
         # Check Daily leads limit
         if !po.leads_daily_limit.nil? and po.daily_leads_count >= po.leads_daily_limit
-          # binding.pry
           next
         end
 
         # Check Date
         if !po.start_date.nil? and po.start_date > Date.today
-          # binding.pry
           next
         end
 
         if !po.end_date.nil? and po.end_date < Date.today
-          # binding.pry
           next
         end
         
