@@ -163,15 +163,21 @@ class PurchaseOrderBuilder
 					next # Go to next highest price
 				end
 
+        same_price_po_list_temp = []
+        for j in 0..same_price_po_list.length-1
+          same_price_po_list_temp.push same_price_po_list[j]
+        end
+
 				selected = false
 				try_count = 0
 				while try_count != same_price_po_list.length
-					random = rand(0..same_price_po_list.length-1)
-					random_po = same_price_po_list[random]
+					random = rand(0..same_price_po_list_temp.length-1)
+					random_po = same_price_po_list_temp[random]
 					try_count = try_count + 1
 					unless rejected_po_id_list.include? random_po[:id]
 						returned_pos.push random_po
 					end
+          same_price_po_list_temp.delete_at random
 
 					if returned_pos.length == limit
 						return returned_pos

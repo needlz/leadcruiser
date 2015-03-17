@@ -47,6 +47,7 @@ class DataGeneratorProvider
     ########## True code ##################
     response = nil
     puts "******************" + client.timeout.to_s
+    
     begin
       if client.integration_name == ClientsVertical::PETS_BEST
         response = HTTParty.get request_url, 

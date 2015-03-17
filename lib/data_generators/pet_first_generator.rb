@@ -54,7 +54,7 @@ class PetFirstGenerator
       :StreetAddress2 => lead.address_2,
       :LeadId => lead.id.to_s,
       :PetsCovered => lead.details_pets.first.species,
-      :Pet1BDay => lead.details_pets.first.birth_year.to_s,
+      :Pet1BDay => lead.details_pets.first.birth_month.to_s.rjust(2, "0") + "/" + lead.details_pets.first.birth_day.to_s.rjust(2, "0") + "/" + lead.details_pets.first.birth_year.to_s,
       :Pet1Name => lead.details_pets.first.pet_name,
       :Pet1Breed => lead.details_pets.first.breed_to_send('pet_first'),
       :Pet1Species => lead.details_pets.first.species
