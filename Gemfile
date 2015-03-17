@@ -49,6 +49,7 @@ gem 'devise'
 gem 'activeadmin', github: 'gregbell/active_admin'
 gem "paperclip", "~> 4.2"
 gem "aws-sdk"
+gem 'obscenity' # profanity filter gem
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
