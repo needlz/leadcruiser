@@ -48,12 +48,12 @@ class API::V1::LeadsController  < ActionController::API
       end
 
       # Profanities Filter : first name, last name, email, pet name
-      # filter_txt = [lead.first_name, lead.last_name, lead.email, pet.pet_name].join(' ')
-      # if Obscenity.profane?(filter_txt)
-        # lead.update_attribute(:disposition, Lead::PROFANITY)
-        # SendEmailWorker.perform_async(nil, lead.id)
-        # render json: { errors: Lead::PROFANITY, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
-      # end
+      filter_txt = [lead.first_name, lead.last_name, lead.email, pet.pet_name].join(' ')
+      if Obscenity.profane?(filter_txt)
+        lead.update_attribute(:disposition, Lead::PROFANITY)
+        SendEmailWorker.perform_async(nil, lead.id)
+        render json: { errors: Lead::PROFANITY, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
+      end
 
       # Testing dispotiion, Test Sale
       if lead.first_name == "Erik" && lead.last_name == "Needham"
