@@ -57,8 +57,13 @@ class UserMailer
           response = Response.find(response_id_list[i])
           client = ClientsVertical.find_by_integration_name(response.try(:client_name))
 
+          weight = response.purchase_order.weight
+          if weight.nil?
+            weight = 0
+          end
+
           body[("client_name"+(i+1).to_s).to_sym] = client.official_name
-          body[("sold_price"+(i+1).to_s).to_sym] = response.price.to_s
+          body[("sold_price"+(i+1).to_s).to_sym] = (response.price - weight).to_s
 
           total_revenue += response.price
         end
