@@ -96,7 +96,7 @@ class API::V1::LeadsController  < ActionController::API
             redirect_url += "/quote/retrievequote?sessionid="
             redirect_url += lead.email
           end
-          sold_clients << JSON[cpo_cv_json(cv, redirect_url)]
+          sold_clients << JSON[cv_json(cv, redirect_url)]
         end
 
         # Get other client list by clicks_purchase_order        
