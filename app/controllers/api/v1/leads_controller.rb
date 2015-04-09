@@ -96,7 +96,7 @@ class API::V1::LeadsController  < ActionController::API
             redirect_url += "/quote/retrievequote?sessionid="
             redirect_url += lead.email
           end
-          sold_clients << JSON[cpo_cv_json(cv, redirect_url)]
+          sold_clients << JSON[cv_json(cv, redirect_url)]
         end
 
         # Get other client list by clicks_purchase_order        
@@ -152,6 +152,7 @@ class API::V1::LeadsController  < ActionController::API
   end
 
   def cv_json(cv, redirect_url=nil)
+    po_cv = ClicksPurchaseOrder.find_by('clients_vertical_id = ? and page_id IS NOT NULL and active = true', cv.id)
     {
       :clients_vertical_id => cv.id,
       :integration_name   => cv.integration_name,
@@ -163,7 +164,9 @@ class API::V1::LeadsController  < ActionController::API
       :logo_url           => cv.logo.url,
       :sort_order         => cv.sort_order,
       :display            => cv.display,
-      :redirect_url       => redirect_url
+      :redirect_url       => redirect_url,
+      :page_id            => (po_cv ? po_cv.page_id : 0),
+      :clicks_purchase_order_id  => (po_cv ? po_cv.id : 0)
     }   
   end
 
