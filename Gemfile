@@ -47,7 +47,7 @@ gem 'sinatra', '>= 1.3.0', :require => nil
 gem 'dotenv-rails', :groups => [:development, :test]
 gem 'devise'
 gem 'activeadmin', github: 'gregbell/active_admin'
-gem "paperclip", "~> 4.2"
+gem "paperclip"
 gem "aws-sdk"
 gem 'obscenity' # profanity filter gem
 # Use ActiveModel has_secure_password
