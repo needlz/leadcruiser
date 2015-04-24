@@ -552,22 +552,6 @@
 			}
 		},
 		{
-			"file": "/root/workspace/leadcruiser/blog/app/models/categoring.rb",
-			"settings":
-			{
-				"buffer_size": 87,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "/root/workspace/leadcruiser/blog/app/models/category.rb",
-			"settings":
-			{
-				"buffer_size": 64,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "/root/workspace/leadcruiser/blog/app/models/partner.rb",
 			"settings":
 			{
@@ -672,14 +656,6 @@
 			}
 		},
 		{
-			"file": "/root/workspace/leadcruiser/blog/app/models/article.rb",
-			"settings":
-			{
-				"buffer_size": 820,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "/root/workspace/leadcruiser/blog/Gemfile",
 			"settings":
 			{
@@ -692,6 +668,22 @@
 			"settings":
 			{
 				"buffer_size": 3303,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/root/workspace/leadcruiser/blog/config/application.rb",
+			"settings":
+			{
+				"buffer_size": 1109,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/root/workspace/leadcruiser/blog/app/models/article.rb",
+			"settings":
+			{
+				"buffer_size": 822,
 				"line_ending": "Unix"
 			}
 		}
@@ -720,6 +712,9 @@
 	},
 	"file_history":
 	[
+		"/root/workspace/leadcruiser/blog/app/models/article.rb",
+		"/root/workspace/leadcruiser/blog/app/models/categoring.rb",
+		"/root/workspace/leadcruiser/blog/app/models/category.rb",
 		"/root/workspace/leadcruiser/blog/app/assets/images/partner.png",
 		"/root/workspace/leadcruiser/blog/app/controllers/partners_controller.rb",
 		"/root/workspace/leadcruiser/blog/app/views/partners/new.html.haml",
@@ -734,7 +729,6 @@
 		"/root/workspace/leadcruiser/blog/app/views/snippets/_subheader.html.haml",
 		"/root/workspace/leadcruiser/blog/app/views/layouts/application.html.haml",
 		"/root/workspace/leadcruiser/blog/app/views/pages/partner.html.haml",
-		"/root/workspace/leadcruiser/blog/app/models/article.rb",
 		"/root/workspace/leadcruiser/blog/db/migrate/20150406193954_create_articles.rb",
 		"/root/workspace/leadcruiser/blog/app/views/articles/show.html.haml",
 		"/root/workspace/leadcruiser/blog/app/views/articles/new.html.haml",
@@ -742,8 +736,6 @@
 		"/root/workspace/leadcruiser/blog/app/assets/stylesheets/articles.scss",
 		"/root/workspace/leadcruiser/blog/app/assets/stylesheets/devise.css.scss",
 		"/root/workspace/leadcruiser/blog/app/assets/stylesheets/application.css.scss",
-		"/root/workspace/leadcruiser/blog/app/models/category.rb",
-		"/root/workspace/leadcruiser/blog/app/models/categoring.rb",
 		"/root/workspace/leadcruiser/blog/app/views/snippets/_posttile.html.haml",
 		"/root/workspace/leadcruiser/blog/app/views/snippets/_postpopular.html.haml",
 		"/root/workspace/leadcruiser/blog/app/models/admin_user.rb",
@@ -855,7 +847,7 @@
 	},
 	"find_in_files":
 	{
-		"height": 93.0,
+		"height": 0.0,
 		"where_history":
 		[
 			"/root/workspace/leadcruiser/blog",
@@ -1266,7 +1258,7 @@
 	"groups":
 	[
 		{
-			"selected": 19,
+			"selected": 11,
 			"sheets":
 			[
 				{
@@ -1281,8 +1273,24 @@
 						"selection":
 						[
 							[
-								6,
-								6
+								62,
+								62
+							],
+							[
+								88,
+								88
+							],
+							[
+								92,
+								92
+							],
+							[
+								95,
+								95
+							],
+							[
+								108,
+								108
 							],
 							[
 								340,
@@ -1296,7 +1304,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 88.0,
+						"translation.y": 308.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1313,6 +1321,14 @@
 						"selection":
 						[
 							[
+								63,
+								63
+							],
+							[
+								68,
+								68
+							],
+							[
 								74,
 								74
 							]
@@ -1322,7 +1338,7 @@
 							"syntax": "Packages/Ruby/Ruby.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 88.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1339,8 +1355,12 @@
 						"selection":
 						[
 							[
-								143,
-								143
+								601,
+								601
+							],
+							[
+								929,
+								929
 							]
 						],
 						"settings":
@@ -1350,7 +1370,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 440.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1366,10 +1386,6 @@
 						},
 						"selection":
 						[
-							[
-								205,
-								205
-							],
 							[
 								359,
 								359
@@ -1389,66 +1405,6 @@
 				},
 				{
 					"buffer": 4,
-					"file": "/root/workspace/leadcruiser/blog/app/models/categoring.rb",
-					"settings":
-					{
-						"buffer_size": 87,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								8,
-								8
-							],
-							[
-								69,
-								69
-							],
-							[
-								87,
-								87
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Ruby/Ruby.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 66.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "/root/workspace/leadcruiser/blog/app/models/category.rb",
-					"settings":
-					{
-						"buffer_size": 64,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								64,
-								64
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Ruby/Ruby.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
 					"file": "/root/workspace/leadcruiser/blog/app/models/partner.rb",
 					"settings":
 					{
@@ -1474,7 +1430,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 5,
 					"file": "/root/workspace/leadcruiser/blog/app/views/articles/index.html.haml",
 					"settings":
 					{
@@ -1485,8 +1441,32 @@
 						"selection":
 						[
 							[
-								642,
-								642
+								712,
+								712
+							],
+							[
+								811,
+								811
+							],
+							[
+								1020,
+								1020
+							],
+							[
+								1033,
+								1033
+							],
+							[
+								1335,
+								1335
+							],
+							[
+								1390,
+								1390
+							],
+							[
+								1714,
+								1714
 							],
 							[
 								1992,
@@ -1500,13 +1480,13 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 770.0,
+						"translation.y": 682.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 6,
 					"file": "/root/workspace/leadcruiser/blog/app/views/articles/new.html.haml",
 					"settings":
 					{
@@ -1516,26 +1496,6 @@
 						},
 						"selection":
 						[
-							[
-								45,
-								45
-							],
-							[
-								97,
-								97
-							],
-							[
-								98,
-								98
-							],
-							[
-								107,
-								107
-							],
-							[
-								167,
-								167
-							],
 							[
 								239,
 								239
@@ -1548,13 +1508,13 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 132.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 7,
 					"file": "/root/workspace/leadcruiser/blog/app/views/articles/show.html.haml",
 					"settings":
 					{
@@ -1564,10 +1524,6 @@
 						},
 						"selection":
 						[
-							[
-								1622,
-								1622
-							],
 							[
 								2390,
 								2390
@@ -1580,13 +1536,13 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1314.0,
+						"translation.y": 830.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 10,
+					"buffer": 8,
 					"file": "/root/workspace/leadcruiser/blog/app/views/partners/new.html.haml",
 					"settings":
 					{
@@ -1597,28 +1553,16 @@
 						"selection":
 						[
 							[
-								173,
-								173
+								429,
+								429
 							],
 							[
-								179,
-								179
+								532,
+								532
 							],
 							[
-								374,
-								374
-							],
-							[
-								534,
-								534
-							],
-							[
-								556,
-								556
-							],
-							[
-								858,
-								858
+								765,
+								765
 							],
 							[
 								1079,
@@ -1632,13 +1576,13 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 286.0,
+						"translation.y": 264.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 11,
+					"buffer": 9,
 					"file": "/root/workspace/leadcruiser/blog/app/views/snippets/_footer.html.haml",
 					"settings":
 					{
@@ -1648,6 +1592,14 @@
 						},
 						"selection":
 						[
+							[
+								607,
+								607
+							],
+							[
+								987,
+								987
+							],
 							[
 								1232,
 								1232
@@ -1660,13 +1612,13 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 616.0,
+						"translation.y": 808.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 12,
+					"buffer": 10,
 					"file": "/root/workspace/leadcruiser/blog/app/views/snippets/_followus.html.haml",
 					"settings":
 					{
@@ -1677,20 +1629,8 @@
 						"selection":
 						[
 							[
-								299,
-								299
-							],
-							[
-								333,
-								333
-							],
-							[
-								349,
-								349
-							],
-							[
-								350,
-								350
+								472,
+								472
 							],
 							[
 								517,
@@ -1702,13 +1642,13 @@
 							"syntax": "Packages/Rails/Ruby Haml.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 198.0,
+						"translation.y": 220.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
-					"buffer": 13,
+					"buffer": 11,
 					"file": "/root/workspace/leadcruiser/blog/app/views/snippets/_header.html.haml",
 					"settings":
 					{
@@ -1718,10 +1658,6 @@
 						},
 						"selection":
 						[
-							[
-								158,
-								158
-							],
 							[
 								711,
 								711
@@ -1740,7 +1676,7 @@
 					"type": "text"
 				},
 				{
-					"buffer": 14,
+					"buffer": 12,
 					"file": "/root/workspace/leadcruiser/blog/db/migrate/20150421075321_add_custom_tags_to_article.rb",
 					"settings":
 					{
@@ -1751,8 +1687,66 @@
 						"selection":
 						[
 							[
+								128,
+								128
+							],
+							[
 								129,
 								129
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Ruby/Ruby.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 88.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "/root/workspace/leadcruiser/blog/app/admin/article.rb",
+					"settings":
+					{
+						"buffer_size": 1525,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1085,
+								1085
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Ruby/Ruby.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 610.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "/root/workspace/leadcruiser/blog/db/migrate/20150416204840_add_total_visits_to_article.rb",
+					"settings":
+					{
+						"buffer_size": 147,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								147,
+								147
 							]
 						],
 						"settings":
@@ -1767,60 +1761,6 @@
 				},
 				{
 					"buffer": 15,
-					"file": "/root/workspace/leadcruiser/blog/app/admin/article.rb",
-					"settings":
-					{
-						"buffer_size": 1525,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								100,
-								100
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Ruby/Ruby.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 16,
-					"file": "/root/workspace/leadcruiser/blog/db/migrate/20150416204840_add_total_visits_to_article.rb",
-					"settings":
-					{
-						"buffer_size": 147,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								73,
-								73
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Ruby/Ruby.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 17,
 					"file": "/root/workspace/leadcruiser/blog/db/migrate/20150406193954_create_articles.rb",
 					"settings":
 					{
@@ -1831,6 +1771,10 @@
 						"selection":
 						[
 							[
+								188,
+								188
+							],
+							[
 								191,
 								191
 							]
@@ -1840,17 +1784,115 @@
 							"syntax": "Packages/Ruby/Ruby.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 132.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 16,
+					"file": "/root/workspace/leadcruiser/blog/db/migrate/20150407202905_add_scheduled_at_to_article.rb",
+					"settings":
+					{
+						"buffer_size": 133,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								133,
+								133
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Ruby/Ruby.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 110.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 17,
+					"file": "/root/workspace/leadcruiser/blog/Gemfile",
+					"settings":
+					{
+						"buffer_size": 1779,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1779,
+								1779
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Ruby/Ruby.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 846.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
 				},
 				{
 					"buffer": 18,
-					"file": "/root/workspace/leadcruiser/blog/db/migrate/20150407202905_add_scheduled_at_to_article.rb",
+					"file": "/root/workspace/leadcruiser/blog/config/environments/production.rb",
 					"settings":
 					{
-						"buffer_size": 133,
+						"buffer_size": 3303,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2970,
+								2970
+							],
+							[
+								3024,
+								3024
+							],
+							[
+								3151,
+								3151
+							],
+							[
+								3301,
+								3301
+							],
+							[
+								3303,
+								3303
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Ruby/Ruby.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1628.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 19,
+					"file": "/root/workspace/leadcruiser/blog/config/application.rb",
+					"settings":
+					{
+						"buffer_size": 1109,
 						"regions":
 						{
 						},
@@ -1863,34 +1905,8 @@
 						],
 						"settings":
 						{
-							"syntax": "Packages/Ruby/Ruby.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 19,
-					"file": "/root/workspace/leadcruiser/blog/app/models/article.rb",
-					"settings":
-					{
-						"buffer_size": 820,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								496,
-								496
-							]
-						],
-						"settings":
-						{
 							"syntax": "Packages/Ruby/Ruby.tmLanguage",
-							"tab_size": 2,
+							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
@@ -1901,46 +1917,18 @@
 				},
 				{
 					"buffer": 20,
-					"file": "/root/workspace/leadcruiser/blog/Gemfile",
+					"file": "/root/workspace/leadcruiser/blog/app/models/article.rb",
 					"settings":
 					{
-						"buffer_size": 1779,
+						"buffer_size": 822,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								608,
-								608
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Ruby/Ruby.tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 198.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 21,
-					"file": "/root/workspace/leadcruiser/blog/config/environments/production.rb",
-					"settings":
-					{
-						"buffer_size": 3303,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1843,
-								1843
+								4,
+								4
 							]
 						],
 						"settings":

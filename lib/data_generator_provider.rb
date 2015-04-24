@@ -4,6 +4,16 @@ require 'uri'
 class DataGeneratorProvider
   attr_accessor :lead, :client
 
+  NON_ENCODE_QUERY_STRING_NORMALIZER = Proc.new do |query|
+    query.map do |key, value|
+      if key.to_s.downcase.include? 'email'
+        "#{key}=#{value}"
+      else
+        "#{key}=#{ERB::Util.url_encode(value)}"
+      end
+    end.join('&')
+  end
+
   def initialize(lead, client)
     @lead = lead
     @client = client
@@ -49,7 +59,14 @@ class DataGeneratorProvider
     puts "******************" + client.timeout.to_s
     
     begin
-      if client.integration_name == ClientsVertical::PETS_BEST
+      if client.integration_name == ClientsVertical::VET_CARE_HEALTH
+        response = HTTParty.get request_url, 
+                      :query => data_to_send(exclusive), 
+                      :timeout => client.timeout,
+                      #:debug_output => $stdout,
+                      query_string_normalizer: NON_ENCODE_QUERY_STRING_NORMALIZER
+
+      elsif client.integration_name == ClientsVertical::PETS_BEST
         response = HTTParty.get request_url, 
                       :query => data_to_send(exclusive), 
                       :timeout => client.timeout
