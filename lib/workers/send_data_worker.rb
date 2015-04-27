@@ -168,8 +168,8 @@ class SendDataWorker
 
   def update_po_attribute(po, client, lead)
     purchase_order = PurchaseOrder.find po[:id]
-    purchase_order.update_attributes :leads_count_sold => purchase_order.leads_count_sold + 1,
-                                     :daily_leads_count => purchase_order.daily_leads_count + 1
+    purchase_order.update_attributes :leads_count_sold => purchase_order.leads_count_sold.to_i + 1,
+                                     :daily_leads_count => purchase_order.daily_leads_count.to_i + 1
 
     if client.integration_name == "pet_first" && purchase_order.exclusive
       ResponsePetfirstWorker.perform_async(lead.id)
@@ -224,6 +224,13 @@ class SendDataWorker
           sold = true
         else
           rejection_reasons = response["Error"]["ErrorText"].to_s
+        end
+      elsif client.integration_name == ClientsVertical::VET_CARE_HEALTH
+        if response.downcase.include? "success"
+          sold = true
+        else
+          rejection_reasons = response
+          sold = false
         end
       elsif client.integration_name == ClientsVertical::PETS_BEST
         if response["Status"] == "Success" and response["Message"].nil?
@@ -315,12 +322,12 @@ class SendDataWorker
         end
 
         # Check Maximum leads limit
-        if !po.leads_max_limit.nil? and po.leads_count_sold >= po.leads_max_limit
+        if !po.leads_max_limit.nil? and !po.leads_count_sold.nil? and po.leads_count_sold >= po.leads_max_limit
           next
         end
 
         # Check Daily leads limit
-        if !po.leads_daily_limit.nil? and po.daily_leads_count >= po.leads_daily_limit
+        if !po.leads_daily_limit.nil? and !po.daily_leads_count.nil? and po.daily_leads_count >= po.leads_daily_limit
           next
         end
 

@@ -224,12 +224,12 @@ class PurchaseOrderBuilder
         end
 
         # Check Maximum leads limit
-        if !po.leads_max_limit.nil? and po.leads_count_sold >= po.leads_max_limit
+        if !po.leads_max_limit.nil? and !po.leads_count_sold.nil? and po.leads_count_sold >= po.leads_max_limit
           next
         end
 
         # Check Daily leads limit
-        if !po.leads_daily_limit.nil? and po.daily_leads_count >= po.leads_daily_limit
+        if !po.leads_daily_limit.nil? and !po.daily_leads_count.nil? and po.daily_leads_count >= po.leads_daily_limit
           next
         end
 

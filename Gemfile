@@ -39,7 +39,6 @@ gem 'redis-rails'
 gem 'factory_girl_rails', group: [:development, :test]
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
-gem 'jquery-rails'
 gem "haml-rails"
 # gem 'will_paginate'#, '~> 3.0'
 gem 'will_paginate-bootstrap'
@@ -48,7 +47,7 @@ gem 'dotenv-rails', :groups => [:development, :test]
 gem 'devise'
 gem 'activeadmin', github: 'gregbell/active_admin'
 gem "paperclip", "~> 4.2"
-gem "aws-sdk"
+gem 'aws-sdk', '< 2.0'
 gem 'obscenity' # profanity filter gem
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
@@ -68,3 +67,4 @@ gem "letter_opener", group: :development
 gem 'figaro', git: 'git://github.com/laserlemon/figaro.git', branch: 'master'
 gem 'airbrake'
 gem 'bootstrap-sass'
+gem 'ordinalize'
