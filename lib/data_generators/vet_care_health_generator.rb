@@ -27,12 +27,11 @@ class VetCareHealthGenerator
       :Zip => lead.zip,
       :Phone => lead.day_phone,
       :Email => lead.email,
-      :ContactMethod => "E",
-      :misc_code => "PI-" + lead.id.to_s
+      :ContactMethod => 'E',
+      :misc_code => 'PI-' + lead.id.to_s
     }
 
     query = generate_pet_query query
-    
     return query
   end
 
@@ -56,7 +55,6 @@ class VetCareHealthGenerator
     else
       query["FourPlus"] = "off"
     end
-
     return query
   end
 
