@@ -65,7 +65,7 @@ class UserMailer
           body[("client_name"+(i+1).to_s).to_sym] = client.official_name
           body[("sold_price"+(i+1).to_s).to_sym] = (response.price - weight).to_s
 
-          total_revenue += response.price
+          total_revenue += (response.price - weight)
         end
       end
     end
