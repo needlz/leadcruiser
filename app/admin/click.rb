@@ -26,9 +26,7 @@ ActiveAdmin.register Click do
       end
     end
     column "Created Date" do |click|
-      unless click.created_at.nil?
-        click.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
-      end
+      UTCToPST(click.created_at)
     end
   end
   
