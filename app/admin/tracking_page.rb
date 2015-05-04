@@ -14,9 +14,7 @@ ActiveAdmin.register TrackingPage do
     column :display_order
 
     column "Created Date" do |page|
-      unless page.created_at.nil?
-        page.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
-      end
+      UTCToPST(page.created_at)
     end
 
     actions
@@ -44,9 +42,7 @@ ActiveAdmin.register TrackingPage do
       row :display_order
 
       row "Created Date" do |page|
-        unless page.created_at.nil?
-          page.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M")
-        end
+        UTCToPST(page.created_at)
       end
     end
   end
