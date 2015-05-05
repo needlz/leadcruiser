@@ -69,6 +69,8 @@ en:
   reports:
     excel_icon_alt: 'Export to XLS'
     choose_range: 'Choose range:'
+    range_from: 'From'
+    range_to: 'To'
 
     lead:
       columns:
