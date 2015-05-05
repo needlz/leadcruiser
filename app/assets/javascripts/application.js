@@ -13,7 +13,7 @@
 //= require jquery
 //= require jquery_ujs
 //= require moment.min
-//= require jquery.daterangepicker
+
 //= require jquery.flot
 //= require jquery.flot.resize
 //= require jquery.flot.pie

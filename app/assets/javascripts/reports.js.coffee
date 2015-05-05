@@ -82,10 +82,23 @@ class @LeadStatisticGraph
 
 class @DatePicker
 
+  @graph_date_range_from = null
+  @graph_date_range_to = null
+  @table_date_range_from = null
+  @table_date_range_to = null
+
   @initializeForGraph:  ->
-    $(".graph-date-range").dateRangePicker().bind "datepicker-change", (_, period) ->
-      LeadStatisticGraph.refresh period.date1.format("fullUts"), period.date2.format("fullUts")
+#    $(".graph-date-range").dateRangePicker().bind "datepicker-change", (_, period) ->
+#      LeadStatisticGraph.refresh period.date1.format("fullUts"), period.date2.format("fullUts")
+    LeadStatisticGraph.refresh
 
   @initializeForLeads: ->
-    $(".table-date-range").dateRangePicker().bind "datepicker-change", (_, period) ->
-      LeadStatisticGraph.rebuildPage period.date1.format("fullUts"), period.date2.format("fullUts")
+#    $(".table-date-range").dateRangePicker().bind "datepicker-change", (_, period) ->
+#      LeadStatisticGraph.rebuildPage period.date1.format("fullUts"), period.date2.format("fullUts")
+    LeadStatisticGraph.rebuildPage
+
+  @updateForGraph: ->
+    LeadStatisticGraph.refresh DatePicker.graph_date_range_from, DatePicker.graph_date_range_to
+
+  @updateForLeads: ->
+    LeadStatisticGraph.rebuildPage DatePicker.table_date_range_from, DatePicker.table_date_range_to

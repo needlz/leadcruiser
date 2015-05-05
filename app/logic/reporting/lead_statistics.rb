@@ -28,8 +28,8 @@ module Reporting
     private
 
     def period(first_date, last_date)
-      from = first_date.nil? ? 14.days.ago : Time.parse(first_date).try(:beginning_of_day)
-      to = last_date.nil? ? Time.now : Time.parse(last_date).try(:end_of_day)
+      from = first_date.nil? || first_date == "" ? 14.days.ago : Time.parse(first_date).try(:beginning_of_day)
+      to = last_date.nil? || last_date == "" ? Time.now : Time.parse(last_date).try(:end_of_day)
       from..to
     end
 
