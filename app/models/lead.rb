@@ -39,10 +39,14 @@ class Lead < ActiveRecord::Base
   end
 
   def sold_po_price(purchase_order_id)
-    po = PurchaseOrder.find (purchase_order_id)
-    # not include weight in po price
-    # '%.2f' % (po.try(:price).to_f + po.try(:weight).to_f)
-    '%.2f' % po.try(:price).to_f
+    if PurchaseOrder.exists? purchase_order_id
+      po = PurchaseOrder.find (purchase_order_id)
+      # not include weight in po price
+      # '%.2f' % (po.try(:price).to_f + po.try(:weight).to_f)
+      '%.2f' % po.try(:price).to_f
+    else
+      '0.00'
+    end
   end
 
   def sold_type

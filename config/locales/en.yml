@@ -67,7 +67,7 @@ en:
   pet_details_uniqueness_for_lead: "Lead with '%{breed}' breed or '%{pet_name}' name already exists"
 
   reports:
-    excel_icon_alt: 'Export to XLS'
+    excel_icon_alt: 'Export to XLSX'
     choose_range: 'Choose range:'
     range_from: 'From'
     range_to: 'To'

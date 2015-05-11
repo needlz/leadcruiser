@@ -9,19 +9,6 @@
       <Row>
         <% I18n.t('reports.lead.columns').values.each do |column_value|%>
           <Cell><Data ss:Type="String"><%= column_value %></Data></Cell>
-        created: 'Created'
-        phone: 'Phone'
-        pet_name: 'Pet Name'
-        species: 'Species'
-        breed: 'Breed'
-        spayed_or_neutered: 'Spayed/Neutered'
-        month_of_birth: 'Month of Birth'
-        year_of_birth: 'Year of Birth'
-        gender: 'Gender'
-        session_hash: 'Session Hash'
-        referring_url: 'Referring URL'
-        landing_page: 'Landing Page'
-        keyword: 'Keywords'
         <% end %>
       </Row>
       <% @leads.each do |lead| %>
