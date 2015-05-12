@@ -14,6 +14,7 @@ class ReportsController < ApplicationController
       format.xls do
         leads = statistic.leads(params[:firstDate], params[:secondDate])
         Axlsx::Package.new do |axlsx_package|
+          axlsx_package.use_shared_strings = true
           start_time = Time.now
           axlsx_package.workbook do |wb|
             wb.styles do |style|
@@ -49,7 +50,7 @@ class ReportsController < ApplicationController
                   en_titles[:referring_url], 
                   en_titles[:landing_page], 
                   en_titles[:keyword]
-                ], :style => title_bg_style, :types => [:string]
+                ], :style => title_bg_style
 
                 leads.each do |lead|
                   if lead.sold_responses.length == 0
@@ -79,7 +80,7 @@ class ReportsController < ApplicationController
                       lead.visitor.nil? ? '' : lead.visitor.referring_url,
                       lead.visitor.nil? ? '' : lead.visitor.landing_page,
                       lead.visitor.nil? ? '' : lead.visitor.keywords
-                    ], :types => [:string, :string]
+                    ]
                   else
                     lead.sold_responses.each do |response|
                       sheet.add_row [
@@ -108,7 +109,7 @@ class ReportsController < ApplicationController
                         lead.visitor.nil? ? '' : lead.visitor.referring_url,
                         lead.visitor.nil? ? '' : lead.visitor.landing_page,
                         lead.visitor.nil? ? '' : lead.visitor.keywords
-                      ], :types => [:string]
+                      ]
                     end
                   end
                 end
