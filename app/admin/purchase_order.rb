@@ -65,6 +65,9 @@ ActiveAdmin.register PurchaseOrder do
       f.input :weight
       f.input :exclusive
       f.input :states
+      # f.input :states,
+      #         :as => :check_boxes,
+      #         :collection => State.select(:name, :code).uniq.pluck(:name, :code)
       f.input :preexisting_conditions,
               :as => :select
       f.input :price
