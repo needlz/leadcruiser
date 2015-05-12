@@ -14,6 +14,7 @@ class ReportsController < ApplicationController
       format.xls do
         leads = statistic.leads(params[:firstDate], params[:secondDate])
         Axlsx::Package.new do |axlsx_package|
+          start_time = Time.now
           axlsx_package.workbook do |wb|
             wb.styles do |style|
               wb.add_worksheet(name:'Report') do |sheet|
@@ -48,7 +49,7 @@ class ReportsController < ApplicationController
                   en_titles[:referring_url], 
                   en_titles[:landing_page], 
                   en_titles[:keyword]
-                ], :style => title_bg_style
+                ], :style => title_bg_style, :types => [:string]
 
                 leads.each do |lead|
                   if lead.sold_responses.length == 0
@@ -58,7 +59,7 @@ class ReportsController < ApplicationController
                       lead.first_name,
                       lead.last_name,
                       lead.zip,
-                      lead.state.nil? ? lead.zip_code.try(:state) : lead.state,
+                      lead.state,
                       lead.email,
                       lead.details_pets.first.conditions? ? 'TRUE' : 'FALSE',
                       lead.times_sold.nil? ? 0 : lead.times_sold,
@@ -78,7 +79,7 @@ class ReportsController < ApplicationController
                       lead.visitor.nil? ? '' : lead.visitor.referring_url,
                       lead.visitor.nil? ? '' : lead.visitor.landing_page,
                       lead.visitor.nil? ? '' : lead.visitor.keywords
-                    ]
+                    ], :types => [:string, :string]
                   else
                     lead.sold_responses.each do |response|
                       sheet.add_row [
@@ -87,7 +88,7 @@ class ReportsController < ApplicationController
                         lead.first_name,
                         lead.last_name,
                         lead.zip,
-                        lead.state.nil? ? lead.zip_code.try(:state) : lead.state,
+                        lead.state,
                         lead.email,
                         lead.details_pets.first.conditions? ? 'TRUE' : 'FALSE',
                         lead.times_sold.nil? ? 0 : lead.times_sold,
@@ -107,13 +108,16 @@ class ReportsController < ApplicationController
                         lead.visitor.nil? ? '' : lead.visitor.referring_url,
                         lead.visitor.nil? ? '' : lead.visitor.landing_page,
                         lead.visitor.nil? ? '' : lead.visitor.keywords
-                      ]
+                      ], :types => [:string]
                     end
                   end
                 end
               end
             end
           end
+          end_time = Time.now
+          diff = end_time - start_time
+          puts "------------------- Generating Reports ------------------" + diff.to_s
 
           send_data axlsx_package.to_stream.read, :filename => "Report.xlsx"
         end

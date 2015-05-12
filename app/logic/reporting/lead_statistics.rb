@@ -21,6 +21,7 @@ module Reporting
       leads = Lead.where(created_at: period(first_date, last_date))
         .joins(:details_pets)
         .order(created_at: :desc)
+        .includes(:details_pets, :visitor)
       return leads unless page
       leads.paginate(page: page, per_page: 20)
     end
