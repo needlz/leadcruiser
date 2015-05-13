@@ -6,15 +6,17 @@ class PurchaseOrder < ActiveRecord::Base
 
   belongs_to :clients_vertical, foreign_key: 'client_id', primary_key: 'id'
 
-  # def states
-  #   return "" if read_attribute(:states).blank?
+  def states_array
+    states_str = read_attribute(:states)
+    if states_str.blank?
+      return ""
+    end
 
-  #   self.read_attribute(:states)
-  # end
+    states_array = states_str.split(/,/)
+    states_array.compact
+  end
 
-  # def states=(states)
-  #   binding.pry
-  #   self[:states] = "111"
-  # end
-
+  def states_array=(values)
+    write_attribute(:states, values[1..-1].join(","))
+  end
 end
