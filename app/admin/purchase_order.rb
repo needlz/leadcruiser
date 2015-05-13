@@ -3,7 +3,7 @@ ActiveAdmin.register PurchaseOrder do
   menu priority: 3
 
   permit_params :vertical_id, :client_id, :weight, :exclusive, :states, :preexisting_conditions, :price, 
-                :status, :active, :leads_max_limit, :leads_daily_limit, :start_date, :end_date
+                :status, :active, :leads_max_limit, :leads_daily_limit, :start_date, :end_date, :states_array => []
 
   filter :vertical
   filter :clients_vertical
@@ -64,10 +64,10 @@ ActiveAdmin.register PurchaseOrder do
               :collection => ClientsVertical.select(:integration_name, :id).uniq.pluck(:integration_name, :id)
       f.input :weight
       f.input :exclusive
-      f.input :states
-      # f.input :states,
-      #         :as => :check_boxes,
-      #         :collection => State.select(:name, :code).uniq.pluck(:name, :code)
+      # f.input :states
+      f.input :states_array,
+              :as => :check_boxes,
+              :collection => State.select(:name, :code).uniq.pluck(:name, :code)
       f.input :preexisting_conditions,
               :as => :select
       f.input :price
@@ -80,5 +80,11 @@ ActiveAdmin.register PurchaseOrder do
 
     f.actions
   end
+
+  # controller do
+  #   def create
+  #     super
+  #   end
+  # end
 
 end
