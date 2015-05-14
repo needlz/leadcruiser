@@ -1,3 +1,5 @@
+require 'axlsx'
+
 class ClicksReportsController < ApplicationController
 
   http_basic_authenticate_with name: LOGIN_NAME, password: LOGIN_PASSWORD
@@ -66,7 +68,45 @@ class ClicksReportsController < ApplicationController
         @clients_verticals_clicks_paging
       end
       format.xls do
-        @clients_verticals_clicks
+        
+        Axlsx::Package.new do |axlsx_package|
+          axlsx_package.use_shared_strings = true
+          start_time = Time.now
+          axlsx_package.workbook do |wb|
+            wb.styles do |style|
+              wb.add_worksheet(name:'Report') do |sheet|
+
+                en_titles = I18n.t('reports.clients_vertical_report.columns')
+                title_bg_style = style.add_style :bg_color => "bbbbbb", 
+                                                :border => { :style => :thin, :color => '000000' }
+
+                sheet.add_row [
+                  en_titles[:vertical_id],
+                  en_titles[:client_name],
+                  en_titles[:total_clicks],
+                  en_titles[:sold_clicks], 
+                  en_titles[:total_price], 
+                  en_titles[:date_from], 
+                  en_titles[:date_to]
+                ], :style => title_bg_style
+
+                @clients_verticals_clicks.each do |click|
+                  sheet.add_row [
+                    click["vertical_id"],
+                    click["integration_name"],
+                    click["total_clicks"],
+                    click["sold_clicks"],
+                    click["total_price"],
+                    params["from_date"],
+                    params["to_date"]
+                  ]
+                end
+              end
+            end
+          end
+
+          send_data axlsx_package.to_stream.read, :filename => "ClicksReport.xlsx"
+        end
       end
     end
   end
@@ -150,6 +190,45 @@ class ClicksReportsController < ApplicationController
       end
       format.xls do
         @visitor_clicks
+
+        Axlsx::Package.new do |axlsx_package|
+          axlsx_package.use_shared_strings = true
+          start_time = Time.now
+          axlsx_package.workbook do |wb|
+            wb.styles do |style|
+              wb.add_worksheet(name:'Report') do |sheet|
+
+                en_titles = I18n.t('reports.clients_vertical_by_client_report.columns')
+                title_bg_style = style.add_style :bg_color => "bbbbbb", 
+                                                :border => { :style => :thin, :color => '000000' }
+
+                sheet.add_row [
+                  en_titles[:visitor_ip],
+                  en_titles[:date],
+                  en_titles[:sold_clicks], 
+                  en_titles[:duplicated_clicks], 
+                  en_titles[:total_price], 
+                  en_titles[:date_from], 
+                  en_titles[:date_to]
+                ], :style => title_bg_style
+
+                @visitor_clicks.each do |click|
+                  sheet.add_row [
+                    click["ip"],
+                    click["date"],
+                    click["sold_clicks"],
+                    click["duplicated_clicks"],
+                    click["total_price"],
+                    params["from_date"],
+                    params["to_date"]
+                  ]
+                end
+              end
+            end
+          end
+
+          send_data axlsx_package.to_stream.read, :filename => "ClicksReport_By_Client.xlsx"
+        end
       end
     end
   end
