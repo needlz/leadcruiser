@@ -72,6 +72,26 @@ en:
     range_from: 'From'
     range_to: 'To'
 
+    clients_vertical_by_client_report:
+      columns:
+        visitor_ip:   'Visitor IP'
+        date:         'Date'
+        sold_clicks:  'Sold Clicks'
+        duplicated_clicks: 'Duplicated Clicks'
+        total_price:  'Total Price'
+        date_from:    'Date (From)'
+        date_to:      'Date (To)'
+
+    clients_vertical_report:
+      columns:
+        vertical_id:    'Vertical ID'
+        client_name:    'Client Name'
+        total_clicks:   'Total Clicks'
+        sold_clicks:    'Sold Clicks'
+        total_price:    'Total Price'
+        date_from:      'Date (From)'
+        date_to:        'Date (To)'
+
     lead:
       columns:
         lead_id: 'Lead ID'
