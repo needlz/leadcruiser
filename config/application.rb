@@ -25,5 +25,9 @@ module Leadcruiser
     Kaminari.configure do |config|
       config.page_method_name = :per_page_kaminari
     end
+
+    Obscenity.configure do |config|
+      config.blacklist   = "config/blacklist.yml"
+    end
   end
 end
