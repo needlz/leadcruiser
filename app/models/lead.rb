@@ -25,6 +25,7 @@ class Lead < ActiveRecord::Base
   TEST_SALE   = "Test Sale"
   TEST_TERM   = "test"
   PROFANITY   = "profanity"
+  BLOCKED     = "blocked"
 
   def latest_response
     Response.where('lead_id = ?', self.id).order(id: :desc).try(:first)
