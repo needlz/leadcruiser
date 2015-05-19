@@ -160,7 +160,7 @@ class API::V1::LeadsController  < ActionController::API
 
   # Check if incoming IP address is on block list
   def blocked(lead)
-    if BlockList.where('block_ip = ? and active = TRUE', lead.visitor.visitor_ip).count > 0
+    if lead.visitor.nil? || BlockList.where('block_ip = ? and active = TRUE', lead.visitor.visitor_ip).count > 0
       true
     else
       false
