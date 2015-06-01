@@ -38,7 +38,6 @@ module Reporting
         result << [day.beginning_of_day.to_i * 1000, matching_item ? matching_item[1] : 0]
         day += 1.day
       end
-      binding.pry
       result
     end
 
