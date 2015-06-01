@@ -6,7 +6,7 @@ class UserMailer
     lead = Lead.find(lead_id)
     unless lead.nil?
       template 'lead-was-sold'
-      subject = "Pet-Insurance.org #{env_field} New Lead - ID: #{lead.id} - #{lead.created_at}"
+      subject = "Pet-Insurance.org #{env_field} New Lead - ID: #{lead.id} - #{lead.created_at.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M:%S PST")}"
       set_template_values(set_lead_params(response_id_list, lead))
 
       mail to: [wrap_recipient(ENV["RECIPIENT_EMAIL"], ENV["RECIPIENT_NAME"], "to"),
