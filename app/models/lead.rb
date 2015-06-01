@@ -27,6 +27,9 @@ class Lead < ActiveRecord::Base
   PROFANITY   = "profanity"
   BLOCKED     = "blocked"
 
+  # ransacker :created_at_range_gteq, lambda{ |date| where("create_at >= ? ", Time.zone.parse("2015-06-01").try(:beginning_of_day)) }
+  # ransacker :created_at_range_lteq, lambda{ |date| where("create_at <= ? ", Time.zone.parse("2015-06-01").try(:end_of_day)) }
+
   def latest_response
     Response.where('lead_id = ?', self.id).order(id: :desc).try(:first)
   end
