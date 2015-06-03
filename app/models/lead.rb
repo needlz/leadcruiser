@@ -24,8 +24,8 @@ class Lead < ActiveRecord::Base
   TEST_NO_SALE = "Test No Sale"
   TEST_SALE   = "Test Sale"
   TEST_TERM   = "test"
-  PROFANITY   = "profanity"
-  BLOCKED     = "blocked"
+  PROFANITY   = "profanity block"
+  BLOCKED     = "IP block"
 
   # ransacker :created_at_range_gteq, lambda{ |date| where("create_at >= ? ", Time.zone.parse("2015-06-01").try(:beginning_of_day)) }
   # ransacker :created_at_range_lteq, lambda{ |date| where("create_at <= ? ", Time.zone.parse("2015-06-01").try(:end_of_day)) }
