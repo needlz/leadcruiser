@@ -34,7 +34,7 @@ module Reporting
       result = []
       day = from
       while day < to
-        matching_item = leads_by_date.detect{ |item| item[0] == day.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d") }
+        matching_item = leads_by_date.detect{ |item| item[0] == day.strftime("%Y-%m-%d") }
         result << [day.beginning_of_day.to_i * 1000, matching_item ? matching_item[1] : 0]
         day += 1.day
       end

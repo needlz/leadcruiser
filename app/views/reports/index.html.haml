@@ -7,7 +7,7 @@
     %input#graph-date-range-from
     = t('reports.range_to')
     %input#graph-date-range-to
-    #leads_per_day
+    #leads_per_day{:style => "height: 400px; min-width: 500px;"}
 
 .row.form-group
   .col-md-2
@@ -25,10 +25,18 @@
 
 :javascript
   $(function () {
+    Highcharts.setOptions({
+      global: {
+        useUTC: false
+      }
+    });
+
     $('#leads_per_day').highcharts({
       chart: {
         type: 'line',
-        zoomType: 'xy'
+        zoomType: 'xy',
+        alignTicks: false,
+        plotBorderWidth: 2
       },
       title : {
         text: 'Leads per Day'
@@ -36,16 +44,23 @@
       credits: {
         enabled: false
       },
+      global: {
+        useUTC: false
+      },
       xAxis: {
         title: {
-          enabled: true,
           text: 'Date'
         },
-        labels: {
-          formatter: function() {
-            date = new Date(this.value);
-            return [date.getMonth() + 1, date.getDate()].join('/');
-          }
+        type: 'datetime',
+        dateTimeLabelFormats: {
+          millisecond: '%e. %b',
+          second: '%e. %b',
+          minute: '%e. %b',
+          hour: '%e. %b',
+          day: '%e. %b',
+          week: '%e. %b',
+          month: '%b \'%y',
+          year: '%Y'
         },
         startOnTick: true,
         endOnTick: true,
@@ -54,6 +69,14 @@
       yAxis: {
         title: {
           text: 'Leads'
+        }
+      },
+      legend: {
+        enabled: false
+      },
+      tooltip: {
+        formatter: function() {
+          return Highcharts.dateFormat('%m/%e/%Y', new Date(this.x)) + '<br/>Leads: ' + this.y;
         }
       },
       series: [{
