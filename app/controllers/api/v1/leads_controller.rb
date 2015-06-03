@@ -42,10 +42,10 @@ class API::V1::LeadsController  < ActionController::API
       end
 
       # If the visitors are in block lists, it would be not be sold
-      if blocked(lead)
-        lead.update_attributes(:status => Lead::BLOCKED)
-        render json: { errors: "Your IP address was blocked", :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
-      end
+      # if blocked(lead)
+      #   lead.update_attributes(:status => Lead::BLOCKED)
+      #   render json: { errors: "Your IP address was blocked", :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
+      # end
 
       # Testing dispotiion, Test No Sale
       if lead.first_name == Lead::TEST_TERM && lead.last_name == Lead::TEST_TERM
@@ -161,10 +161,12 @@ class API::V1::LeadsController  < ActionController::API
   # Check if incoming IP address is on block list
   def blocked(lead)
     if lead.visitor.nil? || BlockList.where('block_ip = ? and active = TRUE', lead.visitor.visitor_ip).count > 0
-      true
+      return true
     else
-      false
+      return false
     end
+
+    return false
   end
 
   def cv_json(cv, redirect_url=nil)
