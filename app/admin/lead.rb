@@ -18,7 +18,7 @@ ActiveAdmin.register Lead do
   filter :preexisting_conditions
   filter :status
   # filter :created_at_range, :lable => "Created At", :as => :date_range
-  filter :created_at
+  filter :created_at, :as => :date_range
 
   index do
     selectable_column
