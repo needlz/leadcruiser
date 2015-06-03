@@ -25,15 +25,48 @@
 
 :javascript
   $(function () {
-      LeadStatisticGraph.show( #{@leads_per_day} );
-  });
+    $('#leads_per_day').highcharts({
+      chart: {
+        type: 'line',
+        zoomType: 'xy'
+      },
+      title : {
+        text: 'Leads per Day'
+      },
+      credits: {
+        enabled: false
+      },
+      xAxis: {
+        title: {
+          enabled: true,
+          text: 'Date'
+        },
+        labels: {
+          formatter: function() {
+            date = new Date(this.value);
+            return [date.getMonth() + 1, date.getDate()].join('/');
+          }
+        },
+        startOnTick: true,
+        endOnTick: true,
+        showLastLabel: true
+      },
+      yAxis: {
+        title: {
+          text: 'Leads'
+        }
+      },
+      series: [{
+        name: 'Leads',
+        color: 'rgba(223, 83, 83, 0.5)',
+      }]
+    });
 
-  $(document).ready(function () {
+    LeadStatisticGraph.show( #{@leads_per_day} );
+
     DatePicker.initializeForGraph();
     DatePicker.initializeForLeads();
-  });
 
-  $(document).ready(function () {
     $('#graph-date-range-from').datetimepicker({
       timepicker: false,
       format: "Y-m-d",
@@ -73,6 +106,6 @@
       },
       closeOnDateSelect: true
     });
-  })
+  });
 
   Pagination.initialize();
