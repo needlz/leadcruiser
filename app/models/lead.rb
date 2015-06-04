@@ -20,12 +20,13 @@ class Lead < ActiveRecord::Base
   # constant
   DUPLICATED  = "duplicated"
   SOLD        = "sold"
+  BLOCKED     = "blocked"
   NO_POS      = "No Matching POs"
   TEST_NO_SALE = "Test No Sale"
   TEST_SALE   = "Test Sale"
   TEST_TERM   = "test"
-  PROFANITY   = "profanity block"
-  BLOCKED     = "IP block"
+  PROFANITY   = "Profanity block"
+  IP_BLOCKED  = "IP block"
 
   # ransacker :created_at do
   #   Arel.sql("date(timezone('PST8PDT', created_at))")
