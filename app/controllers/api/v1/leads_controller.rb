@@ -12,6 +12,7 @@ class API::V1::LeadsController  < ActionController::API
   include ActionView::Helpers::NumberHelper
 
   def create
+    puts "--------------------------------------" + request.host
     error = "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
 
     lead_params = permit_lead_params

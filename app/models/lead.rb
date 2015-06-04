@@ -27,9 +27,17 @@ class Lead < ActiveRecord::Base
   PROFANITY   = "profanity block"
   BLOCKED     = "IP block"
 
-  ransacker :created_at do
-    Arel.sql("date(timezone('PST8PDT', created_at))")
-  end
+  # ransacker :created_at do
+  #   Arel.sql("date(timezone('PST8PDT', created_at))")
+  # end
+
+  # ransacker :created_at_gteq do
+  #   Arel.sql("date(timezone('UTC', created_at))")
+  # end
+
+  # ransacker :created_at_lteq do
+  #   Arel.sql("date(timezone('UTC', created_at))")
+  # end
 
   def latest_response
     Response.where('lead_id = ?', self.id).order(id: :desc).try(:first)
