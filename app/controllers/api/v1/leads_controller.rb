@@ -7,6 +7,7 @@ require 'data_generators/vet_care_health_generator'
 require 'next_client_builder'
 require 'data_generator_provider'
 require 'workers/send_data_worker.rb'
+require 'lead_validation'
 
 class API::V1::LeadsController  < ActionController::API
   include ActionView::Helpers::NumberHelper
@@ -30,26 +31,25 @@ class API::V1::LeadsController  < ActionController::API
     lead = Lead.new(lead_params)
     pet = lead.details_pets.build(permit_pet_params)
 
-    # Check duplication for the lead sold
-    duplicated = duplicated_lead(lead_params[:email], lead_params[:vertical_id])
-
     if lead.save
 
       # If it is duplicated, it would not be sold
+      duplicated = LeadValidation.duplicated_lead(lead_params[:email], lead_params[:vertical_id], lead_params[:site_id])
+
       if duplicated
         lead.update_attributes(:status => Lead::DUPLICATED)
         render json: { errors: "The email address of this lead was duplicated", :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
       end
 
       # If the visitors are in block lists, it would be not be sold
-      if blocked(lead)
-        lead.update_attributes(:status => Lead::BLOCKED)
+      if LeadValidation.blocked(lead)
+        lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::IP_BLOCKED)
         render json: { errors: "Your IP address was blocked", :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
       end
 
       # Testing dispotiion, Test No Sale
-      if lead.first_name == Lead::TEST_TERM && lead.last_name == Lead::TEST_TERM
-        lead.update_attribute(:disposition, Lead::TEST_NO_SALE)
+      if lead.first_name.downcase == Lead::TEST_TERM && lead.last_name.downcase == Lead::TEST_TERM
+        lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::TEST_NO_SALE)
         SendEmailWorker.perform_async(nil, lead.id)
         render json: { errors: Lead::TEST_NO_SALE, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
       end
@@ -57,13 +57,13 @@ class API::V1::LeadsController  < ActionController::API
       # Profanities Filter : first name, last name, email, pet name
       filter_txt = [lead.first_name, lead.last_name, lead.email, pet.pet_name].join(' ')
       if Obscenity.profane?(filter_txt)
-        lead.update_attribute(:disposition, Lead::PROFANITY)
+        lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::PROFANITY)
         SendEmailWorker.perform_async(nil, lead.id)
         render json: { errors: Lead::PROFANITY, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
       end
 
       # Testing dispotiion, Test Sale
-      if lead.first_name == "Erik" && lead.last_name == "Needham"
+      if lead.first_name.downcase == "erik" && lead.last_name.downcase == "needham"
         lead.update_attribute(:disposition, Lead::TEST_SALE)
       end
 
@@ -133,18 +133,6 @@ class API::V1::LeadsController  < ActionController::API
 
   private
 
-  def duplicated_lead(email, vertical_id)
-    
-    exist_lead = Lead.where('email = ? and vertical_id = ? and status = ?', email, vertical_id, Lead::SOLD).first
-    if exist_lead.nil? || exist_lead.responses.nil?
-      return false
-    else
-      return true
-    end
-
-    return false
-  end 
-
   def all_po_client_list
     clicks_purchase_order_builder = ClicksPurchaseOrderBuilder.new
 
@@ -157,16 +145,7 @@ class API::V1::LeadsController  < ActionController::API
 
     return other_clients
   end
-
-  # Check if incoming IP address is on block list
-  def blocked(lead)
-    if BlockList.where('block_ip = ? and active = TRUE', lead.visitor_ip).count > 0
-      return true
-    else
-      return false
-    end
-  end
-
+  
   def cv_json(cv, redirect_url=nil)
     po_cv = ClicksPurchaseOrder.find_by('clients_vertical_id = ? and page_id IS NOT NULL and active = true', cv.id)
     {

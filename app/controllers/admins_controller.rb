@@ -24,12 +24,31 @@ class AdminsController < ApplicationController
 			return false
 		end
 
-		duplicated = duplicated_lead(lead.email, lead.vertical_id)
+    filter_txt = [lead.first_name, lead.last_name, lead.email, lead.details_pets.try(:first).pet_name].join(' ')
 
-		if duplicated
+		if LeadValidation.duplicated_lead(lead.email, lead.vertical_id, lead.site_id)
       lead.update_attributes(:status => Lead::DUPLICATED)
       return false
+
+    elsif LeadValidation.blocked(lead)
+      lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::IP_BLOCKED)
+      return false
+
+    elsif lead.first_name == Lead::TEST_TERM && lead.last_name == Lead::TEST_TERM
+      lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::TEST_NO_SALE)
+      SendEmailWorker.perform_async(nil, lead.id)
+      return false
+
+    elsif Obscenity.profane?(filter_txt)
+      lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::PROFANITY)
+      SendEmailWorker.perform_async(nil, lead.id)
+      return false
+
    	else
+      if lead.first_name.downcase == "erik" && lead.last_name.downcase == "needham"
+        lead.update_attribute(:disposition, Lead::TEST_SALE)
+      end
+
    		SendDataWorker.new.perform(lead.id)
 
       response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)

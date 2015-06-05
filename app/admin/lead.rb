@@ -10,6 +10,30 @@ ActiveAdmin.register Lead do
     redirect_to admin_leads_path
   end
 
+  # before_filter only: :index do
+  #   # Increate to_date by one day
+  #   unless params[:commit].blank?
+  #     created_at_lteq = params[:q][:created_at_lteq]
+  #     unless created_at_lteq.blank?
+  #       created_at_lteq_date = created_at_lteq.to_date + 1.day
+  #       binding.pry
+  #       params[:q][:created_at_lteq] = created_at_lteq_date.to_s(:db)
+  #     end
+  #   end
+  # end
+
+  # after_filter only: :index do
+  #   # Decrease to_date by one day
+  #   unless params[:commit].blank?
+  #     created_at_lteq = params[:q][:created_at_lteq]
+  #     unless created_at_lteq.blank?
+  #       created_at_lteq_date = created_at_lteq.to_date - 1.day
+  #       binding.pry
+  #       params[:q][:created_at_lteq] = created_at_lteq_date.to_s(:db)
+  #     end
+  #   end
+  # end
+
   filter :id
   filter :vertical
   filter :last_name

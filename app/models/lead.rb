@@ -20,16 +20,25 @@ class Lead < ActiveRecord::Base
   # constant
   DUPLICATED  = "duplicated"
   SOLD        = "sold"
+  BLOCKED     = "blocked"
   NO_POS      = "No Matching POs"
   TEST_NO_SALE = "Test No Sale"
   TEST_SALE   = "Test Sale"
   TEST_TERM   = "test"
-  PROFANITY   = "profanity block"
-  BLOCKED     = "IP block"
+  PROFANITY   = "Profanity block"
+  IP_BLOCKED  = "IP block"
 
-  ransacker :created_at do
-    Arel.sql("date(timezone('PST8PDT', created_at))")
-  end
+  # ransacker :created_at do
+  #   Arel.sql("date(timezone('PST8PDT', created_at))")
+  # end
+
+  # ransacker :created_at_gteq do
+  #   Arel.sql("date(timezone('UTC', created_at))")
+  # end
+
+  # ransacker :created_at_lteq do
+  #   Arel.sql("date(timezone('UTC', created_at))")
+  # end
 
   def latest_response
     Response.where('lead_id = ?', self.id).order(id: :desc).try(:first)
