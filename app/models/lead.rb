@@ -14,6 +14,7 @@ class Lead < ActiveRecord::Base
   has_one :zip_code, foreign_key: 'zip', primary_key: 'zip'
   has_many :details_pets
   belongs_to :vertical
+  belongs_to :site
   has_many :responses
   has_many :transaction_attempts
 
