@@ -50,7 +50,7 @@ class API::V1::LeadsController  < ActionController::API
       # Testing dispotiion, Test No Sale
       if lead.first_name.downcase == Lead::TEST_TERM && lead.last_name.downcase == Lead::TEST_TERM
         lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::TEST_NO_SALE)
-        SendEmailWorker.perform_async(nil, lead.id)
+        # SendEmailWorker.perform_async(nil, lead.id)
         render json: { errors: Lead::TEST_NO_SALE, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
       end
 
@@ -58,7 +58,7 @@ class API::V1::LeadsController  < ActionController::API
       filter_txt = [lead.first_name, lead.last_name, lead.email, pet.pet_name].join(' ')
       if Obscenity.profane?(filter_txt)
         lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::PROFANITY)
-        SendEmailWorker.perform_async(nil, lead.id)
+        # SendEmailWorker.perform_async(nil, lead.id)
         render json: { errors: Lead::PROFANITY, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
       end
 
