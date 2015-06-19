@@ -84,11 +84,12 @@ class DataGeneratorProvider
 
     rescue IOError
       response = "IOError"
-    rescue Net::ReadTimeout, Net::OpenTimeout
+    rescue Net::ReadTimeout
       response = "Timeout"
-    rescue
+    rescue Net::OpenTimeout
       response = "Timeout"
     end
+
     response
   end
 
