@@ -69,3 +69,6 @@ gem 'airbrake'
 gem 'bootstrap-sass'
 gem 'ordinalize'
 gem 'axlsx'
+
+gem 'annotate'
+gem 'config'

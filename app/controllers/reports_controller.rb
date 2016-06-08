@@ -3,7 +3,7 @@ require 'axlsx'
 class ReportsController < ApplicationController
   include ApplicationHelper
 
-  http_basic_authenticate_with name: LOGIN_NAME, password: LOGIN_PASSWORD
+  http_basic_authenticate_with(name: LOGIN_NAME, password: LOGIN_PASSWORD) if Settings.use_authentication
 
   def index
     respond_to do |format|

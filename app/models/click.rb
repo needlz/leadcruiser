@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: clicks
+#
+#  id                       :integer          not null, primary key
+#  visitor_ip               :string(255)
+#  clients_vertical_id      :integer
+#  site_id                  :integer
+#  page_id                  :integer
+#  partner_id               :integer
+#  created_at               :datetime
+#  updated_at               :datetime
+#  clicks_purchase_order_id :integer
+#  status                   :string(255)
+#
+
 class Click < ActiveRecord::Base
 	validates :visitor_ip, :clients_vertical_id, presence: true
 

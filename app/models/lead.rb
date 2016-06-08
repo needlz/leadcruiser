@@ -1,3 +1,34 @@
+# == Schema Information
+#
+# Table name: leads
+#
+#  id                :integer          not null, primary key
+#  session_hash      :string(255)
+#  site_id           :integer
+#  form_id           :integer          default(1)
+#  first_name        :string(255)
+#  last_name         :string(255)
+#  address_1         :string(255)
+#  address_2         :string(255)
+#  city              :string(255)
+#  state             :string(255)
+#  zip               :string(255)
+#  day_phone         :string(255)
+#  evening_phone     :string(255)
+#  email             :string(255)
+#  best_time_to_call :string(255)
+#  birth_date        :datetime
+#  gender            :string(255)
+#  created_at        :datetime
+#  updated_at        :datetime
+#  times_sold        :integer
+#  total_sale_amount :float
+#  vertical_id       :integer
+#  visitor_ip        :string(255)      default("127.1.1.1")
+#  status            :string(255)
+#  disposition       :string(255)
+#
+
 require 'httparty'
 require 'workers/send_email_worker.rb'
 class Lead < ActiveRecord::Base
