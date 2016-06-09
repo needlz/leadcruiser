@@ -3,7 +3,7 @@ module ErrorMessages
   extend ActiveSupport::Concern
 
   def error_messages
-    errors.messages.values.flatten
+    errors.full_messages
   end
 
 end
