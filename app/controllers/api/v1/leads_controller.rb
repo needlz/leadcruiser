@@ -13,6 +13,16 @@ class API::V1::LeadsController  < ActionController::API
   include ActionView::Helpers::NumberHelper
 
   def create
+    if params[:TYPE] = '21'
+      handle_health_insurance_lead
+    else
+      handle_pet_insurance_lead
+    end
+  end
+
+  private
+
+  def handle_pet_insurance_lead
     error = "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
 
     lead_params = permit_lead_params
@@ -106,7 +116,7 @@ class API::V1::LeadsController  < ActionController::API
           sold_clients << JSON[cv_json(cv, redirect_url)]
         end
 
-        # Get other client list by clicks_purchase_order        
+        # Get other client list by clicks_purchase_order
         clicks_purchase_order_builder = ClicksPurchaseOrderBuilder.new
         all_clients_list = clicks_purchase_order_builder.po_available_clients
 
@@ -117,11 +127,11 @@ class API::V1::LeadsController  < ActionController::API
           end
         end
 
-        render json: { 
-          :success => true, 
-          :client => sold_clients.to_json, 
-          :other_client => other_clients.to_json
-        }, status: :created
+        render json: {
+                   :success => true,
+                   :client => sold_clients.to_json,
+                   :other_client => other_clients.to_json
+               }, status: :created
       else
         lead.update_attributes :status => Lead::NO_POS
         render json: { errors: error.gsub("[pets_name]", pet["pet_name"]) , :other_client => all_po_client_list.to_json}, status: :unprocessable_entity
@@ -131,7 +141,16 @@ class API::V1::LeadsController  < ActionController::API
     end
   end
 
-  private
+  def handle_health_insurance_lead
+    form = HealthInsuranceLeadForm.new(params)
+    ActiveRecord::Base.transaction do
+      lead = Lead.create!(form.lead_attributes)
+      health_insurance_lead = HealthInsuranceLead.create!(form.health_insurance_lead_attributes)
+    end
+    form.lead = lead
+    form.health_insurance_lead = health_insurance_lead
+    render json: form.boberdoo_params
+  end
 
   def all_po_client_list
     clicks_purchase_order_builder = ClicksPurchaseOrderBuilder.new

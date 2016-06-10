@@ -14,4 +14,13 @@ class Vertical < ActiveRecord::Base
   has_many :leads
   has_many :clients_verticals
   has_many :purchase_orders
+
+  def self.pet_insurance
+    find_by_name('pet_insurance')
+  end
+
+  def self.health_insurance
+    find_by_name('health_insurance')
+  end
+
 end
