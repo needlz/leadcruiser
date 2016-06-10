@@ -48,6 +48,7 @@ class Lead < ActiveRecord::Base
   belongs_to :site
   has_many :responses
   has_many :transaction_attempts
+  has_many :health_insurance_leads
 
   # constant
   DUPLICATED  = "duplicated"
