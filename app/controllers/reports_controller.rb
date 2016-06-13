@@ -12,47 +12,44 @@ class ReportsController < ApplicationController
         @leads = statistic.leads(params[:firstDate], params[:secondDate], params[:page] || 1)
       end
       format.xls do
-        leads = statistic.leads(params[:firstDate], params[:secondDate])
+        @leads = statistic.leads(params[:firstDate], params[:secondDate])
         Axlsx::Package.new do |axlsx_package|
           axlsx_package.use_shared_strings = true
           start_time = Time.now
           axlsx_package.workbook do |wb|
             wb.styles do |style|
               wb.add_worksheet(name:'Report') do |sheet|
-
                 en_titles = I18n.t('reports.lead.columns')
-                title_bg_style = style.add_style :bg_color => "bbbbbb", 
-                                                :border => { :style => :thin, :color => '000000' }
-
+                title_bg_style = style.add_style :bg_color => "bbbbbb",
+                                                 :border => { :style => :thin, :color => '000000' }
                 sheet.add_row [
-                  en_titles[:lead_id], 
-                  en_titles[:visitor_ip], 
-                  en_titles[:first_name], 
-                  en_titles[:last_name], 
-                  en_titles[:zip_code], 
-                  en_titles[:state], 
-                  en_titles[:email], 
-                  en_titles[:pre_existing], 
-                  en_titles[:times_sold], 
-                  en_titles[:po_amount], 
-                  en_titles[:sold_to], 
-                  en_titles[:type_of_lead], 
-                  en_titles[:created], 
-                  en_titles[:phone], 
-                  en_titles[:pet_name], 
-                  en_titles[:species], 
-                  en_titles[:breed], 
-                  en_titles[:spayed_or_neutered], 
-                  en_titles[:month_of_birth], 
-                  en_titles[:year_of_birth], 
-                  en_titles[:gender], 
+                  en_titles[:lead_id],
+                  en_titles[:visitor_ip],
+                  en_titles[:first_name],
+                  en_titles[:last_name],
+                  en_titles[:zip_code],
+                  en_titles[:state],
+                  en_titles[:email],
+                  en_titles[:pre_existing],
+                  en_titles[:times_sold],
+                  en_titles[:po_amount],
+                  en_titles[:sold_to],
+                  en_titles[:type_of_lead],
+                  en_titles[:created],
+                  en_titles[:phone],
+                  en_titles[:pet_name],
+                  en_titles[:species],
+                  en_titles[:breed],
+                  en_titles[:spayed_or_neutered],
+                  en_titles[:month_of_birth],
+                  en_titles[:year_of_birth],
+                  en_titles[:gender],
                   en_titles[:session_hash],
-                  en_titles[:referring_url], 
-                  en_titles[:landing_page], 
+                  en_titles[:referring_url],
+                  en_titles[:landing_page],
                   en_titles[:keyword]
                 ], :style => title_bg_style
-
-                leads.each do |lead|
+                @leads.each do |lead|
                   if lead.sold_responses.length == 0
                     sheet.add_row [
                       lead.id,
@@ -119,7 +116,6 @@ class ReportsController < ApplicationController
           end_time = Time.now
           diff = end_time - start_time
           puts "------------------- Generating Reports ------------------" + diff.to_s
-
           send_data axlsx_package.to_stream.read, :filename => "Report.xlsx"
         end
       end
@@ -128,7 +124,7 @@ class ReportsController < ApplicationController
 
   def refresh
     render json: {
-        days: statistic.amount_per_day(params[:firstDate], params[:secondDate])
+      days: statistic.amount_per_day(params[:firstDate], params[:secondDate])
     }
   end
 

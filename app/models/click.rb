@@ -15,6 +15,8 @@
 #
 
 class Click < ActiveRecord::Base
+	include ErrorMessages
+
 	validates :visitor_ip, :clients_vertical_id, presence: true
 
 	belongs_to :clients_vertical

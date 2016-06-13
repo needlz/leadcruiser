@@ -72,3 +72,7 @@ gem 'axlsx'
 
 gem 'annotate'
 gem 'config'
+
+group :test do
+  gem 'webmock'
+end

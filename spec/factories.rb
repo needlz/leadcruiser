@@ -31,13 +31,6 @@ module FactoryHelper
 
     end
 
-    factory :clients_vertical, class: 'ClientsVertical' do
-      vertical_id 1
-      integration_name 'pet_premium'
-      active true
-      exclusive true
-    end
-
     factory :client_dog_breed_mapping, class: 'ClientDogBreedMapping' do
       integration_name 'pet_premium'
       name 'Bulldog'
@@ -47,14 +40,32 @@ module FactoryHelper
       name 'Alapaha Blue Blood Bulldog'
     end
 
-    factory :vertical do
-      id 1
-    end
-
     factory :zip_code, class: 'ZipCode' do
       zip 10001
       primary_city "New York"
       state "NY"
+    end
+
+    factory :clients_vertical, class: 'ClientsVertical' do
+      integration_name 'pet_premium'
+      active true
+      exclusive true
+      display true
+    end
+
+    factory :vertical do
+      id 1
+      next_client 'Yurii'
+    end
+
+    factory :clicks_purchase_order, class: 'ClicksPurchaseOrder' do
+      id 1
+      active true
+    end
+
+    factory :tracking_page, class: 'TrackingPage' do
+      id 1
+      link 'test_link'
     end
 
   end

@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'api_helper'
 
 
-describe 'API::V1::VisitorsController', type: :request do
+describe API::V1::VisitorsController, type: :request do
 
   describe '#create' do
     let (:correct_data) { { os: 'Linux', visitor_ip: '127.0.0.1', session_hash: '#234-22' } }
