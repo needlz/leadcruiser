@@ -38,6 +38,12 @@ describe API::V1::LeadsController, type: :request do
                             conditions: false } }
   let (:data_with_sold_state) { correct_data.merge({status: 'sold'}) }
 
+  before do
+    stub_request(:get, "https://api.smartystreets.com/zipcode?auth-id=&auth-token=&zipcode=10004").
+        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200, :body => [{city_states: [{state_abbreviation: 'NY', city: 'New York'}]}].to_json, :headers => {})
+  end
+
   describe '#create with visitor' do
     let! (:visitor) { Visitor.create(session_hash: session_hash) }
 
