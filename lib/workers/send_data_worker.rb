@@ -351,7 +351,6 @@ class SendDataWorker
   def record_transaction(
     lead_id, client_id=nil, po_id=nil, price=nil, weight=nil, success=false, 
     exclusive_selling=nil, reason=nil, response_id=nil)
-    puts "---------------------------------------------" + price.to_s
     unless lead_id.nil?
       TransactionAttempt.create(
         lead_id: lead_id,

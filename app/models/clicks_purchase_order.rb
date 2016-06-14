@@ -1,3 +1,25 @@
+# == Schema Information
+#
+# Table name: clicks_purchase_orders
+#
+#  id                  :integer          not null, primary key
+#  clients_vertical_id :integer
+#  site_id             :integer
+#  page_id             :integer
+#  redirect_url        :string(255)
+#  price               :float
+#  weight              :float
+#  active              :boolean
+#  total_limit         :integer
+#  daily_limit         :integer
+#  total_count         :integer          default(0)
+#  daily_count         :integer          default(0)
+#  start_date          :date
+#  end_date            :date
+#  created_at          :datetime
+#  updated_at          :datetime
+#
+
 class ClicksPurchaseOrder < ActiveRecord::Base
 	belongs_to :clients_vertical, foreign_key: 'clients_vertical_id', primary_key: 'id'
 	belongs_to :tracking_page, foreign_key: 'page_id', primary_key: 'id'

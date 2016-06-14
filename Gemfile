@@ -69,3 +69,10 @@ gem 'airbrake'
 gem 'bootstrap-sass'
 gem 'ordinalize'
 gem 'axlsx'
+
+gem 'annotate'
+gem 'config'
+
+group :test do
+  gem 'webmock'
+end

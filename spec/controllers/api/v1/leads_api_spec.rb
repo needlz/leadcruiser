@@ -1,59 +1,89 @@
 require 'rails_helper'
 require 'api_helper'
 
+describe API::V1::LeadsController, type: :request do
 
-describe 'API::V1::LeadsController', type: :request do
-
+  let (:message) do
+    "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
+  end
   let (:session_hash) { '#234-22' }
   let! (:vertical) { create(:vertical) }
   let! (:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
-  let (:correct_data) { { first_name: 'John', last_name: 'Doe', session_hash: session_hash, vertical_id: vertical.id, site_id: 1, city: 'New York', state:'NY', zip: 10004, day_phone: '2-12-22', email: 'test@example.com' } }
-  let (:pet_data) { { species: 'cat', spayed_or_neutered: 'false', pet_name: 'kitty', breed: 'sphinx', birth_month: 12, birth_year: 1998, gender: 'male', conditions: false } }
+  let (:correct_data) { { first_name: 'John',
+                          last_name: 'Doe',
+                          session_hash: session_hash,
+                          vertical_id: vertical.id,
+                          site_id: 1,
+                          city: 'New York',
+                          state:'NY',
+                          zip: 10004,
+                          day_phone: '2-12-22',
+                          email: 'test@example.com' } }
+  let (:pet_data) { { species: 'cat',
+                      spayed_or_neutered: 'false',
+                      pet_name: 'kitty',
+                      breed: 'sphinx',
+                      birth_month: 12,
+                      birth_year: 1998,
+                      gender: 'male',
+                      conditions: false } }
   let (:wrong_data) { correct_data.except(:first_name) }
+  let (:wrong_pet_data) { { species: '',
+                            spayed_or_neutered: '',
+                            pet_name: '',
+                            breed: '',
+                            birth_month: 12,
+                            birth_year: 1998,
+                            gender: '',
+                            conditions: false } }
+  let (:data_with_sold_state) { correct_data.merge({status: 'sold'}) }
+
+  before do
+    stub_request(:get, "https://api.smartystreets.com/zipcode?auth-id=&auth-token=&zipcode=10004").
+        with(:headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent'=>'Ruby'}).
+        to_return(:status => 200, :body => [{city_states: [{state_abbreviation: 'NY', city: 'New York'}]}].to_json, :headers => {})
+  end
 
   describe '#create with visitor' do
     let! (:visitor) { Visitor.create(session_hash: session_hash) }
 
     it 'returns success' do
-      api_post 'leads', lead: correct_data, pet: pet_data
-      result = JSON.parse response.body
+      result = api_post 'leads', lead: correct_data, pet: pet_data
 
-      expect(result['message']).to eq('Lead was created successfully')
+      expect(result['errors']).to eq message.gsub('[pets_name]', pet_data[:pet_name])
     end
 
     it 'creates lead with session_hash' do
-      api_post 'leads', lead: correct_data, pet: pet_data
-      expect(Lead.where(session_hash: session_hash).exists?).to eq(true)
+      expect{ api_post 'leads', lead: correct_data, pet: pet_data }.to change{Lead.count}.from(0).to(1)
+
+      expect(Lead.last.session_hash).to eq session_hash
     end
 
     it 'creates lead with city and state' do
       api_post 'leads', lead: correct_data, pet: pet_data
+
       expect(Lead.where(city: 'New York', state: 'NY').exists?).to eq(true)
     end
 
     it 'creates pet' do
       api_post 'leads', lead: correct_data, pet: pet_data
+
       expect(DetailsPet.where(breed: 'sphinx').exists?).to eq(true)
     end
   end
 
   describe '#create without mandatory field' do
     it 'returns error without vertical_id' do
-      api_post 'leads', lead: wrong_data, pet: pet_data
-      result = JSON.parse response.body
+      result = api_post 'leads', lead: wrong_data, pet: pet_data
 
-      expect(result['errors']).to eq(["Firstname cannot be blank"])
+      expect(result['errors']).to eq message.gsub('[pets_name]', pet_data[:pet_name])
     end
 
     it 'returns all errors for mandatory fields' do
-      api_post 'leads'
+      api_post 'leads', lead: wrong_data, pet: wrong_pet_data
       result = JSON.parse response.body
 
-      expect(result['errors']).to eq(["Site cannot be blank", "Vertical ID cannot be blank", "Firstname cannot be blank",
-                                      "Lastname cannot be blank", "ZIP cannot be blank", "Day phone cannot be blank",
-                                      "Email cannot be blank", "is invalid", "Species cannot be blank", "Pet name cannot be blank",
-                                      "Breed cannot be blank", "Birth month cannot be blank", "Birth year cannot be blank",
-                                      "Gender cannot be blank", "Spayed/neutered cannot be blank", "Conditions cannot be blank"])
+      expect(result['errors']).to eq message.gsub('[pets_name]', wrong_pet_data[:pet_name])
     end
 
     it 'does not create lead without vertical_id' do
@@ -65,71 +95,29 @@ describe 'API::V1::LeadsController', type: :request do
   end
 
   describe 'validation on lead uniqueness' do
-    let (:another_pet_data) { { species: 'cat', spayed_or_neutered: 'false', pet_name: 'Mediolan', breed: 'Cymric', birth_month: 12, birth_year: 1998, gender: 'male', conditions: false } }
-    let (:sensitive_case_pet_data) { { species: 'cat', spayed_or_neutered: 'false', pet_name: 'MediOlan', breed: 'Cymric', birth_month: 12, birth_year: 1998, gender: 'male', conditions: false } }
+    let (:another_pet_data) { { species: 'cat',
+                                spayed_or_neutered: 'false',
+                                pet_name: 'Mediolan',
+                                breed: 'Cymric',
+                                birth_month: 12,
+                                birth_year: 1998,
+                                gender: 'male',
+                                conditions: false } }
+    let (:sensitive_case_pet_data) { { species: 'cat',
+                                       spayed_or_neutered: 'false',
+                                       pet_name: 'MediOlan',
+                                       breed: 'Cymric',
+                                       birth_month: 12,
+                                       birth_year: 1998,
+                                       gender: 'male',
+                                       conditions: false } }
 
-    it 'creates only one lead by email' do
-      api_post 'leads', lead: correct_data, pet: pet_data
-      api_post 'leads', lead: correct_data, pet: pet_data
+    it 'sets duplicated status if the same lead was sold' do
+      api_post 'leads', lead: data_with_sold_state, pet: pet_data
+      Lead.last.update_attributes( status: Lead::SOLD )
+      api_post 'leads', lead: data_with_sold_state, pet: pet_data
 
-      expect(Lead.count).to eq(1)
-    end
-
-    it 'creates only one pet by breed' do
-      api_post 'leads', lead: correct_data, pet: pet_data
-      api_post 'leads', lead: correct_data, pet: pet_data
-
-      expect(DetailsPet.count).to eq(1)
-    end
-
-    it 'creates two pets with different names and breeds' do
-      api_post 'leads', lead: correct_data, pet: pet_data
-      api_post 'leads', lead: correct_data, pet: another_pet_data
-      api_post 'leads', lead: correct_data, pet: sensitive_case_pet_data
-
-      expect(DetailsPet.all.map(&:pet_name)).to eq(['kitty', 'Mediolan'])
-    end
-  end
-
-  describe 'sending leads to different clients' do
-    let (:clients_vertical_2) { create(:clients_vertical, vertical_id: vertical.id, integration_name: 'pet_casual', weight: 14) }
-    let (:clients_vertical_3) { create(:clients_vertical, vertical_id: vertical.id, integration_name: 'pet_indigo', weight: 5) }
-    let (:clients_vertical_4) { create(:clients_vertical, vertical_id: vertical.id, integration_name: 'cat_insurance', weight: 1) }
-
-    it 'sends to client without weight (if it`s only one)' do
-      api_post 'leads', lead: correct_data, pet: pet_data
-      lead = Lead.where(session_hash: session_hash).first
-      expect(lead.vertical.next_client).to eq('pet_premium')
-    end
-
-    it 'sends to client with weight and skip client without' do
-      clients_vertical_2
-      api_post 'leads', lead: correct_data, pet: pet_data
-      lead = Lead.where(session_hash: session_hash).first
-      expect(lead.vertical.next_client).to eq('pet_casual')
-    end
-
-    it 'sends leads to client with round-robin algorithm' do
-      clients_vertical_2
-      clients_vertical_4
-      clients_vertical_3
-
-      api_post 'leads', lead: correct_data, pet: pet_data
-      lead = Lead.where(session_hash: session_hash).last
-      expect(lead.vertical.next_client).to eq('cat_insurance')
-
-      api_post 'leads', lead: correct_data, pet: pet_data.merge(pet_name: 'Marko1')
-      lead = Lead.where(session_hash: session_hash).last
-      expect(lead.vertical.next_client).to eq('pet_indigo')
-
-      api_post 'leads', lead: correct_data, pet: pet_data.merge(pet_name: 'Marko2')
-      lead = Lead.where(session_hash: session_hash).last
-      expect(lead.vertical.next_client).to eq('pet_casual')
-
-      api_post 'leads', lead: correct_data, pet: pet_data.merge(pet_name: 'Marko3')
-      lead = Lead.where(session_hash: session_hash).last
-      expect(lead.vertical.next_client).to eq('cat_insurance')
+      expect(Lead.last.status).to eq(Lead::DUPLICATED)
     end
   end
-
 end
