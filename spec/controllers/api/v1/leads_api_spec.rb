@@ -7,7 +7,7 @@ describe API::V1::LeadsController, type: :request do
     "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
   end
   let (:session_hash) { '#234-22' }
-  let! (:vertical) { create(:vertical) }
+  let! (:vertical) { create(:vertical, name: Vertical::PET_INSURANCE) }
   let! (:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
   let (:correct_data) { { first_name: 'John',
                           last_name: 'Doe',

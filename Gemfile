@@ -75,3 +75,6 @@ gem 'config'
 group :test do
   gem 'webmock'
 end
+
+gem 'awesome_print', require: 'ap'
+gem 'quiet_assets'

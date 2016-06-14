@@ -15,8 +15,10 @@ class Vertical < ActiveRecord::Base
   has_many :clients_verticals
   has_many :purchase_orders
 
+  PET_INSURANCE = 'pet_insurance'
+
   def self.pet_insurance
-    find_by_name('pet_insurance')
+    find_by_name(PET_INSURANCE)
   end
 
   def self.health_insurance
