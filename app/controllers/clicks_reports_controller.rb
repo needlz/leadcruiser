@@ -2,7 +2,7 @@ require 'axlsx'
 
 class ClicksReportsController < ApplicationController
 
-  http_basic_authenticate_with name: LOGIN_NAME, password: LOGIN_PASSWORD
+  http_basic_authenticate_with(name: LOGIN_NAME, password: LOGIN_PASSWORD) if Settings.use_authentication
 
   def index
     clients_verticals = ClientsVertical.where('active = true').order(:vertical_id)

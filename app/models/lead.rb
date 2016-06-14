@@ -1,3 +1,34 @@
+# == Schema Information
+#
+# Table name: leads
+#
+#  id                :integer          not null, primary key
+#  session_hash      :string(255)
+#  site_id           :integer
+#  form_id           :integer          default(1)
+#  first_name        :string(255)
+#  last_name         :string(255)
+#  address_1         :string(255)
+#  address_2         :string(255)
+#  city              :string(255)
+#  state             :string(255)
+#  zip               :string(255)
+#  day_phone         :string(255)
+#  evening_phone     :string(255)
+#  email             :string(255)
+#  best_time_to_call :string(255)
+#  birth_date        :datetime
+#  gender            :string(255)
+#  created_at        :datetime
+#  updated_at        :datetime
+#  times_sold        :integer
+#  total_sale_amount :float
+#  vertical_id       :integer
+#  visitor_ip        :string(255)      default("127.1.1.1")
+#  status            :string(255)
+#  disposition       :string(255)
+#
+
 require 'httparty'
 require 'workers/send_email_worker.rb'
 class Lead < ActiveRecord::Base
@@ -29,6 +60,9 @@ class Lead < ActiveRecord::Base
   PROFANITY   = "Profanity block"
   IP_BLOCKED  = "IP block"
 
+  PRICE_PRECISION = '%.2f'
+  ZERO_PRICE = '0.00'
+
   # ransacker :created_at do
   #   Arel.sql("date(timezone('PST8PDT', created_at))")
   # end
@@ -50,7 +84,7 @@ class Lead < ActiveRecord::Base
   end
 
   def client_sold_to(client_name)
-    client = ClientsVertical.where('vertical_id = ? and integration_name = ?', self.vertical_id, client_name).try(:first)
+    ClientsVertical.where('vertical_id = ? and integration_name = ?', self.vertical_id, client_name).try(:first)
   end
 
   def sold_po_price(purchase_order_id)
@@ -58,14 +92,14 @@ class Lead < ActiveRecord::Base
       po = PurchaseOrder.find (purchase_order_id)
       # not include weight in po price
       # '%.2f' % (po.try(:price).to_f + po.try(:weight).to_f)
-      '%.2f' % po.try(:price).to_f
+      PRICE_PRECISION % po.try(:price).to_f
     else
-      '0.00'
+      ZERO_PRICE
     end
   end
 
   def sold_type
-    ta = TransactionAttempt.where('lead_id = ? and success = ?', self.id, true).try(:first)
+    TransactionAttempt.where('lead_id = ? and success = ?', self.id, true).try(:first)
   end
 
   private
