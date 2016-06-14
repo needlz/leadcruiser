@@ -173,7 +173,6 @@ class SendDataWorker
 
     if client.integration_name == "pet_first" && purchase_order.exclusive
       ResponsePetfirstWorker.perform_async(lead.id)
-      # ResponsePetfirstWorker.new.perform(lead.id)
     end
   end
 
@@ -243,6 +242,13 @@ class SendDataWorker
           sold = true
         else
           rejection_reasons = response
+          sold = false
+        end
+      elsif client.integration_name == 'boberdoo'
+        if response['response']['status'] == "UNMATCHED"
+          sold = true
+        else
+          rejection_reasons = response['response']['error']
           sold = false
         end
       else

@@ -1,1 +1,3 @@
 use_authentication: <%= Rails.env.production? %>
+request_delays:
+  boberdoo: <%= ENV['REQUEST_DELAY_SECONDS_BOBERDOO'].present? ? ENV['REQUEST_DELAY_SECONDS_BOBERDOO'].to_i.seconds : 30.seconds %>

@@ -210,9 +210,11 @@ class PurchaseOrderBuilder
         end
 
         # Check preexisting conditions
-        pet = lead.details_pets.first
-        if !po.preexisting_conditions.nil? and po.preexisting_conditions != pet.conditions
-          next
+				if lead.pet_insurance?
+          pet = lead.details_pets.first
+          if !po.preexisting_conditions.nil? and po.preexisting_conditions != pet.conditions
+            next
+          end
         end
 
         # Check Maximum leads limit

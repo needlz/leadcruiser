@@ -56,8 +56,7 @@ class DataGeneratorProvider
     
     ########## True code ##################
     response = nil
-    puts "******************" + client.timeout.to_s
-    
+
     begin
       if client.integration_name == ClientsVertical::VET_CARE_HEALTH
         response = HTTParty.get request_url, 
@@ -70,7 +69,7 @@ class DataGeneratorProvider
         response = HTTParty.get request_url, 
                       :query => data_to_send(exclusive), 
                       :timeout => client.timeout
-      elsif client.integration_name == ClientsVertical::HEALTHY_PAWS
+      elsif client.integration_name == ClientsVertical::HEALTHY_PAWS || client.integration_name == 'boberdoo'
         response = HTTParty.get request_url, 
                       :query => data_to_send(exclusive), 
                       :headers => request_header,
