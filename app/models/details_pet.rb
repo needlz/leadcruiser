@@ -52,7 +52,7 @@ class DetailsPet < ActiveRecord::Base
                                                                       breed_id: breed_id)
                                                                       .try(:first)
                                                                       .try(:client_breed_id)
-    mapping_breed || breed
+    mapping_breed || breed_id
   end
 
   def validate_same(other)

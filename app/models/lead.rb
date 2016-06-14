@@ -60,6 +60,9 @@ class Lead < ActiveRecord::Base
   PROFANITY   = "Profanity block"
   IP_BLOCKED  = "IP block"
 
+  PRICE_PRECISION = '%.2f'
+  ZERO_PRICE = '0.00'
+
   # ransacker :created_at do
   #   Arel.sql("date(timezone('PST8PDT', created_at))")
   # end
@@ -81,7 +84,7 @@ class Lead < ActiveRecord::Base
   end
 
   def client_sold_to(client_name)
-    client = ClientsVertical.where('vertical_id = ? and integration_name = ?', self.vertical_id, client_name).try(:first)
+    ClientsVertical.where('vertical_id = ? and integration_name = ?', self.vertical_id, client_name).try(:first)
   end
 
   def sold_po_price(purchase_order_id)
@@ -89,14 +92,14 @@ class Lead < ActiveRecord::Base
       po = PurchaseOrder.find (purchase_order_id)
       # not include weight in po price
       # '%.2f' % (po.try(:price).to_f + po.try(:weight).to_f)
-      '%.2f' % po.try(:price).to_f
+      PRICE_PRECISION % po.try(:price).to_f
     else
-      '0.00'
+      ZERO_PRICE
     end
   end
 
   def sold_type
-    ta = TransactionAttempt.where('lead_id = ? and success = ?', self.id, true).try(:first)
+    TransactionAttempt.where('lead_id = ? and success = ?', self.id, true).try(:first)
   end
 
   private

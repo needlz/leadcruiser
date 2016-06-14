@@ -1,7 +1,7 @@
 module FactoryHelper
-  FactoryGirl.define do  factory :admin_user do
-    
-  end
+  FactoryGirl.define do
+    factory :admin_user do
+    end
 
     factory :pet, class: 'DetailsPet' do
       species 'dog'
@@ -68,5 +68,18 @@ module FactoryHelper
       link 'test_link'
     end
 
+    factory :purchase_order, class: 'PurchaseOrder' do
+      states 'Texas, Colorado, Washington'
+      price 25
+    end
+
+    factory :response, class: 'Response' do
+      response 'text'
+      price 1
+    end
+
+    factory :transaction_attempt, class: 'TransactionAttempt' do
+      success true
+    end
   end
 end

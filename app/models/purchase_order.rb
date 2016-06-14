@@ -36,11 +36,10 @@ class PurchaseOrder < ActiveRecord::Base
       return ""
     end
 
-    states_array = states_str.split(/,/)
-    states_array.compact
+    states_str.split(/,\s+/)
   end
 
   def states_array=(values)
-    write_attribute(:states, values[1..-1].join(","))
+    write_attribute(:states, values[1..-1].join(", "))
   end
 end
