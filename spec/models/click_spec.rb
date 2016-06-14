@@ -7,6 +7,8 @@ describe Click, type: :model do
 
     expect(click.invalid?).to be_truthy
     expect { click.save! }.to raise_error( ActiveRecord::RecordInvalid,
-                                           "Validation failed: Visitor ip cannot be blank, Clients vertical cannot be blank" )
+                                           /Visitor ip cannot be blank/)
+    expect { click.save! }.to raise_error( ActiveRecord::RecordInvalid,
+                                           /Clients vertical cannot be blank/)
   end
 end
