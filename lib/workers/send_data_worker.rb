@@ -84,7 +84,7 @@ class SendDataWorker
         finish = Time.now
         diff = finish - start
 
-        sold = SendDataWorker.check_response(lead, generator, client, exclusive_po, diff, true)
+        sold = SendDataWorker.check_response(lead, provider, client, exclusive_po, diff, true)
         used_exclusive_po_id_list.push exclusive_po[:id]
         current_exclusive_po = exclusive_po
 
@@ -105,7 +105,7 @@ class SendDataWorker
           finish = Time.now
           diff = finish - start
 
-          sold = SendDataWorker.check_response(lead, generator, client, current_shared_pos[i], diff)
+          sold = SendDataWorker.check_response(lead, provider, client, current_shared_pos[i], diff)
           used_shared_po_id_list.push current_shared_pos[i][:id]
           current_shared_po = current_shared_pos[i]
           if !sold
@@ -145,7 +145,7 @@ class SendDataWorker
               finish = Time.now
               diff = finish - start
 
-              sold = SendDataWorker.check_response(lead, generator, client, new_shared_pos[i], diff)
+              sold = SendDataWorker.check_response(lead, provider, client, new_shared_pos[i], diff)
 
               used_shared_po_id_list.push new_shared_pos[i][:id]
               current_shared_po = new_shared_pos[i]
