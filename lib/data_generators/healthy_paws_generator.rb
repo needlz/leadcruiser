@@ -1,8 +1,6 @@
-class HealthyPawsGenerator
+class HealthyPawsGenerator < ClientRequestGenerator
 
   LINK = ""
-
-  attr_accessor :lead
 
   def initialize(lead)
     @lead = lead
@@ -41,6 +39,13 @@ class HealthyPawsGenerator
     query["28"] = pet.spayed_or_neutered ? "Y" : "N"
     
     return query
+  end
+
+  def perform_http_request(exclusive)
+    HTTParty.get request_url,
+                 :query => generate(exclusive),
+                 :headers => request_header,
+                 :timeout => client.timeout
   end
 
 end

@@ -1,8 +1,6 @@
-class PetFirstGenerator
+class PetFirstGenerator < ClientRequestGenerator
 
   LINK = ENV["PET_FIRST_LINK"]
-
-  attr_accessor :lead
 
   def initialize(lead)
     @lead = lead

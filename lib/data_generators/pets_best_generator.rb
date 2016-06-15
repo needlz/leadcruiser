@@ -1,8 +1,6 @@
-class PetsBestGenerator
+class PetsBestGenerator < ClientRequestGenerator
 
   LINK = ""
-
-  attr_accessor :lead
 
   def initialize(lead)
     @lead = lead
@@ -47,6 +45,12 @@ class PetsBestGenerator
     end
 
     return query
+  end
+
+  def perform_http_request(exclusive)
+    HTTParty.get request_url,
+                 :query => generate(exclusive),
+                 :timeout => client.timeout
   end
 
 end

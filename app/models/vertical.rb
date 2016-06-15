@@ -16,13 +16,14 @@ class Vertical < ActiveRecord::Base
   has_many :purchase_orders
 
   PET_INSURANCE = 'pet_insurance'
+  HEALTH_INSURANCE = 'health_insurance'
 
   def self.pet_insurance
     find_by_name(PET_INSURANCE)
   end
 
   def self.health_insurance
-    find_by_name('health_insurance')
+    find_by_name(HEALTH_INSURANCE)
   end
 
 end

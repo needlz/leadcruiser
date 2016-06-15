@@ -9,13 +9,13 @@ describe API::V1::ClientsController, type: :request do
     let (:tracking_page) { create(:tracking_page) }
 
     it 'return error message if no available clients' do
-      ERROR_MESSAGE = 'No available clients'
+      error_message = 'No available clients'
 
       expect(ClientsVertical.count).to be_zero
 
       result = api_post 'clients', vertical_id: vertical.id
 
-      expect(result['errors']).to eq ERROR_MESSAGE
+      expect(result['errors']).to eq error_message
       expect(response).to have_http_status(:unprocessable_entity)
     end
 

@@ -1,15 +1,12 @@
 require 'nokogiri'
 
-class PetPremiumGenerator
+class PetPremiumGenerator < ClientRequestGenerator
 
   LINK = ENV["PET_PREMIUM_LINK"]
-
-  attr_accessor :lead
 
   def initialize(lead)
     @lead = lead
   end
-
 
   def generate(exclusive)
     if exclusive

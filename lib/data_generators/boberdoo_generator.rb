@@ -1,10 +1,6 @@
-require 'nokogiri'
+class BoberdooGenerator < ClientRequestGenerator
 
-class BoberdooGenerator
-
-  LINK = ""
-
-  attr_accessor :lead
+  LINK = ''
 
   def initialize(lead)
     @lead = lead
@@ -15,6 +11,15 @@ class BoberdooGenerator
     form.lead = lead
     form.health_insurance_lead = lead.health_insurance_lead
     form.boberdoo_params
+  end
+
+  private
+
+  def perform_http_request(exclusive)
+    HTTParty.get request_url,
+                 :query => generate(exclusive),
+                 :headers => request_header,
+                 :timeout => client.timeout
   end
 
 end
