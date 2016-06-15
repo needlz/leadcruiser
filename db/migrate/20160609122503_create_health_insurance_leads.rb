@@ -20,8 +20,8 @@ class CreateHealthInsuranceLeads < ActiveRecord::Migration
       t.string :fpl
       t.integer :age
       t.integer :height_feet
-      t.string :height_inches
-      t.string :weight
+      t.integer :height_inches
+      t.integer :weight
       t.string :tobacco_use
       t.string :preexisting_conditions
 
@@ -33,8 +33,8 @@ class CreateHealthInsuranceLeads < ActiveRecord::Migration
       t.integer :spouse_height_feet
       t.integer :spouse_height_inches
       t.integer :spouse_weight
-      t.boolean :spouse_tobacco_use
-      t.boolean :spouse_preexisting_conditions
+      t.string :spouse_tobacco_use
+      t.string :spouse_preexisting_conditions
 
       t.string :child_1_gender
       t.integer :child_1_age
