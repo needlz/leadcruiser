@@ -29,6 +29,17 @@ module FactoryHelper
         state 'AL'
       end
 
+      trait :for_boberdoo do
+        birth_date '06/07/1990'
+      end
+
+    end
+
+    factory :health_insurance_lead, class: 'HealthInsuranceLead' do
+      boberdoo_type 'type'
+      src 'source'
+      landing_page 'http://gethealthcare.co'
+      age 25
     end
 
     factory :client_dog_breed_mapping, class: 'ClientDogBreedMapping' do
