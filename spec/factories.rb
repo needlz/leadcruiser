@@ -30,7 +30,9 @@ module FactoryHelper
       end
 
       trait :for_boberdoo do
-        birth_date '06/07/1990'
+        city 'Alabama'
+        state 'AL'
+        birth_date '06.07.1990'
       end
 
     end
