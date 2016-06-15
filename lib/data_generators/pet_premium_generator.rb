@@ -1,4 +1,5 @@
 require 'nokogiri'
+require './lib/data_generators/client_request_generator'
 
 class PetPremiumGenerator < ClientRequestGenerator
 
