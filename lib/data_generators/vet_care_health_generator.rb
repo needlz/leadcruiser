@@ -1,8 +1,6 @@
-class VetCareHealthGenerator
+class VetCareHealthGenerator < ClientRequestGenerator
 
   LINK = ""
-
-  attr_accessor :lead
 
   def initialize(lead)
     @lead = lead
@@ -56,6 +54,13 @@ class VetCareHealthGenerator
       query["FourPlus"] = "off"
     end
     return query
+  end
+
+  def perform_http_request(exclusive)
+    HTTParty.get request_url,
+                 :query => generate(exclusive),
+                 :timeout => client.timeout,
+                 query_string_normalizer: DataGeneratorProvider::NON_ENCODE_QUERY_STRING_NORMALIZER
   end
 
 end

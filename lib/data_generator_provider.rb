@@ -1,6 +1,3 @@
-require 'net/http'
-require 'uri'
-
 class DataGeneratorProvider
   attr_accessor :lead, :client
 
@@ -20,15 +17,15 @@ class DataGeneratorProvider
   end
 
   def data_to_send(exclusive)
-    "#{client.integration_name}_generator".camelize.constantize.new(lead).generate exclusive
+    generator.new(lead).generate exclusive
   end
 
   def link
-    "#{client.integration_name}_generator".camelize.constantize::LINK
+    generator::LINK
   end
 
-  def int_name
-    "#{client.integration_name}_generator"
+  def generator
+    "#{client.integration_name}_generator".camelize.constantize
   end
 
   def send_data (exclusive=true)
@@ -58,29 +55,7 @@ class DataGeneratorProvider
     response = nil
 
     begin
-      if client.integration_name == ClientsVertical::VET_CARE_HEALTH
-        response = HTTParty.get request_url, 
-                      :query => data_to_send(exclusive), 
-                      :timeout => client.timeout,
-                      #:debug_output => $stdout,
-                      query_string_normalizer: NON_ENCODE_QUERY_STRING_NORMALIZER
-
-      elsif client.integration_name == ClientsVertical::PETS_BEST
-        response = HTTParty.get request_url, 
-                      :query => data_to_send(exclusive), 
-                      :timeout => client.timeout
-      elsif client.integration_name == ClientsVertical::HEALTHY_PAWS || client.integration_name == 'boberdoo'
-        response = HTTParty.get request_url, 
-                      :query => data_to_send(exclusive), 
-                      :headers => request_header,
-                      :timeout => client.timeout
-      else
-        response = HTTParty.post request_url,
-                      :body => data_to_send(exclusive),
-                      :headers => request_header,
-                      :timeout => client.timeout
-      end
-
+      response = generator.do_request(exclusive, client)
     rescue IOError
       response = "IOError"
     rescue Net::ReadTimeout
@@ -90,20 +65,6 @@ class DataGeneratorProvider
     end
 
     response
-  end
-
-  private
-
-  def request_url
-    client.service_url.nil? ? link : client.service_url
-  end
-
-  def request_header
-    if client.request_type == "JSON"
-      { 'Content-type' => 'application/json' }
-    elsif client.request_type == "XML"
-      { 'Content-type' => 'application/xml' }
-    end
   end
 
 end

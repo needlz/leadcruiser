@@ -1,10 +1,8 @@
 require 'nokogiri'
 
-class HartvilleGenerator
+class HartvilleGenerator < ClientRequestGenerator
 
   LINK = ""
-
-  attr_accessor :lead
 
   def initialize(lead)
     @lead = lead

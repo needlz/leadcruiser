@@ -1,10 +1,3 @@
-require 'data_generators/pet_premium_generator'
-require 'data_generators/pet_first_generator'
-require 'data_generators/hartville_generator'
-require 'data_generators/pets_best_generator'
-require 'data_generators/healthy_paws_generator'
-require 'data_generators/vet_care_health_generator'
-require 'data_generators/boberdoo_generator'
 require 'next_client_builder'
 require 'data_generator_provider'
 require 'workers/send_data_worker'
@@ -14,8 +7,10 @@ require 'lead_validation'
 class API::V1::LeadsController  < ActionController::API
   include ActionView::Helpers::NumberHelper
 
+  GETHEALTHCARE_LEAD_TYPE = '21'
+
   def index
-    if params[:TYPE] == '21'
+    if health_insurace_lead?
       handle_health_insurance_lead
     else
       render json: { errors: 'Unknown type' }, status: :unprocessable_entity
@@ -23,7 +18,7 @@ class API::V1::LeadsController  < ActionController::API
   end
 
   def create
-    if params[:TYPE] == '21'
+    if health_insurace_lead?
       handle_health_insurance_lead
     else
       handle_pet_insurance_lead
@@ -31,6 +26,10 @@ class API::V1::LeadsController  < ActionController::API
   end
 
   private
+
+  def health_insurace_lead?
+    params[:TYPE] == GETHEALTHCARE_LEAD_TYPE
+  end
 
   def handle_pet_insurance_lead
     error = "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."

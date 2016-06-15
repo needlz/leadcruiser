@@ -115,7 +115,6 @@ class ReportsController < ApplicationController
           end
           end_time = Time.now
           diff = end_time - start_time
-
           send_data axlsx_package.to_stream.read, :filename => "Report.xlsx"
         end
       end
