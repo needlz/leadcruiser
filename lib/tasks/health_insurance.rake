@@ -13,6 +13,7 @@ namespace :health_insurance do
 
   task :seed_boberdoo_records => :environment do
     ActiveRecord::Base.transaction do
+      vertical = Vertical.find_by_name('health_insurance')
       client = ClientsVertical.find_by_integration_name('boberdoo')
       client = ClientsVertical.create!(vertical_id: vertical.id,
                               integration_name: 'boberdoo',
@@ -42,6 +43,7 @@ namespace :health_insurance do
 
   task :seed_velocify_records => :environment do
     ActiveRecord::Base.transaction do
+      vertical = Vertical.find_by_name('health_insurance')
       client = ClientsVertical.find_by_integration_name('velocify')
       client = ClientsVertical.create!(vertical_id: vertical.id,
                                        integration_name: 'velocify',

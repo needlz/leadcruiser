@@ -11,7 +11,6 @@ class RequestToClient
     @response = perform_http_request(exclusive)
   end
 
-
   def request_url
     client.service_url.nil? ? link : client.service_url
   end
