@@ -59,7 +59,6 @@ module FactoryHelper
     end
 
     factory :clicks_purchase_order, class: 'ClicksPurchaseOrder' do
-      id 1
       active true
     end
 

@@ -2,48 +2,30 @@ class ClicksPurchaseOrderBuilder
 	include ActionView::Helpers::NumberHelper
 
 	def po_available_clients
-    client_list = ClientsVertical.where('display = true and active = true').order(sort_order: :asc)
+    client_list = ClientsVertical.active_to_be_displayed.ordered
+    return [] if client_list.empty?
 
-    # Select highest price by ClientsVertical
-    final_po_list = []
+    orders_list = []
+
     client_list.each do |client|
-      same_client_list = ClicksPurchaseOrder.where('clients_vertical_id = ? and page_id IS NOT NULL and active = true', client.id)
+      purchase_orders = client.clicks_purchase_orders.active_with_page
+      next if purchase_orders.empty?
 
-      po_by_price = {}
-      same_client_list.each do |scl|
-        real_price = number_with_precision(scl.price.to_f + scl.weight.to_f, :precision => 2)
-        if po_by_price[real_price].nil?
-          po_by_price[real_price] = []
-        end
-        po_by_price[real_price] << scl
-      end
-
-      # Sort by price and get high-price purchase order
-      price_keys = []
-      po_by_price.keys.each do |key|
-        price_keys << key
-      end
-      price_keys = price_keys.sort {|a,b| b.to_f <=> a.to_f}
-
-      unless price_keys.length == 0
-        same_price_pos = po_by_price[price_keys[0]]
-        if same_price_pos.length > 1
-          random = rand(0..same_price_pos.length-1)
-          final_po_list.push same_price_pos[random]
-        else
-          final_po_list.push same_price_pos[0]
-          next
-        end
-      end
+      price = max_price purchase_orders
+      order = most_expensive_order purchase_orders, price
+      orders_list.push order
     end
 
-    clients = []
-    if final_po_list.length != 0                            
-      final_po_list.each do |click_po|
-        clients << click_po
-      end
-    end
+    orders_list
+  end
 
-    return clients
-	end
+  private
+
+  def max_price purchase_orders
+    purchase_orders.map(&:total_price).max
+  end
+
+  def most_expensive_order purchase_orders, price
+    purchase_orders.detect { |order| order.total_price == price }
+  end
 end
