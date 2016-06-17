@@ -1,4 +1,4 @@
-class HealthyPawsGenerator < ClientRequestGenerator
+class RequestToHealthyPaws < RequestToClient
 
   LINK = ""
 
@@ -46,6 +46,14 @@ class HealthyPawsGenerator < ClientRequestGenerator
                  :query => generate(exclusive),
                  :headers => request_header,
                  :timeout => client.timeout
+  end
+
+  def success?
+    response == "SUCCESS"
+  end
+
+  def rejection_reason
+    response
   end
 
 end

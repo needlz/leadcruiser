@@ -1,5 +1,5 @@
 require 'next_client_builder'
-require 'data_generator_provider'
+require 'request_to_client_generator'
 require 'workers/send_data_worker'
 require 'workers/forward_boberdoo_request'
 require 'lead_validation'

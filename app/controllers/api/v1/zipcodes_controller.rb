@@ -1,4 +1,4 @@
-require 'data_generator_provider'
+require 'request_to_client_generator'
 require 'workers/send_data_worker.rb'
 
 class API::V1::ZipcodesController  < ActionController::API

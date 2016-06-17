@@ -1,4 +1,4 @@
-class PetsBestGenerator < ClientRequestGenerator
+class RequestToPetsBest < RequestToClient
 
   LINK = ""
 
@@ -51,6 +51,14 @@ class PetsBestGenerator < ClientRequestGenerator
     HTTParty.get request_url,
                  :query => generate(exclusive),
                  :timeout => client.timeout
+  end
+
+  def success?
+    response["Status"] == "Success" && response["Message"].nil?
+  end
+
+  def rejection_reason
+    response["Message"].to_s
   end
 
 end

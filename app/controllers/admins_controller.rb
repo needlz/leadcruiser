@@ -1,10 +1,10 @@
-require 'data_generators/pet_premium_generator'
-require 'data_generators/pet_first_generator'
-require 'data_generators/pets_best_generator'
-require 'data_generators/healthy_paws_generator'
-require 'data_generators/vet_care_health_generator'
+require 'data_generators/request_to_pet_premium'
+require 'data_generators/request_to_pet_first'
+require 'data_generators/request_to_pets_best'
+require 'data_generators/request_to_healthy_paws'
+require 'data_generators/request_to_vet_care_health'
 require 'next_client_builder'
-require 'data_generator_provider'
+require 'request_to_client_generator'
 require 'workers/send_data_worker.rb'
 
 class AdminsController < ApplicationController

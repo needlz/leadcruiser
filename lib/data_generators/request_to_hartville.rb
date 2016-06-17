@@ -1,6 +1,6 @@
 require 'nokogiri'
 
-class HartvilleGenerator < ClientRequestGenerator
+class RequestToHartville < RequestToClient
 
   LINK = ""
 

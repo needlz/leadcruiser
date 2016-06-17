@@ -1,4 +1,4 @@
-class BoberdooGenerator < ClientRequestGenerator
+class RequestToBoberdoo < RequestToClient
 
   LINK = ''
 
@@ -68,6 +68,14 @@ class BoberdooGenerator < ClientRequestGenerator
         Child_1_Tobacco_Use: health_insurance_lead.child_1_tobacco_use,
         Child_1_Preexisting_Conditions: health_insurance_lead.child_1_preexisting_conditions,
     }
+  end
+
+  def success?
+    response['response']['status'] == "UNMATCHED" || response['response']['status'] == "MATCHED"
+  end
+
+  def rejection_reason
+    response['response']['error']
   end
 
   private
