@@ -69,11 +69,11 @@ RSpec.describe DetailsPet, :type => :model do
       end
 
       it 'adds message to errors' do
-        ERROR_MESSAGE = "Lead with '#{pet.breed}' breed or '#{pet.pet_name}' name already exists"
+        error_message = "Lead with '#{pet.breed}' breed or '#{pet.pet_name}' name already exists"
 
         pet.validate_same(new_pet)
 
-        expect(pet.errors[:base].first).to eq ERROR_MESSAGE
+        expect(pet.errors[:base].first).to eq error_message
       end
     end
 

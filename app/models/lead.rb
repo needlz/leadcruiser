@@ -48,6 +48,7 @@ class Lead < ActiveRecord::Base
   belongs_to :site
   has_many :responses
   has_many :transaction_attempts
+  has_one :health_insurance_lead
 
   # constant
   DUPLICATED  = "duplicated"
@@ -102,6 +103,10 @@ class Lead < ActiveRecord::Base
     TransactionAttempt.where('lead_id = ? and success = ?', self.id, true).try(:first)
   end
 
+  def pet_insurance?
+    vertical_id == Vertical.pet_insurance.id
+  end
+
   private
 
   def populate_state
@@ -126,7 +131,4 @@ class Lead < ActiveRecord::Base
     true
    end
 
-  def pet_insurance?
-    vertical_id == 1
-  end
 end

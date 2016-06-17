@@ -1,8 +1,6 @@
-class PetFirstGenerator
+class RequestToPetFirst < RequestToClient
 
   LINK = ENV["PET_FIRST_LINK"]
-
-  attr_accessor :lead
 
   def initialize(lead)
     @lead = lead
@@ -60,6 +58,14 @@ class PetFirstGenerator
       :Pet1Species => lead.details_pets.first.species,
       :EnrollmentCode => ENV['PET_FIRST_ENROLLMENT_CODE']
     }.to_json
+  end
+
+  def success?
+    response["Error"]["ErrorText"] == ""
+  end
+
+  def rejection_reason
+    response["Error"]["ErrorText"].to_s
   end
 
 end

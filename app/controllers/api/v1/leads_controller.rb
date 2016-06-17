@@ -1,18 +1,37 @@
-require 'data_generators/pet_premium_generator'
-require 'data_generators/pet_first_generator'
-require 'data_generators/hartville_generator'
-require 'data_generators/pets_best_generator'
-require 'data_generators/healthy_paws_generator'
-require 'data_generators/vet_care_health_generator'
 require 'next_client_builder'
-require 'data_generator_provider'
-require 'workers/send_data_worker.rb'
+require 'request_to_client_generator'
+require 'workers/send_data_worker'
+require 'workers/forward_boberdoo_request'
 require 'lead_validation'
 
 class API::V1::LeadsController  < ActionController::API
   include ActionView::Helpers::NumberHelper
 
+  GETHEALTHCARE_LEAD_TYPE = '21'
+
+  def index
+    if health_insurace_lead?
+      handle_health_insurance_lead
+    else
+      render json: { errors: 'Unknown type' }, status: :unprocessable_entity
+    end
+  end
+
   def create
+    if health_insurace_lead?
+      handle_health_insurance_lead
+    else
+      handle_pet_insurance_lead
+    end
+  end
+
+  private
+
+  def health_insurace_lead?
+    params[:TYPE] == GETHEALTHCARE_LEAD_TYPE
+  end
+
+  def handle_pet_insurance_lead
     error = "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
 
     lead_params = permit_lead_params
@@ -27,6 +46,8 @@ class API::V1::LeadsController  < ActionController::API
       lead_params[:state] = state_response[0]["city_states"][0]["state_abbreviation"]
       lead_params[:city] = state_response[0]["city_states"][0]["city"]
     end
+
+    @vertical = Vertical.pet_insurance
 
     lead = Lead.new(lead_params)
     pet = lead.details_pets.build(permit_pet_params)
@@ -106,9 +127,9 @@ class API::V1::LeadsController  < ActionController::API
           sold_clients << JSON[cv_json(cv, redirect_url)]
         end
 
-        # Get other client list by clicks_purchase_order        
+        # Get other client list by clicks_purchase_order
         clicks_purchase_order_builder = ClicksPurchaseOrderBuilder.new
-        all_clients_list = clicks_purchase_order_builder.po_available_clients
+        all_clients_list = clicks_purchase_order_builder.po_available_clients(vertical)
 
         other_clients = []
         all_clients_list.each do |cpo_client|
@@ -117,11 +138,11 @@ class API::V1::LeadsController  < ActionController::API
           end
         end
 
-        render json: { 
-          :success => true, 
-          :client => sold_clients.to_json, 
-          :other_client => other_clients.to_json
-        }, status: :created
+        render json: {
+                   :success => true,
+                   :client => sold_clients.to_json,
+                   :other_client => other_clients.to_json
+               }, status: :created
       else
         lead.update_attributes :status => Lead::NO_POS
         render json: { errors: error.gsub("[pets_name]", pet["pet_name"]) , :other_client => all_po_client_list.to_json}, status: :unprocessable_entity
@@ -131,12 +152,64 @@ class API::V1::LeadsController  < ActionController::API
     end
   end
 
-  private
+  def handle_health_insurance_lead
+    @vertical = Vertical.health_insurance
+    lead_params = permit_lead_params
+    form = HealthInsuranceLeadForm.new(params)
+    ActiveRecord::Base.transaction do
+      lead = Lead.new(form.lead_attributes)
+
+      if lead.save
+        # If it is duplicated, it would not be sold
+        duplicated = LeadValidation.duplicated_lead(lead_params[:email], lead_params[:vertical_id], lead_params[:site_id])
+
+        if duplicated
+          lead.update_attributes(:status => Lead::DUPLICATED)
+          render json: { errors: "The email address of this lead was duplicated", :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
+        end
+
+        # If the visitors are in block lists, it would be not be sold
+        if LeadValidation.blocked(lead)
+          lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::IP_BLOCKED)
+          render json: { errors: "Your IP address was blocked", :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
+        end
+
+        # Testing dispotiion, Test No Sale
+        # if lead.first_name.downcase == Lead::TEST_TERM || lead.last_name.downcase == Lead::TEST_TERM
+        #   lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::TEST_NO_SALE)
+        #   render json: { errors: Lead::TEST_NO_SALE, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
+        # end
+
+        # Profanities Filter : first name, last name, email
+        filter_txt = [lead.first_name, lead.last_name, lead.email].join(' ')
+        if Obscenity.profane?(filter_txt)
+          lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::PROFANITY)
+          render json: { errors: Lead::PROFANITY, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
+        end
+
+        # Testing dispotiion, Test Sale
+        if lead.first_name.downcase == "erik" && lead.last_name.downcase == "needham"
+          lead.update_attribute(:disposition, Lead::TEST_SALE)
+        end
+
+        HealthInsuranceLead.create!(form.health_insurance_lead_attributes.merge({ lead_id: lead.id }))
+        # AutoResponseThankWorker.perform_async(lead.email)
+
+        ForwardBoberdooRequest.perform_in(Settings.request_delays.boberdoo, lead.id)
+
+        render json: {
+          :success => true,
+        }, status: :created
+      else
+        render json: { errors: lead.error_messages, other_client: all_po_client_list.to_json }, status: :unprocessable_entity
+      end
+    end
+  end
 
   def all_po_client_list
     clicks_purchase_order_builder = ClicksPurchaseOrderBuilder.new
 
-    all_cpo_clients = clicks_purchase_order_builder.po_available_clients
+    all_cpo_clients = clicks_purchase_order_builder.po_available_clients(@vertical)
     
     other_clients = []
     all_cpo_clients.each do |other_cv|

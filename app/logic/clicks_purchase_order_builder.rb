@@ -1,8 +1,8 @@
 class ClicksPurchaseOrderBuilder
 	include ActionView::Helpers::NumberHelper
 
-	def po_available_clients
-    client_list = ClientsVertical.where('display = true and active = true').order(sort_order: :asc)
+	def po_available_clients(vertical)
+    client_list = ClientsVertical.where('vertical_id = ? AND display = true AND active = true', vertical.id).order(sort_order: :asc)
 
     # Select highest price by ClientsVertical
     final_po_list = []

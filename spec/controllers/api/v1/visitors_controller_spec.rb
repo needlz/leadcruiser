@@ -3,16 +3,18 @@ require 'api_helper'
 
 describe API::V1::VisitorsController, type: :request do
   describe 'CREATE visitor with correct params' do
-    it 'should create a visitor' do
-      expect{ api_post 'visitors', visitor: correct_visitor_params  }.to change{ Visitor.count }.from(0).to(1)
-    end
-
     it 'should respond with correct message' do
       result = api_post 'visitors', visitor: correct_visitor_params
 
       expect(result['message']).to eq 'Visitor was created successfully'
       expect(response).to have_http_status(:created)
       expect(result['visitor_id']).to eq Visitor.last.id
+    end
+
+    it 'creates visitor with session_hash' do
+      expect{ api_post 'visitors', visitor: correct_visitor_params }.to change{ Visitor.count }.from(0).to(1)
+
+      expect(Visitor.last.session_hash).to eq correct_visitor_params[:session_hash]
     end
   end
 

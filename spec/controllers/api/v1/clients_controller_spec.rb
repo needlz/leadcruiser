@@ -3,18 +3,19 @@ require 'api_helper'
 
 describe API::V1::ClientsController, type: :request do
   describe 'Get available clients'  do
-    let (:clients_vertical) { create(:clients_vertical) }
+    let (:vertical) { create(:vertical) }
+    let (:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
     let (:clicks_purchase_order) { create(:clicks_purchase_order) }
     let (:tracking_page) { create(:tracking_page) }
 
     it 'return error message if no available clients' do
-      ERROR_MESSAGE = 'No available clients'
+      error_message = 'No available clients'
 
       expect(ClientsVertical.count).to be_zero
 
-      result = api_post 'clients'
+      result = api_post 'clients', vertical_id: vertical.id
 
-      expect(result['errors']).to eq ERROR_MESSAGE
+      expect(result['errors']).to eq error_message
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
@@ -23,7 +24,7 @@ describe API::V1::ClientsController, type: :request do
       clicks_purchase_order.tracking_page = tracking_page
       clicks_purchase_order.save
 
-      result = api_post 'clients'
+      result = api_post 'clients', vertical_id: vertical.id
 
       expect(result['success']).to eq true
       expect(response).to have_http_status(:created)

@@ -4,7 +4,6 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.6'
 gem "rspec-rails", group: [:development, :test]
-# Use sqlite3 as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
@@ -76,3 +75,6 @@ gem 'config'
 group :test do
   gem 'webmock'
 end
+
+gem 'awesome_print', require: 'ap'
+gem 'quiet_assets'

@@ -1,15 +1,13 @@
 require 'nokogiri'
+require './lib/data_generators/request_to_client'
 
-class PetPremiumGenerator
+class RequestToPetPremium < RequestToClient
 
   LINK = ENV["PET_PREMIUM_LINK"]
-
-  attr_accessor :lead
 
   def initialize(lead)
     @lead = lead
   end
-
 
   def generate(exclusive)
     if exclusive
@@ -37,6 +35,14 @@ class PetPremiumGenerator
     end
     
     builder.to_xml
+  end
+
+  def success?
+    response["Response"]["Result"]["Value"] == "BaeOK"
+  end
+
+  def rejection_reason
+    response["Response"]["Result"]["Error"].to_s
   end
 
   private
