@@ -1,7 +1,7 @@
 require 'nokogiri'
-require './lib/data_generators/client_request_generator'
+require './lib/data_generators/request_to_client'
 
-class PetPremiumGenerator < ClientRequestGenerator
+class RequestToPetPremium < RequestToClient
 
   LINK = ENV["PET_PREMIUM_LINK"]
 
@@ -35,6 +35,14 @@ class PetPremiumGenerator < ClientRequestGenerator
     end
     
     builder.to_xml
+  end
+
+  def success?
+    response["Response"]["Result"]["Value"] == "BaeOK"
+  end
+
+  def rejection_reason
+    response["Response"]["Result"]["Error"].to_s
   end
 
   private

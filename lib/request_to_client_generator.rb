@@ -1,4 +1,4 @@
-class DataGeneratorProvider
+class RequestToClientGenerator
   attr_accessor :lead, :client
 
   NON_ENCODE_QUERY_STRING_NORMALIZER = Proc.new do |query|
@@ -25,7 +25,7 @@ class DataGeneratorProvider
   end
 
   def generator
-    "#{client.integration_name}_generator".camelize.constantize
+    "request_to_#{client.integration_name}".camelize.constantize
   end
 
   def send_data (exclusive=true)

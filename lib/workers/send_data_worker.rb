@@ -77,14 +77,14 @@ class SendDataWorker
       # Exclusive selling is selected by price
       if is_exclusive && !exclusive_po.nil?
         client = ClientsVertical.where(active: true, id: exclusive_po[:client_id]).try(:first)
-        provider = DataGeneratorProvider.new(lead, client)
+        provider = RequestToClientGenerator.new(lead, client)
 
         start = Time.now
         response = provider.send_data
         finish = Time.now
         diff = finish - start
 
-        sold = check_response(lead, response, client, exclusive_po, true, diff)
+        sold = check_response(lead, provider, client, exclusive_po, true, diff)
         used_exclusive_po_id_list.push exclusive_po[:id]
         current_exclusive_po = exclusive_po
 
@@ -98,14 +98,14 @@ class SendDataWorker
         shared_selling = false
         for i in 0..current_shared_pos.length - 1
           client = ClientsVertical.where(active:true, id: current_shared_pos[i][:client_id]).try(:first)
-          provider = DataGeneratorProvider.new(lead, client)
+          provider = RequestToClientGenerator.new(lead, client)
 
           start = Time.now
           response = provider.send_data(false)
           finish = Time.now
           diff = finish - start
           
-          sold = check_response(lead, response, client, current_shared_pos[i], diff)
+          sold = check_response(lead, provider, client, current_shared_pos[i], diff)
           used_shared_po_id_list.push current_shared_pos[i][:id]
           current_shared_po = current_shared_pos[i]
           if !sold
@@ -138,14 +138,14 @@ class SendDataWorker
 
             for i in 0..new_shared_pos.length - 1
               client = ClientsVertical.where(active:true, id: new_shared_pos[i][:client_id]).try(:first)
-              provider = DataGeneratorProvider.new(lead, client)
+              provider = RequestToClientGenerator.new(lead, client)
               
               start = Time.now
               response = provider.send_data(false)
               finish = Time.now
               diff = finish - start
 
-              sold = check_response(lead, response, client, new_shared_pos[i], diff)
+              sold = check_response(lead, provider, client, new_shared_pos[i], diff)
 
               used_shared_po_id_list.push new_shared_pos[i][:id]
               current_shared_po = new_shared_pos[i]
@@ -176,9 +176,10 @@ class SendDataWorker
     end
   end
 
-  def check_response(lead, response, client, purchase_order, exclusive_selling=false, response_time)
+  def check_response(lead, generator, client, purchase_order, exclusive_selling=false, response_time)
     response_time = number_with_precision(response_time, :precision => 2)
     sold = false
+    response = generator.response
     unless response.nil?
       # Request timeout
       if response == "Timeout" || response == "IOError"
@@ -212,55 +213,8 @@ class SendDataWorker
           client_name: client.integration_name,
           response_time: response_time
       )
-      if client.integration_name == ClientsVertical::PET_PREMIUM
-        if response["Response"]["Result"]["Value"] == "BaeOK"
-          sold = true
-        else
-          rejection_reasons = response["Response"]["Result"]["Error"].to_s
-        end
-      elsif client.integration_name == ClientsVertical::PET_FIRST
-        if response["Error"]["ErrorText"] == ""
-          sold = true
-        else
-          rejection_reasons = response["Error"]["ErrorText"].to_s
-        end
-      elsif client.integration_name == ClientsVertical::VET_CARE_HEALTH
-        if response.downcase.include? "success"
-          sold = true
-        else
-          rejection_reasons = response
-          sold = false
-        end
-      elsif client.integration_name == ClientsVertical::PETS_BEST
-        if response["Status"] == "Success" and response["Message"].nil?
-          sold = true
-        else
-          rejection_reasons = response["Message"].to_s
-        end
-      elsif client.integration_name == ClientsVertical::HEALTHY_PAWS
-        if response == "SUCCESS"
-          sold = true
-        else
-          rejection_reasons = response
-          sold = false
-        end
-      elsif client.integration_name == 'boberdoo'
-        if response['response']['status'] == "UNMATCHED"
-          sold = true
-        else
-          rejection_reasons = response['response']['error']
-          sold = false
-        end
-      else
-        if !response["success"].nil? && response["success"]
-          sold = true
-        end
-
-        if !response["errors"].nil? && response["errors"]
-          sold = false
-          rejection_reasons = "Test Failure"
-        end
-      end
+      sold = generator.success?
+      rejection_reasons = generator.rejection_reason unless sold
 
       if sold && !resp_model.nil?
         # Update reponse

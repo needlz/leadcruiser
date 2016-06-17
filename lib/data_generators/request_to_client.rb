@@ -1,13 +1,14 @@
 require 'net/http'
 require 'uri'
 
-class ClientRequestGenerator
+class RequestToClient
 
   attr_accessor :lead, :client
+  attr_reader :response
 
   def do_request(exclusive, client)
     @client = client
-    perform_http_request(exclusive)
+    @response = perform_http_request(exclusive)
   end
 
 
@@ -28,6 +29,14 @@ class ClientRequestGenerator
                   :body => generate(exclusive),
                   :headers => request_header,
                   :timeout => client.timeout
+  end
+
+  def success?
+    !response["success"].nil? && response["success"]
+  end
+
+  def rejection_reason
+    "Test Failure"
   end
 
 end
