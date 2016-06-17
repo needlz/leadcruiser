@@ -4,7 +4,8 @@ ActiveAdmin.register ClientsVertical do
 
 
   permit_params :vertical_id, :integration_name, :official_name, :active, :weight, :exclusive, :fixed_price, :email, :phone_number,
-                :website_url, :request_type, :service_url, :logo, :description, :display, :sort_order, :timeout
+                :website_url, :request_type, :service_url, :logo, :description, :display, :sort_order, :timeout,
+                :lead_forwarding_delay_seconds
 
   config.filters = false
 
@@ -22,6 +23,7 @@ ActiveAdmin.register ClientsVertical do
     column :phone_number
     column :website_url
     column :request_type
+    column :lead_forwarding_delay_seconds
     column :service_url
     column :timeout
     column :sort_order
@@ -54,6 +56,7 @@ ActiveAdmin.register ClientsVertical do
       f.input :phone_number
       f.input :website_url
       f.input :request_type
+      f.input :lead_forwarding_delay_seconds
       f.input :service_url
       f.input :timeout
       f.input :sort_order

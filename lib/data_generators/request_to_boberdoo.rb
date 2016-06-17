@@ -13,6 +13,14 @@ class RequestToBoberdoo < RequestToClient
     boberdoo_params
   end
 
+  def success?
+    response['response']['status'] == "UNMATCHED" || response['response']['status'] == "MATCHED"
+  end
+
+  def rejection_reason
+    response['response']['error']
+  end
+
   private
 
   def boberdoo_params
@@ -69,16 +77,6 @@ class RequestToBoberdoo < RequestToClient
         Child_1_Preexisting_Conditions: health_insurance_lead.child_1_preexisting_conditions,
     }
   end
-
-  def success?
-    response['response']['status'] == "UNMATCHED" || response['response']['status'] == "MATCHED"
-  end
-
-  def rejection_reason
-    response['response']['error']
-  end
-
-  private
 
   def perform_http_request(exclusive)
     HTTParty.get request_url,

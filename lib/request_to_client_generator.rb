@@ -1,5 +1,7 @@
 class RequestToClientGenerator
+
   attr_accessor :lead, :client
+  attr_reader :generator
 
   NON_ENCODE_QUERY_STRING_NORMALIZER = Proc.new do |query|
     query.map do |key, value|
@@ -17,15 +19,15 @@ class RequestToClientGenerator
   end
 
   def data_to_send(exclusive)
-    generator.new(lead).generate exclusive
+    generator_class.new(lead).generate exclusive
   end
 
   def link
-    generator::LINK
+    generator_class::LINK
   end
 
-  def generator
-    "request_to_#{client.integration_name}".camelize.constantize
+  def generator_class
+    "request_to_#{ client.integration_name }".camelize.constantize
   end
 
   def send_data (exclusive = true)
@@ -55,6 +57,7 @@ class RequestToClientGenerator
     response = nil
 
     begin
+      @generator = generator_class.new(lead)
       response = generator.do_request(exclusive, client)
     rescue IOError
       response = "IOError"

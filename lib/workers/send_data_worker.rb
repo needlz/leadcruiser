@@ -2,7 +2,7 @@ require 'workers/response_petfirst_worker.rb'
 require 'workers/send_email_worker.rb'
 
 class SendDataWorker
-  include ActionView::Helpers::NumberHelper
+  extend ActionView::Helpers::NumberHelper
 
   attr_accessor :client
 
@@ -164,6 +164,24 @@ class SendDataWorker
     end
   end
 
+  def self.record_transaction(
+    lead_id, client_id=nil, po_id=nil, price=nil, weight=nil, success=false,
+      exclusive_selling=nil, reason=nil, response_id=nil)
+    unless lead_id.nil?
+      TransactionAttempt.create(
+        lead_id: lead_id,
+        client_id: client_id,
+        purchase_order_id: po_id,
+        price: price,
+        weight: weight,
+        success: success,
+        exclusive_selling: exclusive_selling,
+        reason: reason,
+        response_id: response_id
+      )
+    end
+  end
+
   def self.check_response(lead, generator, client, purchase_order, response_time, exclusive_selling=false)
     response_time = number_with_precision(response_time, :precision => 2)
     sold = false
@@ -306,21 +324,4 @@ class SendDataWorker
     nil
   end
 
-  def record_transaction(
-    lead_id, client_id=nil, po_id=nil, price=nil, weight=nil, success=false, 
-    exclusive_selling=nil, reason=nil, response_id=nil)
-    unless lead_id.nil?
-      TransactionAttempt.create(
-        lead_id: lead_id,
-        client_id: client_id,
-        purchase_order_id: po_id,
-        price: price,
-        weight: weight,
-        success: success,
-        exclusive_selling: exclusive_selling,
-        reason: reason,
-        response_id: response_id
-      )
-    end
-  end
 end

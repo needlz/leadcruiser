@@ -13,7 +13,7 @@ class ForwardLeadToClientRequest
     finish = Time.now
     diff = finish - start
 
-    save_response(lead, request_data, client, purchase_order, diff)
+    save_response(lead, request_data.generator, client, purchase_order, diff)
 
     # Check Responses table and return with JSON response
     response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
@@ -22,7 +22,7 @@ class ForwardLeadToClientRequest
     end
   end
 
-  def save_response(lead, response, client, purchase_order, duration)
+  def save_response(lead, generator, client, purchase_order, duration)
     SendDataWorker.check_response(lead, generator, client, purchase_order, duration)
   end
 
