@@ -111,10 +111,14 @@ describe API::V1::LeadsController, type: :request do
                                        birth_year: 1998,
                                        gender: 'male',
                                        conditions: false } }
+    let (:response) { create(:response) }
 
     it 'sets duplicated status if the same lead was sold' do
       api_post 'leads', lead: data_with_sold_state, pet: pet_data
-      Lead.last.update_attributes( status: Lead::SOLD )
+
+      Lead.last.sold!
+      response.update_attributes(lead_id: Lead.last.id)
+
       api_post 'leads', lead: data_with_sold_state, pet: pet_data
 
       expect(Lead.last.status).to eq(Lead::DUPLICATED)

@@ -270,7 +270,7 @@ class SendDataWorker
         # lead.total_sale_amount = lead.total_sale_amount + purchase_order[:real_price]
         lead.total_sale_amount = lead.total_sale_amount + purchase_order[:price]
 
-        lead.update_attributes :status => Lead::SOLD
+        lead.sold!
 
         # Record transaction history
         po_history = PurchaseOrder.find purchase_order[:id]

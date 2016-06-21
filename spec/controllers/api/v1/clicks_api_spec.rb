@@ -36,7 +36,7 @@ describe API::V1::ClicksController, type: :request do
               result = api_post(:clicks, click_params)
               expect(response).to have_http_status(:created)
               expect(result['message']).to eq 'Click was captured successfully'
-              expect(Click.last.status).to eq Click::SOLD
+              expect(Click.last.sold?).to be_truthy
             end
           end
 

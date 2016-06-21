@@ -80,5 +80,9 @@ module FactoryHelper
     factory :transaction_attempt, class: 'TransactionAttempt' do
       success true
     end
+
+    factory :block_list, class: 'BlockList' do
+      active true
+    end
   end
 end

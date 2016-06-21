@@ -102,6 +102,14 @@ class Lead < ActiveRecord::Base
     TransactionAttempt.where('lead_id = ? and success = ?', self.id, true).try(:first)
   end
 
+  def sold!
+    update_attributes!(status: SOLD)
+  end
+
+  def sold?
+    status == SOLD
+  end
+
   private
 
   def populate_state

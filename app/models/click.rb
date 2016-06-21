@@ -24,4 +24,13 @@ class Click < ActiveRecord::Base
 
 	SOLD = "sold"
 	DUPLICATED = "duplicated"
+
+	def sold!
+		update_attributes!(status: SOLD)
+	end
+
+	def sold?
+		status == SOLD
+	end
+
 end

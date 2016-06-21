@@ -14,7 +14,7 @@ ActiveAdmin.register Click do
     column :page_id
     column :status
     column "Price" do |click|
-      if click.status == Click::SOLD
+      if click.sold?
         price = 0
         weight = 0
         price += click.try(:clicks_purchase_order).try(:price).to_f

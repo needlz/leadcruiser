@@ -35,14 +35,6 @@ class PurchaseOrderBuilder
 		@times_sold = @lead.vertical.times_sold.to_i
 	end
 
-	def exclusive_pos_length
-		@exclusive_pos_length
-	end
-
-	def shared_pos_length
-		@shared_pos_length
-	end
-
 	def next_exclusive_po(current_po, rejected_po_id_list)
 		if current_po.nil?
 			# Select highest price list

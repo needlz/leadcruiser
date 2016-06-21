@@ -20,9 +20,7 @@ class AdminsController < ApplicationController
 	end
 
 	def resend_logic(lead)
-		if lead.status == Lead::SOLD
-			return false
-		end
+		return false if lead.sold?
 
     filter_txt = [lead.first_name, lead.last_name, lead.email, lead.details_pets.try(:first).pet_name].join(' ')
 
