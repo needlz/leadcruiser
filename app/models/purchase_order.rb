@@ -30,6 +30,8 @@ class PurchaseOrder < ActiveRecord::Base
 
   belongs_to :clients_vertical, foreign_key: 'client_id', primary_key: 'id'
 
+  scope :active, -> { where(active: true) }
+
   def states_array
     states_str = read_attribute(:states)
     if states_str.blank?

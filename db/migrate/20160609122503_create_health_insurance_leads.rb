@@ -67,6 +67,8 @@ class CreateHealthInsuranceLeads < ActiveRecord::Migration
       t.integer :child_4_weight
       t.string :child_4_tobacco_use
       t.string :child_4_preexisting_conditions
+
+      t.timestamps null: false
     end
   end
 end

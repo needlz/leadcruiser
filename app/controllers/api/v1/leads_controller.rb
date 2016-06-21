@@ -1,7 +1,7 @@
 require 'next_client_builder'
 require 'request_to_client_generator'
 require 'workers/send_data_worker'
-require 'workers/forward_boberdoo_request'
+require 'forward_health_insurance_lead'
 require 'lead_validation'
 
 class API::V1::LeadsController  < ActionController::API
@@ -195,7 +195,7 @@ class API::V1::LeadsController  < ActionController::API
         HealthInsuranceLead.create!(form.health_insurance_lead_attributes.merge({ lead_id: lead.id }))
         # AutoResponseThankWorker.perform_async(lead.email)
 
-        ForwardBoberdooRequest.perform_in(Settings.request_delays.boberdoo, lead.id)
+        ForwardHealthInsuranceLead.perform(lead)
 
         render json: {
           :success => true,

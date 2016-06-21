@@ -84,7 +84,7 @@ class SendDataWorker
         finish = Time.now
         diff = finish - start
 
-        sold = check_response(lead, provider, client, exclusive_po, true, diff)
+        sold = SendDataWorker.check_response(lead, generator, client, exclusive_po, diff, true)
         used_exclusive_po_id_list.push exclusive_po[:id]
         current_exclusive_po = exclusive_po
 
@@ -104,8 +104,8 @@ class SendDataWorker
           response = provider.send_data(false)
           finish = Time.now
           diff = finish - start
-          
-          sold = check_response(lead, provider, client, current_shared_pos[i], diff)
+
+          sold = SendDataWorker.check_response(lead, generator, client, current_shared_pos[i], diff)
           used_shared_po_id_list.push current_shared_pos[i][:id]
           current_shared_po = current_shared_pos[i]
           if !sold
@@ -145,7 +145,7 @@ class SendDataWorker
               finish = Time.now
               diff = finish - start
 
-              sold = check_response(lead, provider, client, new_shared_pos[i], diff)
+              sold = SendDataWorker.check_response(lead, generator, client, new_shared_pos[i], diff)
 
               used_shared_po_id_list.push new_shared_pos[i][:id]
               current_shared_po = new_shared_pos[i]
@@ -164,19 +164,7 @@ class SendDataWorker
     end
   end
 
-  private
-
-  def update_po_attribute(po, client, lead)
-    purchase_order = PurchaseOrder.find po[:id]
-    purchase_order.update_attributes :leads_count_sold => purchase_order.leads_count_sold.to_i + 1,
-                                     :daily_leads_count => purchase_order.daily_leads_count.to_i + 1
-
-    if client.integration_name == "pet_first" && purchase_order.exclusive
-      ResponsePetfirstWorker.perform_async(lead.id)
-    end
-  end
-
-  def check_response(lead, generator, client, purchase_order, exclusive_selling=false, response_time)
+  def self.check_response(lead, generator, client, purchase_order, response_time, exclusive_selling=false)
     response_time = number_with_precision(response_time, :precision => 2)
     sold = false
     response = generator.response
@@ -253,6 +241,16 @@ class SendDataWorker
     end    
 
     sold
+  end
+
+  def update_po_attribute(po, client, lead)
+    purchase_order = PurchaseOrder.find po[:id]
+    purchase_order.update_attributes :leads_count_sold => purchase_order.leads_count_sold.to_i + 1,
+                                     :daily_leads_count => purchase_order.daily_leads_count.to_i + 1
+
+    if client.integration_name == "pet_first" && purchase_order.exclusive
+      ResponsePetfirstWorker.perform_async(lead.id)
+    end
   end
 
   def check_purchase_order(lead, client)
