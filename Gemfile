@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.6'
 gem "rspec-rails", group: [:development, :test]
@@ -65,13 +64,13 @@ gem 'rails_12factor', group: [:staging, :production]
 gem "pry", group: [:development, :staging]
 gem "letter_opener", group: :development
 gem 'figaro', git: 'git://github.com/laserlemon/figaro.git', branch: 'master'
-gem 'airbrake'
 gem 'bootstrap-sass'
 gem 'ordinalize'
 gem 'axlsx'
 
 gem 'annotate'
 gem 'config'
+gem 'rollbar'
 
 group :test do
   gem 'webmock'

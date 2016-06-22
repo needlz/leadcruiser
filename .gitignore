@@ -15,7 +15,7 @@
 /log/*.log
 /tmp
 .idea
-
+.env
 # Ignore application configuration
 /config/application.yml
 config/settings.local.yml

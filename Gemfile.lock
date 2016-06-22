@@ -54,9 +54,6 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     addressable (2.3.7)
-    airbrake (4.1.0)
-      builder
-      multi_json
     annotate (2.7.1)
       activerecord (>= 3.2, < 6.0)
       rake (>= 10.4, < 12.0)
@@ -264,6 +261,8 @@ GEM
       redis (>= 2.2)
     responders (1.1.2)
       railties (>= 3.2, < 4.2)
+    rollbar (2.11.5)
+      multi_json
     rspec-core (3.2.0)
       rspec-support (~> 3.2.0)
     rspec-expectations (3.2.0)
@@ -351,7 +350,6 @@ PLATFORMS
 
 DEPENDENCIES
   activeadmin!
-  airbrake
   annotate
   aws-sdk (< 2.0)
   axlsx
@@ -382,6 +380,7 @@ DEPENDENCIES
   redis
   redis-rails
   redis-store
+  rollbar
   rspec-rails
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
