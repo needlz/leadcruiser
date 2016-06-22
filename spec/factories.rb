@@ -94,8 +94,15 @@ module FactoryHelper
       success true
     end
 
+
     factory :block_list, class: 'BlockList' do
       active true
+    end
+    
+    factory :affiliate, class: 'Affiliate' do
+    end
+
+    factory :site, class: 'Site' do
     end
   end
 end
