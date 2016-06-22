@@ -35,6 +35,10 @@ class ClientsVertical < ActiveRecord::Base
   belongs_to :vertical
 
   has_many :transaction_attempts, foreign_key: 'id', primary_key: 'client_id'
+  has_many :clicks_purchase_orders
+
+  scope :active_to_be_displayed, -> { where('display = true and active = true') }
+  scope :ordered, -> { order(sort_order: :asc) }
 
   has_attached_file :logo,
                     :styles => {

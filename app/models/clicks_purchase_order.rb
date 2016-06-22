@@ -21,6 +21,12 @@
 #
 
 class ClicksPurchaseOrder < ActiveRecord::Base
-	belongs_to :clients_vertical, foreign_key: 'clients_vertical_id', primary_key: 'id'
-	belongs_to :tracking_page, foreign_key: 'page_id', primary_key: 'id'
+  belongs_to :clients_vertical, foreign_key: 'clients_vertical_id', primary_key: 'id'
+  belongs_to :tracking_page, foreign_key: 'page_id', primary_key: 'id'
+
+	scope :active_with_tracking_page, -> { where('page_id IS NOT NULL and active = true') }
+
+  def total_price
+    price.to_f + weight.to_f
+  end
 end

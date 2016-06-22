@@ -35,7 +35,7 @@ class ClicksReportsController < ApplicationController
       total_price = 0
       clicks.each do |ck|
         total_clicks += 1;
-        if ck.status == Click::SOLD
+        if ck.sold?
           sold_clicks += 1;
 
           price = 0
@@ -163,7 +163,7 @@ class ClicksReportsController < ApplicationController
 
         click_list_by_date = hash_by_date[date_key]
         for j in 0..click_list_by_date.length-1
-          if click_list_by_date[j].status == Click::SOLD
+          if click_list_by_date[j].sold?
             sold_clicks += 1
             sold_price += click_list_by_date[j].try(:clicks_purchase_order).try(:price).to_f
             sold_price += click_list_by_date[j].try(:clicks_purchase_order).try(:weight).to_f
