@@ -7,6 +7,8 @@ require 'lead_validation'
 class API::V1::LeadsController  < ActionController::API
   include ActionView::Helpers::NumberHelper
 
+  before_filter :authorize
+
   GETHEALTHCARE_LEAD_TYPE = '21'
 
   def index
@@ -261,6 +263,11 @@ class API::V1::LeadsController  < ActionController::API
                                 :birth_year, :gender, :conditions)
   end
 
-end
+  def authorize
+    site = Site.find(params[:lead][:site_id])
 
-    
+    affiliate = site.try(:affiliate)
+    head :unauthorized if affiliate && affiliate.token != params[:token]
+  end
+
+end
