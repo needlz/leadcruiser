@@ -8,7 +8,7 @@ class ClicksPurchaseOrderBuilder
     orders_list = []
 
     client_list.each do |client|
-      purchase_orders = client.clicks_purchase_orders.active_with_page
+      purchase_orders = client.clicks_purchase_orders.active_with_tracking_page
       next if purchase_orders.empty?
 
       price = max_price purchase_orders
