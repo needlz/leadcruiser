@@ -94,7 +94,6 @@ module FactoryHelper
       success true
     end
 
-
     factory :block_list, class: 'BlockList' do
       active true
     end
