@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160609122503) do
+ActiveRecord::Schema.define(version: 20160623085147) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -358,7 +358,7 @@ ActiveRecord::Schema.define(version: 20160609122503) do
     t.string   "session_hash"
     t.integer  "site_id"
     t.string   "visitor_ip"
-    t.string   "referring_url"
+    t.text     "referring_url"
     t.string   "referring_domain"
     t.string   "landing_page"
     t.string   "keywords"
