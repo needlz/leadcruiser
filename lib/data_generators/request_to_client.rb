@@ -31,7 +31,7 @@ class RequestToClient
   end
 
   def success?
-    !response["success"].nil? && response["success"]
+    response["success"]
   end
 
   def rejection_reason

@@ -17,13 +17,11 @@ class ForwardLeadToClientRequest
 
     # Check Responses table and return with JSON response
     response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
-    if response_list.blank?
-      lead.update_attributes(status: Lead::NO_POS)
-    end
+    lead.update_attributes(status: Lead::NO_POS) if response_list.blank?
   end
 
-  def save_response(lead, generator, client, purchase_order, duration)
-    SendDataWorker.check_response(lead, generator, client, purchase_order, duration)
+  def save_response(*args)
+    SendDataWorker.check_response(*args)
   end
 
 end

@@ -56,11 +56,7 @@ ActiveAdmin.register Lead do
     column :email
     column "Pre existing Condition" do |lead|
       if lead.pet_insurance?
-        if lead.details_pets.first.conditions
-          "True"
-        else
-          "False"
-        end
+        lead.details_pets.first.conditions ? "True" : "False"
       end
     end
     column :times_sold
