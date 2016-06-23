@@ -267,7 +267,8 @@ class API::V1::LeadsController  < ActionController::API
     site = Site.find(params[:lead][:site_id])
 
     affiliate = site.try(:affiliate)
-    head :unauthorized if affiliate && affiliate.token != params[:token]
-  end
+    return unless affiliate
 
+    head :unauthorized if affiliate.token != params[:token]
+  end
 end

@@ -11,33 +11,33 @@ describe API::V1::LeadsController, type: :request do
   let!(:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
   let(:site) { create(:site) }
   let(:correct_data) { { first_name: 'John',
-                          last_name: 'Doe',
-                          session_hash: session_hash,
-                          vertical_id: vertical.id,
-                          site_id: site.id,
-                          city: 'New York',
-                          state:'NY',
-                          zip: 10004,
-                          day_phone: '2-12-22',
-                          email: 'test@example.com' } }
+                         last_name: 'Doe',
+                         session_hash: session_hash,
+                         vertical_id: vertical.id,
+                         site_id: site.id,
+                         city: 'New York',
+                         state:'NY',
+                         zip: 10004,
+                         day_phone: '2-12-22',
+                         email: 'test@example.com' } }
   let(:pet_data) { { species: 'cat',
-                      spayed_or_neutered: 'false',
-                      pet_name: 'kitty',
-                      breed: 'sphinx',
-                      birth_month: 12,
-                      birth_year: 1998,
-                      gender: 'male',
-                      conditions: false } }
+                     spayed_or_neutered: 'false',
+                     pet_name: 'kitty',
+                     breed: 'sphinx',
+                     birth_month: 12,
+                     birth_year: 1998,
+                     gender: 'male',
+                     conditions: false } }
   let(:wrong_data) { correct_data.except(:first_name) }
   let(:wrong_pet_data) { { species: '',
-                            spayed_or_neutered: '',
-                            pet_name: '',
-                            breed: '',
-                            birth_month: 12,
-                            birth_year: 1998,
-                            gender: '',
-                            conditions: false } }
-  let(:data_with_sold_state) { correct_data.merge({status: 'sold'}) }
+                           spayed_or_neutered: '',
+                           pet_name: '',
+                           breed: '',
+                           birth_month: 12,
+                           birth_year: 1998,
+                           gender: '',
+                           conditions: false } }
+  let(:data_with_sold_state) { correct_data.merge({ status: 'sold' }) }
 
   before do
     stub_request(:get, "https://api.smartystreets.com/zipcode?auth-id=&auth-token=&zipcode=10004").
@@ -128,7 +128,7 @@ describe API::V1::LeadsController, type: :request do
 
   describe '#authorize' do
 
-    context 'if site has not any affiliate related to' do
+    context 'if site has no affiliate related to' do
       let(:site) { create(:site) }
       let(:correct_data) { { first_name: 'John',
                              last_name: 'Doe',
@@ -142,7 +142,7 @@ describe API::V1::LeadsController, type: :request do
                              email: 'test@example.com' } }
 
       it 'creates lead' do
-        expect{ api_post 'leads', lead: correct_data, pet: pet_data }.to change{Lead.count}.from(0).to(1)
+        expect{ api_post 'leads', lead: correct_data, pet: pet_data }.to change{ Lead.count }.from(0).to(1)
       end
     end
 
@@ -163,12 +163,8 @@ describe API::V1::LeadsController, type: :request do
       context 'when token given in params' do
         context 'and it equals to stored token' do
           it 'creates lead' do
-            expect do
-              api_post 'leads',
-              lead: correct_data,
-              pet: pet_data,
-              token: affiliate.token
-            end.to change{Lead.count}.from(0).to(1)
+            expect{ api_post 'leads', lead: correct_data, pet: pet_data, token: affiliate.token }
+                .to change{ Lead.count }.from(0).to(1)
           end
         end
 

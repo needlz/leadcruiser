@@ -5,7 +5,8 @@ RSpec.describe Affiliate, type: :model do
     it 'should not create' do
       affiliate = Affiliate.new
 
-      expect { affiliate.save! }.to raise_error( ActiveRecord::RecordInvalid, "Validation failed: Token can't be blank" )
+      expect { affiliate.save! }.to raise_error( ActiveRecord::RecordInvalid,
+                                                 "Validation failed: Token can't be blank" )
     end
   end
 
@@ -15,7 +16,8 @@ RSpec.describe Affiliate, type: :model do
     it 'should not create' do
       affiliate = Affiliate.new(token:'token')
 
-      expect { affiliate.save! }.to raise_error( ActiveRecord::RecordInvalid, "Validation failed: Token has already been taken" )
+      expect { affiliate.save! }.to raise_error( ActiveRecord::RecordInvalid,
+                                                 "Validation failed: Token has already been taken" )
     end
   end
 
