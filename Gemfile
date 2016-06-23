@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.1.6'
+ruby '2.3.0'
+gem 'rails', '~> 4.2.0'
 gem "rspec-rails", group: [:development, :test]
-# Use sqlite3 as the database for Active Record
 gem 'pg'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
@@ -75,3 +75,7 @@ gem 'rollbar'
 group :test do
   gem 'webmock'
 end
+
+gem 'awesome_print', require: 'ap'
+gem 'quiet_assets'
+gem 'velocify'

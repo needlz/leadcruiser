@@ -18,7 +18,8 @@ module Leadcruiser
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
-    config.autoload_paths += %W(#{config.root}/app/logic)
+    autoload_paths = %w[app/logic lib/data_generators]
+    config.autoload_paths += autoload_paths.map { |dir| "#{ config.root }/#{ dir }" }
     config.middleware.use ActionDispatch::Flash
     config.api_only = false
 
@@ -29,5 +30,7 @@ module Leadcruiser
     Obscenity.configure do |config|
       config.blacklist   = "config/blacklist.yml"
     end
+
+    config.active_record.raise_in_transactional_callbacks = true
   end
 end

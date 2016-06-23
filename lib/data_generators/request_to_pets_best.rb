@@ -1,8 +1,6 @@
-class PetsBestGenerator
+class RequestToPetsBest < RequestToClient
 
   LINK = ""
-
-  attr_accessor :lead
 
   def initialize(lead)
     @lead = lead
@@ -47,6 +45,20 @@ class PetsBestGenerator
     end
 
     return query
+  end
+
+  def perform_http_request(exclusive)
+    HTTParty.get request_url,
+                 :query => generate(exclusive),
+                 :timeout => client.timeout
+  end
+
+  def success?
+    response["Status"] == "Success" && response["Message"].nil?
+  end
+
+  def rejection_reason
+    response["Message"].to_s
   end
 
 end

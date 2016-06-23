@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   get 'clicks_reports/:clients_vertical_id/by_client', :to => 'clicks_reports#by_client', :as => 'clicks_reports_by_client'
   namespace :api do
     namespace :v1 do
-      with_options only: :create do |option|
+      with_options only: [:create, :index] do |option|
         option.resources :leads
         option.resources :visitors
         option.resources :clicks

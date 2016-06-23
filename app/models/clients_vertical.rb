@@ -47,12 +47,15 @@ class ClientsVertical < ActiveRecord::Base
                     }
 
   validates_attachment_content_type :logo, :content_type => /\Aimage\/.*\Z/
+  validates :lead_forwarding_delay_seconds, numericality: { greater_than_or_equal_to: 0 }
 
   PET_PREMIUM   = "pet_premium"
   PET_FIRST     = "pet_first"
   PETS_BEST     = "pets_best"
   HEALTHY_PAWS  = "healthy_paws"
   VET_CARE_HEALTH = "vet_care_health"
+
+  BOBERDOO = 'boberdoo'
   
   def refresh_queue
     self.vertical.update_attributes(next_client: nil)
