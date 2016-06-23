@@ -22,6 +22,7 @@ namespace :health_insurance do
                               request_type: '',
                               display: true,
                               exclusive: true,
+                              lead_forwarding_delay_seconds: 30,
                               timeout: 10) unless client
       tracking_page = TrackingPage.find_by_link('http://gethealthcare.co')
       ClicksPurchaseOrder.create!(total_count: 0,
@@ -52,6 +53,7 @@ namespace :health_insurance do
                                        request_type: '',
                                        display: true,
                                        exclusive: true,
+                                       lead_forwarding_delay_seconds: 0,
                                        timeout: 10) unless client
       tracking_page = TrackingPage.find_by_link('http://gethealthcare.co')
       ClicksPurchaseOrder.create!(total_count: 0,

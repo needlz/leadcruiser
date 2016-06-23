@@ -21,10 +21,10 @@ class SendDataWorker
     shared_po_length = po_builder.shared_pos_length
 
     if exclusive_po_length == 0
-      record_transaction lead_id, nil, nil, nil, nil, false, nil, NO_EXCLUSIVE_POS, nil
+      SendDataWorker.record_transaction lead_id, nil, nil, nil, nil, false, nil, NO_EXCLUSIVE_POS, nil
     end
     if shared_po_length == 0
-      record_transaction lead_id, nil, nil, nil, nil, false, nil, NO_SHARED_POS, nil
+      SendDataWorker.record_transaction lead_id, nil, nil, nil, nil, false, nil, NO_SHARED_POS, nil
     end
 
     # Initialize algorithm variables
@@ -167,7 +167,7 @@ class SendDataWorker
   def self.record_transaction(
     lead_id, client_id=nil, po_id=nil, price=nil, weight=nil, success=false,
       exclusive_selling=nil, reason=nil, response_id=nil)
-    unless lead_id.nil?
+    if lead_id
       TransactionAttempt.create(
         lead_id: lead_id,
         client_id: client_id,

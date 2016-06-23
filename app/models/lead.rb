@@ -112,7 +112,7 @@ class Lead < ActiveRecord::Base
   end
 
   def pet_insurance?
-    vertical_id == Vertical.pet_insurance.id
+    Vertical.pet_insurance && vertical_id == Vertical.pet_insurance.id
   end
 
   private

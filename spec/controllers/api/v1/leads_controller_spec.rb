@@ -98,7 +98,6 @@ describe API::V1::LeadsController, type: :request do
     let! (:vertical) { create(:vertical, name: Vertical::HEALTH_INSURANCE) }
     let (:params) { {
         session_hash: 'session hash',
-        pet: pet_data,
         site_id: '1',
         form_id: '1',
         TYPE: '21',
@@ -186,7 +185,7 @@ describe API::V1::LeadsController, type: :request do
         zip: "60610",
         day_phone: "3125554811",
         email: "test@nags.us",
-        birth_date: 'Tue, 23 Dec 1980',
+        birth_date: Date.strptime('12/23/1980', '%m/%d/%Y'),
         gender:"Male",
         vertical_id: 1,
         visitor_ip: "75.2.92.149"

@@ -1,8 +1,8 @@
 class ClicksPurchaseOrderBuilder
 	include ActionView::Helpers::NumberHelper
 
-	def po_available_clients
-    client_list = ClientsVertical.active_to_be_displayed.ordered
+	def po_available_clients(vertical)
+    client_list = vertical.clients_verticals.active_to_be_displayed.ordered
     return [] if client_list.empty?
 
     orders_list = []

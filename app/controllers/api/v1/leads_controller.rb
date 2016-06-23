@@ -175,10 +175,10 @@ class API::V1::LeadsController  < ActionController::API
         end
 
         # Testing dispotiion, Test No Sale
-        # if lead.first_name.downcase == Lead::TEST_TERM || lead.last_name.downcase == Lead::TEST_TERM
-        #   lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::TEST_NO_SALE)
-        #   render json: { errors: Lead::TEST_NO_SALE, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
-        # end
+        if lead.first_name.downcase == Lead::TEST_TERM || lead.last_name.downcase == Lead::TEST_TERM
+          lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::TEST_NO_SALE)
+          render json: { errors: Lead::TEST_NO_SALE, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
+        end
 
         # Profanities Filter : first name, last name, email
         filter_txt = [lead.first_name, lead.last_name, lead.email].join(' ')

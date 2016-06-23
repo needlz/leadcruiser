@@ -30,5 +30,7 @@ module Leadcruiser
     Obscenity.configure do |config|
       config.blacklist   = "config/blacklist.yml"
     end
+
+    config.active_record.raise_in_transactional_callbacks = true
   end
 end

@@ -55,10 +55,12 @@ ActiveAdmin.register Lead do
     column :state
     column :email
     column "Pre existing Condition" do |lead|
-      if lead.details_pets.first.conditions
-        "True"
-      else
-        "False"
+      if lead.pet_insurance?
+        if lead.details_pets.first.conditions
+          "True"
+        else
+          "False"
+        end
       end
     end
     column :times_sold
