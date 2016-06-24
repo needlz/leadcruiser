@@ -97,5 +97,12 @@ module FactoryHelper
     factory :block_list, class: 'BlockList' do
       active true
     end
+    
+    factory :affiliate, class: 'Affiliate' do
+      token '85eba0237061721168876355e4607d47'
+    end
+
+    factory :site, class: 'Site' do
+    end
   end
 end

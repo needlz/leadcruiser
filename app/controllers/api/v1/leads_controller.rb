@@ -7,20 +7,22 @@ require 'lead_validation'
 class API::V1::LeadsController  < ActionController::API
   include ActionView::Helpers::NumberHelper
 
+  before_filter :authorize
+
   GETHEALTHCARE_LEAD_TYPE = '21'
 
   def index
-    return handle_health_insurance_lead if health_insurace_lead?
+    return handle_health_insurance_lead if health_insurance_lead?
     render json: { errors: 'Unknown type' }, status: :unprocessable_entity
   end
 
   def create
-    health_insurace_lead? ? handle_health_insurance_lead : handle_pet_insurance_lead
+    health_insurance_lead? ? handle_health_insurance_lead : handle_pet_insurance_lead
   end
 
   private
 
-  def health_insurace_lead?
+  def health_insurance_lead?
     params[:TYPE] == GETHEALTHCARE_LEAD_TYPE
   end
 
@@ -261,6 +263,13 @@ class API::V1::LeadsController  < ActionController::API
                                 :birth_year, :gender, :conditions)
   end
 
-end
+  def authorize
+    site_id = params.try(:[], :lead).try(:[], :site_id) || params[:site_id]
+    site = Site.find(site_id)
 
-    
+    affiliate = site.try(:affiliate)
+    return unless affiliate
+
+    head :unauthorized if affiliate.token != params[:token]
+  end
+end

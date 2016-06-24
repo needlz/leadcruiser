@@ -9,11 +9,12 @@ describe API::V1::LeadsController, type: :request do
   let (:session_hash) { '#234-22' }
   let! (:vertical) { create(:vertical, name: Vertical::PET_INSURANCE) }
   let! (:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
+  let(:site) { create(:site) }
   let (:correct_data) { {first_name: 'John',
                          last_name: 'Doe',
                          session_hash: session_hash,
                          vertical_id: vertical.id,
-                         site_id: 1,
+                         site_id: site.id,
                          city: 'New York',
                          state: 'NY',
                          zip: 10004,
@@ -96,9 +97,10 @@ describe API::V1::LeadsController, type: :request do
 
   describe '#create with type 21' do
     let! (:vertical) { create(:vertical, name: Vertical::HEALTH_INSURANCE) }
-    let (:params) { {
+    let (:params) {
+      {
         session_hash: 'session hash',
-        site_id: '1',
+        site_id: site.id,
         form_id: '1',
         TYPE: '21',
         Test_Lead: '1',
@@ -121,7 +123,7 @@ describe API::V1::LeadsController, type: :request do
         Address_2: 'Address_2',
         City: 'Chicago',
         State: 'IL',
-        Zip: '60610',
+        Zip: 10004,
         Phone_Number: '3125554811',
         Email_Address: 'test@nags.us',
         FPL: '<138%M',
@@ -170,11 +172,13 @@ describe API::V1::LeadsController, type: :request do
         Child_4_Height_Inches: '15',
         Child_4_Weight: '7',
         Child_4_Tobacco_Use: 'Yes',
-        Child_4_Preexisting_Conditions:'Yes'
-    } }
-    let(:lead_result) { {
+        Child_4_Preexisting_Conditions: 'Yes'
+      }
+    }
+    let(:lead_result) {
+      {
         session_hash: "session hash",
-        site_id: 1,
+        site_id: site.id,
         form_id: 1,
         first_name: "John",
         last_name: "Doe",
@@ -182,76 +186,78 @@ describe API::V1::LeadsController, type: :request do
         address_2: 'Address_2',
         city: "Chicago",
         state: "IL",
-        zip: "60610",
+        zip: "10004",
         day_phone: "3125554811",
         email: "test@nags.us",
         birth_date: Date.strptime('12/23/1980', '%m/%d/%Y'),
         gender:"Male",
-        vertical_id: 1,
         visitor_ip: "75.2.92.149"
-    } }
+      }
+    }
 
-    let(:health_insurance_lead_result) { {
-      boberdoo_type: "21",
-      match_with_partner_id: "22.456",
-      skip_xsl: "1",
-      test_lead: "1",
-      redirect_url: "http://www.yoursite.com/",
-      src: "test",
-      sub_id: "12",
-      pub_id: "12345",
-      optout: "Optout",
-      imbx: "imbx",
-      ref: "Ref",
-      user_agent: "user_agent",
-      tsrc: "tsrc",
-      landing_page: "landing",
-      fpl: "<138%M",
-      age: 5,
-      height_feet: 12,
-      height_inches: 12,
-      weight: 8,
-      tobacco_use: "Yes",
-      preexisting_conditions: "Yes",
-      household_income: 6,
-      household_size: 6,
-      qualifying_life_event: "Lost/Losing Coverage",
-      spouse_gender: "Male",
-      spouse_age: 8,
-      spouse_height_feet: 12,
-      spouse_height_inches: 8,
-      spouse_weight: 11,
-      spouse_tobacco_use: "Yes",
-      spouse_preexisting_conditions: "Yes",
-      child_1_gender: "Male",
-      child_1_age: 6,
-      child_1_height_feet: 10,
-      child_1_height_inches: 6,
-      child_1_weight: 8,
-      child_1_tobacco_use: "Yes",
-      child_1_preexisting_conditions: "Yes",
-      child_2_gender: "Male",
-      child_2_age: 8,
-      child_2_height_feet: 11,
-      child_2_height_inches: 7,
-      child_2_weight: 4,
-      child_2_tobacco_use: "Yes",
-      child_2_preexisting_conditions: "Yes",
-      child_3_gender: "Male",
-      child_3_age: 9,
-      child_3_height_feet: 9,
-      child_3_height_inches: 9,
-      child_3_weight: 9,
-      child_3_tobacco_use: "Yes",
-      child_3_preexisting_conditions: "Yes",
-      child_4_gender: "Male",
-      child_4_age: 12,
-      child_4_height_feet: 15,
-      child_4_height_inches: 15,
-      child_4_weight: 7,
-      child_4_tobacco_use: "Yes",
-      child_4_preexisting_conditions: "Yes"
-    } }
+    let(:health_insurance_lead_result) {
+      {
+        boberdoo_type: "21",
+        match_with_partner_id: "22.456",
+        skip_xsl: "1",
+        test_lead: "1",
+        redirect_url: "http://www.yoursite.com/",
+        src: "test",
+        sub_id: "12",
+        pub_id: "12345",
+        optout: "Optout",
+        imbx: "imbx",
+        ref: "Ref",
+        user_agent: "user_agent",
+        tsrc: "tsrc",
+        landing_page: "landing",
+        fpl: "<138%M",
+        age: 5,
+        height_feet: 12,
+        height_inches: 12,
+        weight: 8,
+        tobacco_use: "Yes",
+        preexisting_conditions: "Yes",
+        household_income: 6,
+        household_size: 6,
+        qualifying_life_event: "Lost/Losing Coverage",
+        spouse_gender: "Male",
+        spouse_age: 8,
+        spouse_height_feet: 12,
+        spouse_height_inches: 8,
+        spouse_weight: 11,
+        spouse_tobacco_use: "Yes",
+        spouse_preexisting_conditions: "Yes",
+        child_1_gender: "Male",
+        child_1_age: 6,
+        child_1_height_feet: 10,
+        child_1_height_inches: 6,
+        child_1_weight: 8,
+        child_1_tobacco_use: "Yes",
+        child_1_preexisting_conditions: "Yes",
+        child_2_gender: "Male",
+        child_2_age: 8,
+        child_2_height_feet: 11,
+        child_2_height_inches: 7,
+        child_2_weight: 4,
+        child_2_tobacco_use: "Yes",
+        child_2_preexisting_conditions: "Yes",
+        child_3_gender: "Male",
+        child_3_age: 9,
+        child_3_height_feet: 9,
+        child_3_height_inches: 9,
+        child_3_weight: 9,
+        child_3_tobacco_use: "Yes",
+        child_3_preexisting_conditions: "Yes",
+        child_4_gender: "Male",
+        child_4_age: 12,
+        child_4_height_feet: 15,
+        child_4_height_inches: 15,
+        child_4_weight: 7,
+        child_4_tobacco_use: "Yes",
+        child_4_preexisting_conditions: "Yes"
+      }
+    }
 
     it 'should create correct lead' do
       expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
