@@ -264,7 +264,8 @@ class API::V1::LeadsController  < ActionController::API
   end
 
   def authorize
-    site = Site.find(params[:lead][:site_id])
+    site_id = params.try(:[], :lead).try(:[], :site_id) || params[:site_id]
+    site = Site.find(site_id)
 
     affiliate = site.try(:affiliate)
     return unless affiliate

@@ -7,7 +7,7 @@ describe API::V1::LeadsController, type: :request do
     "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
   end
   let(:session_hash) { '#234-22' }
-  let!(:vertical) { create(:vertical) }
+  let!(:vertical) { create(:vertical, name: Vertical::PET_INSURANCE) }
   let!(:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
   let(:site) { create(:site) }
   let(:correct_data) { { first_name: 'John',
@@ -16,7 +16,7 @@ describe API::V1::LeadsController, type: :request do
                          vertical_id: vertical.id,
                          site_id: site.id,
                          city: 'New York',
-                         state:'NY',
+                         state: 'NY',
                          zip: 10004,
                          day_phone: '2-12-22',
                          email: 'test@example.com' } }
