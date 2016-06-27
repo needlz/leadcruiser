@@ -97,5 +97,9 @@ module FactoryHelper
     factory :block_list, class: 'BlockList' do
       active true
     end
+
+    factory :visitor, class: 'Visitor' do
+      session_hash "r6ut84b8pfjem64r3lib7fme33"
+    end
   end
 end
