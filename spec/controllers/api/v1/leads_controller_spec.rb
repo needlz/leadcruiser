@@ -261,6 +261,14 @@ describe API::V1::LeadsController, type: :request do
       expect(new_lead.attributes.symbolize_keys).to include (lead_result)
     end
 
+    it 'grant uniqueness of lead email' do
+      expect(ForwardHealthInsuranceLead).to receive(:perform).once
+      expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
+      expect(Lead.last.status).to be_nil
+      expect{ api_post 'leads', params }.to change { Lead.count}.from(1).to(2)
+      expect(Lead.last.status).to eq (Lead::DUPLICATED)
+    end
+
     it 'should create correct health insurance lead' do
       expect{ api_post 'leads', params }.to change { HealthInsuranceLead.count}.from(0).to(1)
 

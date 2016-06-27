@@ -147,37 +147,25 @@ class API::V1::LeadsController  < ActionController::API
 
   def handle_health_insurance_lead
     @vertical = Vertical.health_insurance
-    lead_params = permit_lead_params
     form = HealthInsuranceLeadForm.new(params)
     ActiveRecord::Base.transaction do
       lead = Lead.new(form.lead_attributes)
 
       if lead.save
         # If it is duplicated, it would not be sold
-        duplicated = LeadValidation.duplicated_lead(lead_params[:email], lead_params[:vertical_id], lead_params[:site_id])
+        duplicated = Lead.where(email: form.lead_attributes[:email],
+                                  vertical_id: form.lead_attributes[:vertical_id],
+                                  site_id: form.lead_attributes[:site_id]).count > 1
 
         if duplicated
           lead.update_attributes(:status => Lead::DUPLICATED)
           render json: { errors: "The email address of this lead was duplicated", :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
         end
 
-        # If the visitors are in block lists, it would be not be sold
-        if LeadValidation.blocked(lead)
-          lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::IP_BLOCKED)
-          render json: { errors: "Your IP address was blocked", :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
-        end
-
         # Testing dispotiion, Test No Sale
         if lead.first_name.downcase == Lead::TEST_TERM || lead.last_name.downcase == Lead::TEST_TERM
           lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::TEST_NO_SALE)
           render json: { errors: Lead::TEST_NO_SALE, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
-        end
-
-        # Profanities Filter : first name, last name, email
-        filter_txt = [lead.first_name, lead.last_name, lead.email].join(' ')
-        if Obscenity.profane?(filter_txt)
-          lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::PROFANITY)
-          render json: { errors: Lead::PROFANITY, :other_client => all_po_client_list.to_json}, status: :unprocessable_entity and return
         end
 
         # Testing dispotiion, Test Sale
@@ -188,7 +176,7 @@ class API::V1::LeadsController  < ActionController::API
         HealthInsuranceLead.create!(form.health_insurance_lead_attributes.merge({ lead_id: lead.id }))
         # AutoResponseThankWorker.perform_async(lead.email)
 
-        ForwardHealthInsuranceLead.perform(lead)
+        ForwardHealthInsuranceLead.perform(lead) if lead.status.nil?
 
         render json: {
           :success => true,
