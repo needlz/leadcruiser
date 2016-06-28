@@ -2,22 +2,24 @@ ActiveAdmin.register TransactionAttempt do
 
   menu priority: 4
 
-  filter  :lead,
-          :as => :select,
-          :collection => Lead.select(:id).order(id: :asc).pluck(:id, :id)
-  filter  :purchase_order,
-          :as => :select,
-          :collection => PurchaseOrder.select(:id).order(id: :asc).pluck(:id, :id)
-  filter  :response,
-          :as => :select,
-          :collection => Response.select(:id).order(id: :asc).pluck(:id, :id)
-  filter  :clients_vertical,
-          :as => :select,
-          :collection => ClientsVertical.select(:integration_name, :id).uniq.pluck(:integration_name, :id)
-  filter :price
-  filter :success
-  filter :exclusive_selling
-  filter :created_at
+  if ActiveRecord::Base.connection.table_exists?('leads')
+    filter  :lead,
+            :as => :select,
+            :collection => Lead.select(:id).order(id: :asc).pluck(:id, :id)
+    filter  :purchase_order,
+            :as => :select,
+            :collection => PurchaseOrder.select(:id).order(id: :asc).pluck(:id, :id)
+    filter  :response,
+            :as => :select,
+            :collection => Response.select(:id).order(id: :asc).pluck(:id, :id)
+    filter  :clients_vertical,
+            :as => :select,
+            :collection => ClientsVertical.select(:integration_name, :id).uniq.pluck(:integration_name, :id)
+    filter :price
+    filter :success
+    filter :exclusive_selling
+    filter :created_at
+  end
 
   index do
     id_column

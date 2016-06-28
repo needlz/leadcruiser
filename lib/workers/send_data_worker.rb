@@ -21,10 +21,14 @@ class SendDataWorker
     shared_po_length = po_builder.shared_pos_length
 
     if exclusive_po_length == 0
-      SendDataWorker.record_transaction lead_id, nil, nil, nil, nil, false, nil, NO_EXCLUSIVE_POS, nil
+      SendDataWorker.record_transaction(lead_id: lead_id,
+                                        success: false,
+                                        reason: NO_EXCLUSIVE_POS)
     end
     if shared_po_length == 0
-      SendDataWorker.record_transaction lead_id, nil, nil, nil, nil, false, nil, NO_SHARED_POS, nil
+      SendDataWorker.record_transaction(lead_id: lead_id,
+                                        success: false,
+                                        reason: NO_SHARED_POS)
     end
 
     # Initialize algorithm variables
@@ -164,22 +168,8 @@ class SendDataWorker
     end
   end
 
-  def self.record_transaction(
-    lead_id, client_id=nil, po_id=nil, price=nil, weight=nil, success=false,
-      exclusive_selling=nil, reason=nil, response_id=nil)
-    if lead_id
-      TransactionAttempt.create(
-        lead_id: lead_id,
-        client_id: client_id,
-        purchase_order_id: po_id,
-        price: price,
-        weight: weight,
-        success: success,
-        exclusive_selling: exclusive_selling,
-        reason: reason,
-        response_id: response_id
-      )
-    end
+  def self.record_transaction(transaction_attributes)
+    TransactionAttempt.create(transaction_attributes) if transaction_attributes[:lead_id]
   end
 
   def self.check_response(lead, generator, client, purchase_order, response_time, exclusive_selling=false)
@@ -198,8 +188,15 @@ class SendDataWorker
 
         # Record transaction history
         po_history = PurchaseOrder.find purchase_order[:id]
-        record_transaction lead.id, client.id, purchase_order[:id], po_history.price, po_history.weight, false, exclusive_selling, response, resp_model.id
-
+        record_transaction(lead_id: lead.id,
+                           client_id: client.id,
+                           purchase_order_id: purchase_order[:id],
+                           price: po_history.price,
+                           weight: po_history.weight,
+                           success: false,
+                           exclusive_selling: exclusive_selling,
+                           reason: response,
+                           response_id: resp_model.id)
         return sold
       end
 
@@ -240,23 +237,46 @@ class SendDataWorker
 
         # Record transaction history
         po_history = PurchaseOrder.find purchase_order[:id]
-        record_transaction lead.id, client.id, resp_model.purchase_order_id, po_history.price, po_history.weight, true, exclusive_selling, nil, resp_model.id
-
-        sold = true        
+        record_transaction(        lead_id: lead.id,
+                                   client_id: client.id,
+                                   purchase_order_id: resp_model.purchase_order_id,
+                                   price: po_history.price,
+                                   weight: po_history.weight,
+                                   success: true,
+                                   exclusive_selling: exclusive_selling,
+                                   reason: nil,
+                                   response_id: resp_model.id)
+        sold = true
       elsif !sold && !resp_model.nil?
         resp_model.update_attributes :rejection_reasons => rejection_reasons
 
         # Record transaction history
         po_history = PurchaseOrder.find purchase_order[:id]
-        record_transaction lead.id, client.id, purchase_order[:id], po_history.price, po_history.weight, false, exclusive_selling, rejection_reasons, resp_model.id
+        record_transaction(        lead_id: lead.id,
+                                   client_id: client.id,
+                                   purchase_order_id: purchase_order[:id],
+                                   price: po_history.price,
+                                   weight: po_history.weight,
+                                   success: false,
+                                   exclusive_selling: exclusive_selling,
+                                   reason: rejection_reasons,
+                                   response_id: resp_model.id)
       end
     else
       sold = false
       
       # Record transaction history
       po_history = PurchaseOrder.find purchase_order[:id]
-      record_transaction lead.id, client.id, purchase_order[:id], po_history.price, po_history.weight, false, exclusive_selling, NIL_RESPONSE, nil
-    end    
+      record_transaction(        lead_id: lead.id,
+                                 client_id: client.id,
+                                 purchase_order_id: purchase_order[:id],
+                                 price: po_history.price,
+                                 weight: po_history.weight,
+                                 success: false,
+                                 exclusive_selling: exclusive_selling,
+                                 reason: NIL_RESPONSE,
+                                 response_id: nil)
+    end
 
     sold
   end
