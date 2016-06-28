@@ -2,8 +2,8 @@ class API::V1::ClientsController < ActionController::API
   include ActionView::Helpers::NumberHelper
 
   def create
-    clicks_po_builder = ClicksPurchaseOrderBuilder.new
-    final_po_list = clicks_po_builder.po_available_clients(Vertical.find(params[:vertical_id]))
+    clicks_po_builder = ClicksPurchaseOrderQuery.new
+    final_po_list = clicks_po_builder.orders_of_available_clients(Vertical.find(params[:vertical_id]))
 
     if final_po_list.length != 0
       clients = []

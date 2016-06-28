@@ -36,10 +36,11 @@ class API::V1::LeadsController  < ActionController::API
     query_param["auth-id"]    = ENV["SMARTYSTREETS_AUTH_ID"]
     query_param["auth-token"] = ENV["SMARTYSTREETS_AUTH_TOKEN"]
 
-    state_response = HTTParty.get "https://api.smartystreets.com/zipcode?", :query => query_param
-    unless state_response[0]["city_states"].nil?
-      lead_params[:state] = state_response[0]["city_states"][0]["state_abbreviation"]
-      lead_params[:city] = state_response[0]["city_states"][0]["city"]
+    state_response = HTTParty.get "https://api.smartystreets.com/zipcode?", query: query_param
+    city_and_state = state_response[0]["city_states"]
+    if city_and_state.present?
+      lead_params[:state] = city_and_state[0]["state_abbreviation"]
+      lead_params[:city] = city_and_state[0]["city"]
     end
 
     @vertical = Vertical.pet_insurance
@@ -59,57 +60,16 @@ class API::V1::LeadsController  < ActionController::API
       SendDataWorker.new.perform(lead.id)
 
       # Check Responses table and return with JSON response
-      response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
-      if !response_list.nil? && response_list.length != 0
+      successful_clients_responses = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
+      if successful_clients_responses.present?
 
         # Send email to administrator
-        response_id_list = []
-        for i in 0..response_list.length - 1
-          response_id_list << response_list[i].id
-        end
-        SendEmailWorker.perform_async(response_id_list, lead.id)
-        # SendEmailWorker.new.perform(response_list, lead)
+        SendEmailWorker.perform_async(successful_clients_responses.map(&:id), lead.id)
 
         # Concatenate JSON Response of other clients list
-        sold_client_name_list = []
-        sold_clients = []
-        response_list.each do |response|
-          sold_client_name_list << response.client_name
+        response = success_response(lead, successful_clients_responses)
 
-          cv = ClientsVertical.find_by_integration_name(response.client_name)
-          # If sold client is Pets Best, return redirect URL
-          redirect_url = cv.website_url
-          if cv.integration_name == ClientsVertical::PETS_BEST
-            resp_str = response.response.gsub("=>", ":")
-            resp_str = resp_str.gsub("nil", "\"nil\"")
-            resp_json = JSON.parse(resp_str)
-            # redirect_url = resp_json["QuoteRetrievalUrl"]
-            redirect_url = cv.service_url + "/?" + resp_json["OriginalQuerystring"]
-            redirect_url["aqr=true"] = "aqr=false"
-            redirect_url["Json=true"] = "Json=false"
-          elsif cv.integration_name == ClientsVertical::HEALTHY_PAWS
-            redirect_url += "/quote/retrievequote?sessionid="
-            redirect_url += lead.email
-          end
-          sold_clients << JSON[cv_json(cv, redirect_url)]
-        end
-
-        # Get other client list by clicks_purchase_order
-        clicks_purchase_order_builder = ClicksPurchaseOrderBuilder.new
-        all_clients_list = clicks_purchase_order_builder.po_available_clients(vertical)
-
-        other_clients = []
-        all_clients_list.each do |cpo_client|
-          unless sold_client_name_list.include? cpo_client.clients_vertical.try(:integration_name)
-            other_clients << JSON[cpo_cv_json(cpo_client)]
-          end
-        end
-
-        render json: {
-          success: true,
-          client: sold_clients.to_json,
-          other_client: other_clients.to_json
-        }, status: :created
+        render json: response, status: :created
       else
         lead.update_attributes :status => Lead::NO_POS
         render json: { errors: error.gsub("[pets_name]", pet["pet_name"]),
@@ -121,6 +81,51 @@ class API::V1::LeadsController  < ActionController::API
                      other_client: all_po_client_list.to_json },
              status: :unprocessable_entity
     end
+  end
+
+  def success_response(lead, clients_responses)
+    sold_clients_names = []
+    sold_clients = []
+    clients_responses.each do |response|
+      sold_clients_names << response.client_name
+      client = ClientsVertical.find_by_integration_name(response.client_name)
+      redirect_url = client.website_url
+      # If sold client is Pets Best, return redirect URL
+      redirect_url = redirect_url_from_response(client, lead, redirect_url, response)
+      sold_clients << JSON[client_to_json(client, redirect_url)]
+    end
+
+    # Get other client list by clicks_purchase_order
+    clicks_purchase_order_query = ClicksPurchaseOrderQuery.new
+    clicks_purchase_orders = clicks_purchase_order_query.orders_of_available_clients(vertical)
+
+    other_clients = []
+    clicks_purchase_orders.each do |clicks_purchase_order|
+      client_name = clicks_purchase_order.clients_vertical.try(:integration_name)
+      sold_to_client = sold_clients_names.include?(client_name)
+      other_clients << JSON[client_of_order_to_json(clicks_purchase_order)] unless sold_to_client
+    end
+
+    {
+      success: true,
+      client: sold_clients.to_json,
+      other_client: other_clients.to_json
+    }
+  end
+
+  def redirect_url_from_response(client, lead, redirect_url, response)
+    if client.integration_name == ClientsVertical::PETS_BEST
+      resp_str = response.response.gsub("=>", ":")
+      resp_str = resp_str.gsub("nil", "\"nil\"")
+      resp_json = JSON.parse(resp_str)
+      redirect_url = client.service_url + "/?" + resp_json["OriginalQuerystring"]
+      redirect_url["aqr=true"] = "aqr=false"
+      redirect_url["Json=true"] = "Json=false"
+    elsif client.integration_name == ClientsVertical::HEALTHY_PAWS
+      redirect_url += "/quote/retrievequote?sessionid="
+      redirect_url += lead.email
+    end
+    redirect_url
   end
 
   def handle_health_insurance_lead
@@ -153,52 +158,52 @@ class API::V1::LeadsController  < ActionController::API
   end
 
   def all_po_client_list
-    clicks_purchase_order_builder = ClicksPurchaseOrderBuilder.new
+    clicks_purchase_order_builder = ClicksPurchaseOrderQuery.new
 
-    all_cpo_clients = clicks_purchase_order_builder.po_available_clients(@vertical)
+    all_cpo_clients = clicks_purchase_order_builder.orders_of_available_clients(@vertical)
     
     other_clients = []
     all_cpo_clients.each do |other_cv|
-      other_clients << JSON[cpo_cv_json(other_cv)]
+      other_clients << JSON[client_of_order_to_json(other_cv)]
     end
 
     return other_clients
   end
   
-  def cv_json(cv, redirect_url = nil)
-    po_cv = ClicksPurchaseOrder.find_by('clients_vertical_id = ? and page_id IS NOT NULL and active = true', cv.id)
+  def client_to_json(client, redirect_url = nil)
+    clicks_purchase_order = ClicksPurchaseOrder.find_by('clients_vertical_id = ? and page_id IS NOT NULL and active = true', client.id)
     {
-      :clients_vertical_id => cv.id,
-      :integration_name   => cv.integration_name,
-      :email              => cv.email,
-      :phone_number       => cv.phone_number,
-      :website_url        => cv.website_url,
-      :official_name      => cv.official_name,
-      :description        => cv.description,
-      :logo_url           => cv.logo.url,
-      :sort_order         => cv.sort_order,
-      :display            => cv.display,
-      :redirect_url       => redirect_url,
-      :page_id            => (po_cv ? po_cv.page_id : 0),
-      :clicks_purchase_order_id  => (po_cv ? po_cv.id : 0)
+      clients_vertical_id: client.id,
+      integration_name: client.integration_name,
+      email: client.email,
+      phone_number: client.phone_number,
+      website_url: client.website_url,
+      official_name: client.official_name,
+      description: client.description,
+      logo_url: client.logo.url,
+      sort_order: client.sort_order,
+      display: client.display,
+      redirect_url: redirect_url,
+      page_id: (clicks_purchase_order ? clicks_purchase_order.page_id : 0),
+      clicks_purchase_order_id: (clicks_purchase_order ? clicks_purchase_order.id : 0)
     }   
   end
 
-  def cpo_cv_json(po_cv)
-    client = po_cv.clients_vertical
+  def client_of_order_to_json(clicks_purchase_order)
+    client = clicks_purchase_order.clients_vertical
     {
-      :clients_vertical_id => client.id,
-      :integration_name   => client.integration_name,
-      :email              => client.email,
-      :phone_number       => client.phone_number,
-      :website_url        => po_cv.tracking_page.link,
-      :official_name      => client.official_name,
-      :description        => client.description,
-      :logo_url           => client.logo.url,
-      :sort_order         => client.sort_order,
-      :display            => client.display,
-      :page_id            => po_cv.page_id,
-      :clicks_purchase_order_id  => po_cv.id
+      clients_vertical_id: client.id,
+      integration_name: client.integration_name,
+      email: client.email,
+      phone_number: client.phone_number,
+      website_url: clicks_purchase_order.tracking_page.link,
+      official_name: client.official_name,
+      description: client.description,
+      logo_url: client.logo.url,
+      sort_order: client.sort_order,
+      display: client.display,
+      page_id: clicks_purchase_order.page_id,
+      clicks_purchase_order_id: clicks_purchase_order.id
     }   
   end
     

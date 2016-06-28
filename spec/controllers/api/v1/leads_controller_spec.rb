@@ -6,21 +6,20 @@ describe API::V1::LeadsController, type: :request do
   let (:message) do
     "Thanks for submitting your information!<br />Check your email for quotes and exciting offers for [pets_name]."
   end
-  let (:session_hash) { '#234-22' }
-  let! (:vertical) { create(:vertical, name: Vertical::PET_INSURANCE) }
-  let! (:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
-  let (:correct_data) { {first_name: 'John',
+  let(:session_hash) { '#234-22' }
+  let!(:vertical) { create(:vertical, name: Vertical::PET_INSURANCE) }
+  let!(:health_vertical) { create(:vertical, name: Vertical::HEALTH_INSURANCE) }
+  let!(:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
+  let(:correct_data) { {first_name: 'John',
                          last_name: 'Doe',
                          session_hash: session_hash,
                          vertical_id: vertical.id,
                          site_id: 1,
-                         city: 'New York',
-                         state: 'NY',
                          zip: 10004,
                          day_phone: '2-12-22',
                          email: 'test@example.com',
                          visitor_ip: Faker::Internet.ip_v4_address } }
-  let (:pet_data) { {species: 'cat',
+  let(:pet_data) { {species: 'cat',
                      spayed_or_neutered: 'false',
                      pet_name: 'kitty',
                      breed: 'sphinx',
@@ -28,8 +27,8 @@ describe API::V1::LeadsController, type: :request do
                      birth_year: 1998,
                      gender: 'male',
                      conditions: false} }
-  let (:wrong_data) { correct_data.except(:first_name) }
-  let (:wrong_pet_data) { {species: '',
+  let(:wrong_data) { correct_data.except(:first_name) }
+  let(:wrong_pet_data) { {species: '',
                            spayed_or_neutered: '',
                            pet_name: '',
                            breed: '',
@@ -37,12 +36,15 @@ describe API::V1::LeadsController, type: :request do
                            birth_year: 1998,
                            gender: '',
                            conditions: false} }
-  let (:data_with_sold_state) { correct_data.merge({status: 'sold'}) }
+  let(:data_with_sold_state) { correct_data.merge({status: 'sold'}) }
+  let(:city) { 'New York' }
+  let(:state) { 'NY' }
 
   before do
     stub_request(:get, "https://api.smartystreets.com/zipcode?auth-id=&auth-token=&zipcode=10004").
-        with(:headers => {'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent' => 'Ruby'}).
-        to_return(:status => 200, :body => [{city_states: [{state_abbreviation: 'NY', city: 'New York'}]}].to_json, :headers => {})
+        with(headers: {'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent' => 'Ruby'}).
+        to_return(status: 200, body: [{ city_states: [{ state_abbreviation: state, city: city }] }].to_json,
+                  headers: {'Content-Type' => 'application/json'})
   end
 
   describe '#create with visitor' do
@@ -96,7 +98,6 @@ describe API::V1::LeadsController, type: :request do
   end
 
   describe '#create with type 21' do
-    let! (:vertical) { create(:vertical, name: Vertical::HEALTH_INSURANCE) }
     let (:params) { {
         session_hash: 'session hash',
         site_id: '1',
@@ -188,7 +189,7 @@ describe API::V1::LeadsController, type: :request do
         email: "test@nags.us",
         birth_date: Date.strptime('12/23/1980', '%m/%d/%Y'),
         gender:"Male",
-        vertical_id: 1,
+        vertical_id: health_vertical.id,
         visitor_ip: "75.2.92.149"
     } }
 
@@ -256,10 +257,7 @@ describe API::V1::LeadsController, type: :request do
 
     it 'should create correct lead' do
       expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
-
-      new_lead = Lead.last
-
-      expect(new_lead.attributes.symbolize_keys).to include (lead_result)
+      expect(Lead.last.attributes.symbolize_keys).to include (lead_result)
     end
 
     it 'should create correct health insurance lead' do
@@ -305,6 +303,131 @@ describe API::V1::LeadsController, type: :request do
   end
 
   describe 'creation of pet insurance lead' do
+    let(:client) { ClientsVertical.create!(vertical_id: vertical.id,
+                                           integration_name: "vet_care_health",
+                                           active: true,
+                                           exclusive: true,
+                                           service_url: "http://www.vetcarehealth.com/getquote/postlead",
+                                           request_type: "GET",
+                                           display: true) }
+    let(:client_2) { ClientsVertical.create!(vertical_id: vertical.id,
+                                           integration_name: "client 2",
+                                           active: true,
+                                           exclusive: true,
+                                           service_url: "http://www.vetcarehealth.com/getquote/postlead",
+                                           request_type: "POST",
+                                           display: true) }
+    let(:client_3) { ClientsVertical.create!(vertical_id: vertical.id,
+                                           integration_name: "client 3",
+                                           active: true,
+                                           exclusive: true,
+                                           service_url: "http://www.vetcarehealth.com/getquote/postlead",
+                                           request_type: "GET",
+                                           display: true) }
+
+
+    it 'queries state and cite of provided zipcode from api.smartystreets.com' do
+      api_post 'leads', lead: correct_data, pet: pet_data
+
+      lead = Lead.last
+      expect(lead.city).to eq city
+      expect(lead.state).to eq state
+    end
+
+    context "when got successful responses from at least one client" do
+      let!(:purchase_order) { PurchaseOrder.create!(vertical_id: vertical.id,
+                                                   exclusive: false,
+                                                   price: 1,
+                                                   active: true,
+                                                   leads_count_sold: 100,
+                                                   client_id: client.id) }
+      let!(:purchase_order_2) { PurchaseOrder.create!(vertical_id: vertical.id,
+                                                   exclusive: false,
+                                                   price: 1,
+                                                   active: true,
+                                                   leads_count_sold: 100,
+                                                   client_id: client_2.id) }
+      let!(:purchase_order_3) { PurchaseOrder.create!(vertical_id: vertical.id,
+                                                   exclusive: false,
+                                                   price: 1,
+                                                   active: true,
+                                                   leads_count_sold: 100,
+                                                   client_id: client_3.id) }
+      let(:tracking_page) { create(:tracking_page) }
+      let!(:clicks_order_2) { create(:clicks_purchase_order,
+                                     page_id: tracking_page.id,
+                                     price: 10,
+                                     clients_vertical_id: client.id) }
+      let!(:clicks_order_2) { create(:clicks_purchase_order,
+                                     page_id: tracking_page.id,
+                                     price: 10,
+                                     clients_vertical_id: client_2.id) }
+      let!(:clicks_order_3) { create(:clicks_purchase_order,
+                                     page_id: tracking_page.id,
+                                     price: 10,
+                                     clients_vertical_id: client_3.id) }
+      before do
+        allow_any_instance_of(SendDataWorker).to receive(:perform) do |sender, lead_id|
+          Response.create!(lead_id: lead_id,
+                           purchase_order: purchase_order,
+                           client_name: client.integration_name)
+          Response.create!(lead_id: lead_id,
+                           purchase_order: purchase_order,
+                           client_name: client_2.integration_name,
+                           rejection_reasons: 'no')
+          Response.create!(lead_id: lead_id,
+                           purchase_order: purchase_order,
+                           client_name: client_3.integration_name,
+                           rejection_reasons: 'no')
+        end
+      end
+
+      it 'sends email to product owner' do
+        expect(SendEmailWorker).to receive(:perform_async)
+        api_post 'leads', lead: correct_data, pet: pet_data
+      end
+
+      it 'returns list with other clients' do
+        api_post 'leads', lead: correct_data, pet: pet_data
+        json = JSON.parse(response.body)
+
+        expect(json['success']).to eq true
+        expect(json['client']).to eq [controller.send(:client_to_json, client).to_json].to_json
+        expect(json['other_client']).to eq [controller.send(:client_of_order_to_json, clicks_order_2).to_json,
+                                            controller.send(:client_of_order_to_json, clicks_order_3).to_json].to_json
+      end
+    end
+
+    context "when got failed responses from all clients" do
+      let(:client) { ClientsVertical.create!(vertical_id: vertical.id,
+                                              integration_name: "vet_care_health",
+                                              active: true,
+                                              exclusive: true,
+                                              service_url: "http://www.vetcarehealth.com/getquote/postlead",
+                                              request_type: "GET",
+                                              display: true) }
+      let(:purchase_order) { PurchaseOrder.create!(vertical_id: vertical.id,
+                                                   exclusive: false,
+                                                   price: 1,
+                                                   active: true,
+                                                   leads_count_sold: 100,
+                                                   client_id: client.id) }
+
+      before do
+        allow_any_instance_of(SendDataWorker).to receive(:perform) do |sender, lead_id|
+          Response.create!(lead_id: lead_id,
+                           purchase_order: purchase_order,
+                           client_name: client.integration_name,
+                           rejection_reasons: 'failure')
+        end
+      end
+
+      it 'sends email to product owner' do
+        expect(SendEmailWorker).to_not receive(:perform_async)
+        api_post 'leads', lead: correct_data, pet: pet_data
+      end
+    end
+
     describe 'validations' do
       before do
         purchase_order = PurchaseOrder.create!(client_id: clients_vertical.id)
