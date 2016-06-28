@@ -72,6 +72,9 @@ gem 'annotate'
 gem 'config'
 gem 'rollbar'
 
+gem 'capybara'
+gem 'selenium-webdriver'
+
 group :test do
   gem 'webmock'
 end
