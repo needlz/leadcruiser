@@ -18,7 +18,8 @@ describe API::V1::LeadsController, type: :request do
                          state: 'NY',
                          zip: 10004,
                          day_phone: '2-12-22',
-                         email: 'test@example.com'} }
+                         email: 'test@example.com',
+                         visitor_ip: Faker::Internet.ip_v4_address } }
   let (:pet_data) { {species: 'cat',
                      spayed_or_neutered: 'false',
                      pet_name: 'kitty',
@@ -261,51 +262,120 @@ describe API::V1::LeadsController, type: :request do
       expect(new_lead.attributes.symbolize_keys).to include (lead_result)
     end
 
-    it 'grant uniqueness of lead email' do
-      expect(ForwardHealthInsuranceLead).to receive(:perform).once
-      expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
-      expect(Lead.last.status).to be_nil
-      expect{ api_post 'leads', params }.to change { Lead.count}.from(1).to(2)
-      expect(Lead.last.status).to eq (Lead::DUPLICATED)
-    end
-
     it 'should create correct health insurance lead' do
-      expect{ api_post 'leads', params }.to change { HealthInsuranceLead.count}.from(0).to(1)
+      expect{ api_post 'leads', params }.to change { HealthInsuranceLead.count }.from(0).to(1)
 
       new_health_insurance_lead = HealthInsuranceLead.last
 
       expect(new_health_insurance_lead.attributes.symbolize_keys).to include (health_insurance_lead_result)
     end
+
+    describe 'validations' do
+      before do
+        clients_vertical.update_attributes!(vertical_id: vertical.id)
+        purchase_order = PurchaseOrder.create!(client_id: clients_vertical.id)
+        allow_any_instance_of(SendDataWorker).to receive(:perform) do |sender, lead_id|
+          Response.create!(lead_id: lead_id,
+                           purchase_order: purchase_order,
+                           client_name: clients_vertical.integration_name)
+        end
+      end
+
+      it 'grants uniqueness of lead email' do
+        expect(ForwardHealthInsuranceLead).to receive(:perform).once
+        expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
+        expect(Lead.last.status).to be_nil
+        expect{ api_post 'leads', params }.to change { Lead.count}.from(1).to(2)
+        expect(Lead.last.status).to eq (Lead::DUPLICATED)
+      end
+
+      it 'grants that ip is not blocked' do
+        BlockList.create(block_ip: params[:IP_Address], active: true)
+        api_post 'leads', params
+        expect(Lead.last.status).to eq(Lead::BLOCKED)
+      end
+
+      it 'grants that first and last names are not test' do
+        api_post 'leads', params.merge(First_Name: Lead::TEST_TERM, Last_Name: Lead::TEST_TERM)
+        expect(Lead.last.status).to eq(Lead::BLOCKED)
+        expect(Lead.last.disposition).to eq(Lead::TEST_NO_SALE)
+      end
+
+    end
   end
 
-  describe 'validation on lead uniqueness' do
-    let (:another_pet_data) { { species: 'cat',
-                                spayed_or_neutered: 'false',
-                                pet_name: 'Mediolan',
-                                breed: 'Cymric',
-                                birth_month: 12,
-                                birth_year: 1998,
-                                gender: 'male',
-                                conditions: false } }
-    let (:sensitive_case_pet_data) { { species: 'cat',
-                                       spayed_or_neutered: 'false',
-                                       pet_name: 'MediOlan',
-                                       breed: 'Cymric',
-                                       birth_month: 12,
-                                       birth_year: 1998,
-                                       gender: 'male',
-                                       conditions: false } }
-    let (:response) { create(:response) }
+  describe 'creation of pet insurance lead' do
+    describe 'validations' do
+      before do
+        purchase_order = PurchaseOrder.create!(client_id: clients_vertical.id)
+        allow_any_instance_of(SendDataWorker).to receive(:perform) do |sender, lead_id|
+          Response.create!(lead_id: lead_id,
+                           purchase_order: purchase_order,
+                           client_name: clients_vertical.integration_name)
+        end
+      end
 
-    it 'sets duplicated status if the same lead was sold' do
-      api_post 'leads', lead: data_with_sold_state, pet: pet_data
+      describe 'validation on lead uniqueness' do
+        let (:another_pet_data) { { species: 'cat',
+                                    spayed_or_neutered: 'false',
+                                    pet_name: 'Mediolan',
+                                    breed: 'Cymric',
+                                    birth_month: 12,
+                                    birth_year: 1998,
+                                    gender: 'male',
+                                    conditions: false } }
+        let (:sensitive_case_pet_data) { { species: 'cat',
+                                           spayed_or_neutered: 'false',
+                                           pet_name: 'MediOlan',
+                                           breed: 'Cymric',
+                                           birth_month: 12,
+                                           birth_year: 1998,
+                                           gender: 'male',
+                                           conditions: false } }
+        let (:response) { create(:response) }
 
-      Lead.last.sold!
-      response.update_attributes(lead_id: Lead.last.id)
+        it 'sets duplicated status if the same lead was sold' do
+          api_post 'leads', lead: data_with_sold_state, pet: pet_data
 
-      api_post 'leads', lead: data_with_sold_state, pet: pet_data
+          Lead.last.sold!
+          response.update_attributes(lead_id: Lead.last.id)
 
-      expect(Lead.last.status).to eq(Lead::DUPLICATED)
+          api_post 'leads', lead: data_with_sold_state, pet: pet_data
+
+          expect(Lead.last.status).to eq(Lead::DUPLICATED)
+        end
+      end
+
+      it 'grants ip is not blocked' do
+        BlockList.create(block_ip: correct_data[:visitor_ip], active: true)
+        api_post 'leads', lead: correct_data, pet: pet_data
+        expect(Lead.last.status).to eq(Lead::BLOCKED)
+      end
+
+      it 'grants first and last names are not test' do
+        api_post 'leads',
+                 lead: correct_data.merge(first_name: Lead::TEST_TERM, last_name: Lead::TEST_TERM),
+                 pet: pet_data
+        expect(Lead.last.status).to eq(Lead::BLOCKED)
+        expect(Lead.last.disposition).to eq(Lead::TEST_NO_SALE)
+      end
+
+      it 'grants there is no profanity in email' do
+        profanity_email = 'ass@example.com'
+        api_post 'leads',
+                 lead: correct_data.merge(email: profanity_email),
+                 pet: pet_data
+        expect(Lead.last.status).to eq(Lead::BLOCKED)
+        expect(Lead.last.disposition).to eq(Lead::PROFANITY)
+      end
+
+      it 'grants lead is not test sale' do
+        api_post 'leads',
+                 lead: correct_data.merge(first_name: "Erik", last_name: 'Needham'),
+                 pet: pet_data
+        expect(Lead.last.disposition).to eq(Lead::TEST_SALE)
+      end
+
     end
   end
 

@@ -79,3 +79,4 @@ end
 gem 'awesome_print', require: 'ap'
 gem 'quiet_assets'
 gem 'velocify'
+gem 'faker', group: :test
