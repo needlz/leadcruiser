@@ -11,12 +11,8 @@ ActiveAdmin.register GethealthcareHit do
     id_column
     column :lead_id
     column :result
-    column "created_at" do |block|
-      UTCToPST(block.created_at)
-    end
-    column "finished_at" do |block|
-      UTCToPST(block.created_at)
-    end
+    column :last_error
+    column :duration
     actions
   end
 

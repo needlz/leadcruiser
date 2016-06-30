@@ -1,18 +1,6 @@
 require 'capybara'
 require 'capybara/dsl'
 
-module WaitForAjax
-  def wait_for_ajax
-    Timeout.timeout(Capybara.default_max_wait_time) do
-      loop until finished_all_ajax_requests?
-    end
-  end
-
-  def finished_all_ajax_requests?
-    page.evaluate_script('jQuery.active').zero?
-  end
-end
-
 class GethealthcareFormMonitor
   include Sidekiq::Worker
   sidekiq_options queue: "high"
@@ -21,14 +9,16 @@ class GethealthcareFormMonitor
   TOTAL_PHONE_NUMBER_DIGITS = 10
 
   include Capybara::DSL
-  include WaitForAjax
 
   def perform
     begin
       hit_server
-    rescue Capybara::ElementNotFound => e
+    rescue StandardError => e
+      if hit
+        hit.update_attributes!(last_error: e.message)
+      end
       if Rails.env.development?
-        save_screenshot('/screens/file.png')
+        save_screenshot('/tmp/screens/file.png')
         p page.current_url
         p e
         p page.body
@@ -42,6 +32,8 @@ class GethealthcareFormMonitor
 
   private
 
+  attr_reader :hit
+
   def wait_until(&block)
     time_elapsed = 0
     start_time = Time.now
@@ -49,32 +41,41 @@ class GethealthcareFormMonitor
     until time_elapsed > Capybara.default_max_wait_time || done
       done = block.call
       time_elapsed = Time.now - start_time
-      sleep 0.5
+      sleep 0.2
     end
     done
   end
 
   def hit_server
-    Capybara.reset_sessions!
-    page.visit("/")
-
-    hit = GethealthcareHit.new
-    hit.created_at = Time.now
+    @hit = GethealthcareHit.create!
 
     submit_form
 
-    hit.finished_at = Time.now
-    pp page.current_url
-    hit.result = (page.current_url == 'http://gethealthcare.co/next-steps') ? 'Failed' : 'Success'
-    hit.save!
+    hit.update_attributes!(finished_at: Time.now, result: result)
+    check_threshold
+  end
+
+  def result
+    (page.current_url == 'http://gethealthcare.co/next-steps') ? 'Failed' : 'Success'
+  end
+
+  def check_threshold
+    if hit.duration > EditableConfiguration.global.gethealthcare_form_threshold_seconds
+      # do anything yet
+    end
   end
 
   def submit_form
-    #step_1
+    Capybara.reset_sessions!
+    page.visit("/")
+
+    #step 1
     find('.maleRadio').trigger("click")
     find('.age input').set('12/30/1994')
     find('.zipcode input').set('01001')
     find('.startBtnBox input').trigger("click")
+
+    raise StandardError
 
     #step 1a "Would you like to add a family member?"
     switch_to_window windows.last

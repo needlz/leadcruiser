@@ -73,8 +73,6 @@ gem 'config'
 gem 'rollbar'
 
 gem 'capybara'
-# gem 'capybara-webkit'
-gem 'selenium-webdriver'
 gem 'phantomjs'
 gem 'poltergeist'
 
