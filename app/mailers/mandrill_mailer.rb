@@ -31,7 +31,7 @@ module MandrillMailer
   end
 
   def api
-    @api ||= Mandrill::API.new('aRDbl7LhpO7qjqlNaEaIAA')
+    @api ||= Mandrill::API.new(Settings.mandrill_api_key)
   end
 
   def set_template_values(template_params)

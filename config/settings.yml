@@ -1,1 +1,3 @@
 use_authentication: <%= Rails.env.production? %>
+mandrill_api_key: <%= ENV['MANDRILL_API_KEY'] %>
+sendgrid_api_key: <%= ENV['SENDGRID_API_KEY'] %>
