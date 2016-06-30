@@ -8,8 +8,6 @@ class PetfirstResponseMailer
     set_template_values(set_lead_params(lead))
 
     mail to: [wrap_recipient(ENV["PETFIRST_EMAIL"], ENV["PETFIRST_NAME"], "to")], subject:subject
-    # mail to: [wrap_recipient(ENV["RECIPIENT_SELF_EMAIL"], ENV["RECIPIENT_SELF_NAME"], "to")], subject:subject
-
   end
 
   private
