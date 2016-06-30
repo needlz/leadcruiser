@@ -260,6 +260,20 @@ describe API::V1::LeadsController, type: :request do
       expect(Lead.last.attributes.symbolize_keys).to include (lead_result)
     end
 
+    let(:hit) { create(:hit, id:1) }
+    it 'should create test lead' do
+      GethealthcareHit.delete_all
+
+      params[:Phone_Number] = '78700000' + hit.id.to_s
+      params[:First_Name] = 'test'
+      params[:Last_Name] = 'test'
+      params[:Email_Address] = 'test@test.com'
+      params[:Address_1] = 'test'
+
+      api_post 'leads', params
+      expect( GethealthcareHit.last.lead ).to eq Lead.last
+    end
+
     it 'should create correct health insurance lead' do
       expect{ api_post 'leads', params }.to change { HealthInsuranceLead.count }.from(0).to(1)
 

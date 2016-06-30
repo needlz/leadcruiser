@@ -17,6 +17,9 @@ class GethealthcareFormMonitor
   include Sidekiq::Worker
   sidekiq_options queue: "high"
 
+  PHONE_NUMBER_STATE_CODE = '787'
+  TOTAL_PHONE_NUMBER_DIGITS = 10
+
   include Capybara::DSL
   include WaitForAjax
 
@@ -97,9 +100,9 @@ class GethealthcareFormMonitor
     #step_6
     find('#step3-firstname').set('test')
     find('#step3-lastname').set('test')
-    find('#step3-email').set('example@test.com')
-    find('#step3-phone').set('7871111111')
-    find('#step3-address1').set('adress1')
+    find('#step3-email').set('test@test.com')
+    find('#step3-phone').set(build_phone_number)
+    find('#step3-address1').set('test')
     find('.seePlansNow').trigger("click")
 
     wait_until do
@@ -110,5 +113,19 @@ class GethealthcareFormMonitor
       p page.current_url
       page.current_url != 'http://gethealthcare.co/next-steps'
     end
+  end
+
+  def build_phone_number
+    zero_count = phone_number_without_code_digits_count - next_hit_id.length
+
+    PHONE_NUMBER_STATE_CODE + '0'*zero_count + next_hit_id
+  end
+  
+  def next_hit_id
+    (GethealthcareHit.last.id + 1).to_s
+  end
+
+  def phone_number_without_code_digits_count
+    TOTAL_PHONE_NUMBER_DIGITS- PHONE_NUMBER_STATE_CODE.length
   end
 end

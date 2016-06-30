@@ -9,6 +9,7 @@ ActiveAdmin.register GethealthcareHit do
   index do
     selectable_column
     id_column
+    column :lead_id
     column :result
     column "created_at" do |block|
       UTCToPST(block.created_at)
