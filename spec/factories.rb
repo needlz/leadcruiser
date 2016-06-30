@@ -67,7 +67,6 @@ module FactoryHelper
     end
 
     factory :vertical do
-      id 1
       next_client 'Yurii'
     end
 
@@ -76,7 +75,6 @@ module FactoryHelper
     end
 
     factory :tracking_page, class: 'TrackingPage' do
-      id 1
       link 'test_link'
     end
 
