@@ -19,6 +19,14 @@ class RequestToVelocify < RequestToClient
     do_request true, lead.clients_verticals.last
   end
 
+  def success?
+    response[:response][:additions][:lead][:status][:message] == 'Success'
+  end
+
+  def rejection_reason
+    response['error']
+  end
+
   private
 
   def perform_http_request(exclusive)
