@@ -62,6 +62,7 @@ class GethealthcareFormMonitor
   def check_threshold
     if hit.duration > EditableConfiguration.global.gethealthcare_form_threshold_seconds
       # do anything yet
+      
     end
   end
 
@@ -74,8 +75,6 @@ class GethealthcareFormMonitor
     find('.age input').set('12/30/1994')
     find('.zipcode input').set('01001')
     find('.startBtnBox input').trigger("click")
-
-    raise StandardError
 
     #step 1a "Would you like to add a family member?"
     switch_to_window windows.last
