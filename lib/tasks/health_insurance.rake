@@ -26,7 +26,6 @@ namespace :health_insurance do
                               timeout: 10) unless client
       tracking_page = TrackingPage.find_by_link('http://gethealthcare.co')
       ClicksPurchaseOrder.create!(total_count: 0,
-                                  daily_count: 0,
                                   price: 1, #TODO
                                   clients_vertical_id: client.id,
                                   page_id: tracking_page.id,
@@ -57,7 +56,6 @@ namespace :health_insurance do
                                        timeout: 10) unless client
       tracking_page = TrackingPage.find_by_link('http://gethealthcare.co')
       ClicksPurchaseOrder.create!(total_count: 0,
-                                  daily_count: 0,
                                   price: 1, #TODO
                                   clients_vertical_id: client.id,
                                   page_id: tracking_page.id,

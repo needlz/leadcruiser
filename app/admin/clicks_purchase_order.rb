@@ -1,7 +1,7 @@
 ActiveAdmin.register ClicksPurchaseOrder do
 
-  permit_params :clients_vertical_id, :weight, :price, :active, :total_limit, :daily_limit, 
-                :start_date, :end_date, :redirect_url, :page_id
+  permit_params :clients_vertical_id, :weight, :price, :active, :total_limit,
+                :start_date, :end_date, :page_id
 
   filter :clients_vertical
   filter :price
@@ -18,14 +18,11 @@ ActiveAdmin.register ClicksPurchaseOrder do
     column "Link" do |po|
       po.tracking_page.try(:link)
     end
-    column :redirect_url
     column :price
     column :weight
     column :active
     column :total_limit
-    column :daily_limit
     column :total_count
-    column :daily_count
     column "Start Date" do |po|
       unless po.start_date.nil?
         po.start_date.strftime("%Y-%m-%d")
@@ -54,7 +51,6 @@ ActiveAdmin.register ClicksPurchaseOrder do
       f.input :page_id,
               :as => :select,
               :collection => TrackingPage.select(:link, :id).uniq.pluck(:link, :id)
-      f.input :redirect_url
       f.input :price
       f.input :weight
       f.input :active
