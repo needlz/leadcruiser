@@ -49,7 +49,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
-  def params_for_health_lead
+  def params_for_health_lead(hash = {})
     {
       session_hash: 'session hash',
       site_id: '1',
@@ -125,10 +125,10 @@ RSpec.configure do |config|
       Child_4_Weight: '7',
       Child_4_Tobacco_Use: 'Yes',
       Child_4_Preexisting_Conditions:'Yes'
-    }
+    }.merge(hash)
   end
 
-  def params_for_medsupp_lead
+  def params_for_medsupp_lead(hash = {})
     {
       session_hash: 'session hash',
       site_id: '1',
@@ -160,6 +160,6 @@ RSpec.configure do |config|
       Bday: '12/23/1980',
       Gender: 'Male',
       Age: '5',
-    }
+    }.merge(hash)
   end
 end

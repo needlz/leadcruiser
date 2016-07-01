@@ -105,6 +105,8 @@ module FactoryHelper
     end
 
     factory :site, class: 'Site' do
+      domain 'domain.com'
+      host 'Site name'
     end
   end
 end

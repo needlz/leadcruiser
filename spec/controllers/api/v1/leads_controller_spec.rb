@@ -106,8 +106,9 @@ describe API::V1::LeadsController, type: :request do
   end
 
   describe '#create with type 21' do
+    let(:site) { create(:site) }
     let (:params) {
-      params_for_health_lead
+      params_for_health_lead(site_id: site.id)
     }
     let(:lead_result) {
       {
@@ -194,12 +195,12 @@ describe API::V1::LeadsController, type: :request do
       }
     }
 
-    it 'should create correct lead' do
+    it 'creates correct lead' do
       expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
       expect(Lead.last.attributes.symbolize_keys).to include (lead_result)
     end
 
-    it 'should create test lead' do
+    it 'creates test lead' do
       GethealthcareHit.delete_all
 
       params[:Phone_Number] = '78700000' + hit.id.to_s
@@ -212,7 +213,7 @@ describe API::V1::LeadsController, type: :request do
       expect( GethealthcareHit.last.lead ).to eq Lead.last
     end
 
-    it 'should create correct health insurance lead' do
+    it 'creates correct health insurance lead' do
       expect{ api_post 'leads', params }.to change { HealthInsuranceLead.count }.from(0).to(1)
 
       new_health_insurance_lead = HealthInsuranceLead.last
@@ -299,12 +300,12 @@ describe API::V1::LeadsController, type: :request do
       }
     }
 
-    it 'should create correct lead' do
+    it 'creates correct lead' do
       expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
       expect(Lead.last.attributes.symbolize_keys).to include (lead_result)
     end
 
-    it 'should create test lead' do
+    it 'creates test lead' do
       GethealthcareHit.delete_all
 
       params[:Phone_Number] = '78700000' + hit.id.to_s
@@ -317,12 +318,20 @@ describe API::V1::LeadsController, type: :request do
       expect( GethealthcareHit.last.lead ).to eq Lead.last
     end
 
-    it 'should create correct health insurance lead' do
+    it 'creates correct health insurance lead' do
       expect{ api_post 'leads', params }.to change { HealthInsuranceLead.count }.from(0).to(1)
 
       new_health_insurance_lead = HealthInsuranceLead.last
 
       expect(new_health_insurance_lead.attributes.symbolize_keys).to include (health_insurance_lead_result)
+    end
+
+    it 'sends autoresponse email' do
+      expect(HealthInsuranceMailWorker).to receive(:perform_async).with(:thank_you,
+                                                                        email: params[:Email_Address],
+                                                                        site_url: site.domain,
+                                                                        site_name: site.host)
+      api_post 'leads', params
     end
 
     describe 'validations' do
