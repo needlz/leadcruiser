@@ -72,6 +72,10 @@ gem 'annotate'
 gem 'config'
 gem 'rollbar'
 
+gem 'capybara'
+gem 'phantomjs'
+gem 'poltergeist'
+
 group :test do
   gem 'webmock'
 end

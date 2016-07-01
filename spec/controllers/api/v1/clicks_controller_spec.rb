@@ -10,9 +10,7 @@ describe API::V1::ClicksController, type: :request do
           { visitor_ip: 'ip',
             clients_vertical_id: clients_vertical.id,
             clicks_purchase_order_id: 1,
-            site_id: 1,
-            page_id: 1,
-            partner_id: 1 }
+            page_id: 1 }
       }
     }
 

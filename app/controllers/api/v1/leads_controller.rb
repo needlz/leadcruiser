@@ -134,6 +134,8 @@ class API::V1::LeadsController  < ActionController::API
     ActiveRecord::Base.transaction do
       lead = Lead.new(form.lead_attributes)
 
+      process_lead_created_by_crawler lead
+
       if lead.save
         begin
           HealthInsuranceLeadValidation.new(lead).validate
@@ -219,6 +221,16 @@ class API::V1::LeadsController  < ActionController::API
                                 :birth_year, :gender, :conditions)
   end
 
-end
+  def get_id_from_phone_number phone_number
+    number_without_code = phone_number.to_s[3..-1]
+    number_without_code.to_i
+  end
 
-    
+  def process_lead_created_by_crawler lead
+    if lead.test?
+      hit = GethealthcareHit.find(get_id_from_phone_number(lead.day_phone))
+      hit.lead = lead
+      hit.save!
+    end
+  end
+end

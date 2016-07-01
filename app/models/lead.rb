@@ -115,6 +115,10 @@ class Lead < ActiveRecord::Base
     Vertical.pet_insurance && vertical_id == Vertical.pet_insurance.id
   end
 
+  def test?
+    first_name == 'test' && last_name == 'test' && address_1 == 'test' && email == 'test@test.com'
+  end
+
   private
 
   def populate_state
@@ -137,6 +141,6 @@ class Lead < ActiveRecord::Base
     end
 
     true
-   end
+  end
 
 end
