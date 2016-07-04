@@ -84,32 +84,33 @@ class API::V1::LeadsController  < ActionController::API
   end
 
   def success_response(lead, clients_responses)
-    sold_clients_names = []
-    sold_clients = []
-    clients_responses.each do |response|
-      sold_clients_names << response.client_name
-      client = ClientsVertical.find_by_integration_name(response.client_name)
+    sold_clients = clients_responses.map {|response| sold_clients_from_responses(response, lead)}
 
-      redirect_url = redirect_url_from_response(client, lead, client.website_url, response)
-      sold_clients << JSON[client_to_json(client, redirect_url)]
+    clicks_purchase_orders = ClicksPurchaseOrderQuery.new.orders_of_available_clients(vertical)
+
+    other_clicks_purchase_orders = clicks_purchase_orders.reject do |cpo|
+      clicks_purchase_order_from_responses? cpo, clients_responses
     end
 
-    # Get other client list by clicks_purchase_order
-    clicks_purchase_order_query = ClicksPurchaseOrderQuery.new
-    clicks_purchase_orders = clicks_purchase_order_query.orders_of_available_clients(vertical)
-
-    other_clients = []
-    clicks_purchase_orders.each do |clicks_purchase_order|
-      client_name = clicks_purchase_order.clients_vertical.try(:integration_name)
-      sold_to_client = sold_clients_names.include?(client_name)
-      other_clients << JSON[client_of_order_to_json(clicks_purchase_order)] unless sold_to_client
-    end
+    other_clients = other_clicks_purchase_orders.map { |cpo| JSON[client_of_order_to_json(cpo)]}
 
     {
       success: true,
       client: sold_clients.to_json,
       other_client: other_clients.to_json
     }
+  end
+
+  def sold_clients_from_responses(response, lead)
+    client = ClientsVertical.find_by_integration_name(response.client_name)
+    redirect_url = redirect_url_from_response(client, lead, client.website_url, response)
+
+    JSON[client_to_json(client, redirect_url)]
+  end
+
+  def clicks_purchase_order_from_responses?(cpo, responses)
+    integration_name = cpo.clients_vertical.try(:integration_name)
+    responses.map(& :client_name).include? integration_name
   end
 
   def redirect_url_from_response(client, lead, redirect_url, response)
@@ -121,8 +122,7 @@ class API::V1::LeadsController  < ActionController::API
       redirect_url["aqr=true"] = "aqr=false"
       redirect_url["Json=true"] = "Json=false"
     elsif client.integration_name == ClientsVertical::HEALTHY_PAWS
-      redirect_url += "/quote/retrievequote?sessionid="
-      redirect_url += lead.email
+      redirect_url += "/quote/retrievequote?sessionid=" + lead.email
     end
     redirect_url
   end
