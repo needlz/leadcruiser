@@ -12,6 +12,7 @@ module MandrillMailer
   end
 
   def mail(options = {})
+    return if Settings.mandrill_api_key.blank?
     recipients = options[:to]
 
     return if recipients.map { |recipient| recipient[:email] }.any?(&:blank?)

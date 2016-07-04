@@ -18,7 +18,7 @@ module Leadcruiser
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
-    autoload_paths = %w[app/logic lib/data_generators app/workers]
+    autoload_paths = %w[app/logic lib/data_generators app/workers lib lib/workers]
     config.autoload_paths += autoload_paths.map { |dir| "#{ config.root }/#{ dir }" }
     config.middleware.use ActionDispatch::Flash
     config.api_only = false
