@@ -15,7 +15,6 @@ class API::V1::ClicksController < ActionController::API
           click.clicks_purchase_order_id = po.id
           click.save
 
-          po.daily_count += 1
           po.total_count += 1
           po.save
         else
@@ -37,7 +36,6 @@ class API::V1::ClicksController < ActionController::API
           po = ClicksPurchaseOrder.find_by_id permit_click_params[:clicks_purchase_order_id]
 
           if check_purchase_order(po)
-            po.daily_count += 1
             po.total_count += 1
             po.save
           else
@@ -57,7 +55,7 @@ class API::V1::ClicksController < ActionController::API
   private
   
   def permit_click_params
-    params.fetch(:click, {}).permit(:visitor_ip, :clients_vertical_id, :clicks_purchase_order_id, :site_id, :page_id, :partner_id)
+    params.fetch(:click, {}).permit(:visitor_ip, :clients_vertical_id, :clicks_purchase_order_id, :page_id)
   end
 
   def check_purchase_order(po)
@@ -67,11 +65,6 @@ class API::V1::ClicksController < ActionController::API
 
     # Check Maximum limit
     if !po.total_limit.nil? and po.total_count >= po.total_limit
-      return false
-    end
-
-    # Check Daily leads limit
-    if !po.daily_limit.nil? and po.daily_count >= po.daily_limit
       return false
     end
 

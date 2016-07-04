@@ -12,7 +12,6 @@
 #  birth_year         :integer
 #  gender             :string(255)
 #  conditions         :boolean
-#  list_of_conditions :string(255)
 #  lead_id            :integer
 #  created_at         :datetime
 #  updated_at         :datetime

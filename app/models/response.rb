@@ -4,10 +4,6 @@
 #
 #  id                  :integer          not null, primary key
 #  response            :text
-#  client_times_sold   :string(255)
-#  client_offer_amount :string(255)
-#  client_offer_accept :boolean
-#  error_reasons       :text
 #  rejection_reasons   :text
 #  created_at          :datetime
 #  updated_at          :datetime

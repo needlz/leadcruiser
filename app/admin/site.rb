@@ -2,7 +2,7 @@ ActiveAdmin.register Site do
 
   menu priority: 4
 
-  permit_params :domain, :host, :site_ip
+  permit_params :domain, :host
 
   filter :domain
   filter :host
@@ -12,7 +12,6 @@ ActiveAdmin.register Site do
     id_column
     column :domain
     column :host
-    column :site_ip
 
     column "Created Date" do |site|
       UTCToPST(site.created_at)
