@@ -541,7 +541,9 @@ describe API::V1::LeadsController, type: :request do
         allow_any_instance_of(SendPetDataWorker).to receive(:perform) do |sender, lead_id|
           Response.create!(lead_id: lead_id,
                            purchase_order: purchase_order,
-                           client_name: client.integration_name)
+                           client_name: client.integration_name,
+                           response: '{"Status"=>"Success", "Message"=>nil, "QuoteId"=>2877741, "QuoteRetrievalUrl"=>"https://www.petsbest.com/enroll?qn=2877741&zc=94928", "OriginalQuerystring"=>"&ci=PIOSL&ofn=Misty&oln=Adams&oas=&oac=RohnertPark&oaz=94928&oph=2096056901&oea=mymymisty@gmail.com&aqr=true&Json=true&pn1=Rain&s1=Dog&b1=French Bulldog&g1=male&dob1=11-1-2015&mc1=false"}'
+          )
           Response.create!(lead_id: lead_id,
                            purchase_order: purchase_order,
                            client_name: client_2.integration_name,
@@ -566,6 +568,47 @@ describe API::V1::LeadsController, type: :request do
         expect(json['client']).to eq [controller.send(:client_to_json, client).to_json].to_json
         expect(json['other_client']).to eq [controller.send(:client_of_order_to_json, clicks_order_2).to_json,
                                             controller.send(:client_of_order_to_json, clicks_order_3).to_json].to_json
+      end
+
+      context 'when clients integration name is not pets_best or health_paws' do
+        let(:website_url) { 'http://www.vetcarehealth.com/getquote/postlead' }
+        it 'redirect url should be the same' do
+          client.update_attributes!(website_url: website_url)
+
+          api_post 'leads', lead: correct_data, pet: pet_data
+          redirect_url =  redirect_url_from_response response
+
+          expect(redirect_url).to eq client.website_url
+        end
+      end
+
+      context 'when clients integration name is pets_best' do
+        let(:website_url) { 'http://www.petsbest.com/' }
+        let(:service_url) { 'http://www.petsbest.com/enroll' }
+        let(:integration_name) { 'pets_best' }
+        let(:expected_redirect_url) { "http://www.petsbest.com/enroll/?&ci=PIOSL&ofn=Misty&oln=Adams&oas=&oac=RohnertPark&oaz=94928&oph=2096056901&oea=mymymisty@gmail.com&aqr=false&Json=false&pn1=Rain&s1=Dog&b1=French Bulldog&g1=male&dob1=11-1-2015&mc1=false"}
+
+        it 'redirect url should be correct' do
+          client.update_attributes!(website_url: website_url, service_url: service_url, integration_name: integration_name)
+
+          api_post 'leads', lead: correct_data, pet: pet_data
+          redirect_url =  redirect_url_from_response response
+          expect(redirect_url).to eq expected_redirect_url
+        end
+      end
+
+      context 'when clients integration name is healthy_paws' do
+        let(:website_url) { 'https://www.healthypawspetinsurance.com' }
+        let(:integration_name) { 'healthy_paws' }
+        let(:expected_redirect_url) { "https://www.healthypawspetinsurance.com/quote/retrievequote?sessionid=test@example.com"}
+
+        it 'redirect url should be correct' do
+          client.update_attributes!(website_url: website_url, integration_name: integration_name)
+
+          api_post 'leads', lead: correct_data, pet: pet_data
+          redirect_url =  redirect_url_from_response response
+          expect(redirect_url).to eq expected_redirect_url
+        end
       end
     end
 
@@ -673,4 +716,7 @@ describe API::V1::LeadsController, type: :request do
     end
   end
 
+  def redirect_url_from_response response
+    ((JSON.parse(JSON.parse(response.body)['client'])).map { |client| JSON.parse(client)['redirect_url']}).first
+  end
 end

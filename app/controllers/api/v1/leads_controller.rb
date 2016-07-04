@@ -89,9 +89,8 @@ class API::V1::LeadsController  < ActionController::API
     clients_responses.each do |response|
       sold_clients_names << response.client_name
       client = ClientsVertical.find_by_integration_name(response.client_name)
-      redirect_url = client.website_url
-      # If sold client is Pets Best, return redirect URL
-      redirect_url = redirect_url_from_response(client, lead, redirect_url, response)
+
+      redirect_url = redirect_url_from_response(client, lead, client.website_url, response)
       sold_clients << JSON[client_to_json(client, redirect_url)]
     end
 
