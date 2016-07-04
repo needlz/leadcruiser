@@ -14,10 +14,6 @@ class ForwardLeadToClientRequest
     diff = finish - start
 
     save_response(lead, request_data.generator, client, purchase_order, diff)
-
-    # Check Responses table and return with JSON response
-    response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
-    lead.update_attributes(status: Lead::NO_POS) if response_list.blank?
   end
 
   def save_response(*args)
