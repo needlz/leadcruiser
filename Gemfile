@@ -76,12 +76,16 @@ gem 'capybara'
 gem 'phantomjs'
 gem 'poltergeist'
 
-group :test do
-  gem 'webmock'
-end
-
 gem 'awesome_print', require: 'ap'
 gem 'quiet_assets'
 gem 'velocify'
 gem 'faker', group: :test
 gem 'sendgrid-ruby'
+
+group :test do
+  gem 'webmock'
+end
+
+group :production do
+  gem "pgbackups-archive"
+end
