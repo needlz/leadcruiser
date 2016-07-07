@@ -7,7 +7,7 @@ require 'lead_validation'
 class API::V1::LeadsController  < ActionController::API
   include ActionView::Helpers::NumberHelper
 
-  GETHEALTHCARE_LEAD_TYPE = '21'
+  GETHEALTHCARE_LEAD_TYPES = ['21', '23']
 
   attr_reader :vertical
 
@@ -23,7 +23,7 @@ class API::V1::LeadsController  < ActionController::API
   private
 
   def health_insurace_lead?
-    params[:TYPE] == GETHEALTHCARE_LEAD_TYPE
+     GETHEALTHCARE_LEAD_TYPES.include?(params[:TYPE])
   end
 
   def handle_pet_insurance_lead
@@ -52,7 +52,7 @@ class API::V1::LeadsController  < ActionController::API
       begin
         PetInsuranceLeadValidation.new(lead, pet).validate
       rescue PetInsuranceLeadValidation::Error => validation_error
-        return render json: { errors: validation_error, other_client: all_po_client_list.to_json},
+        return render json: { errors: validation_error.message, other_client: all_po_client_list.to_json},
                       status: :unprocessable_entity
       end
 
@@ -140,7 +140,7 @@ class API::V1::LeadsController  < ActionController::API
         begin
           HealthInsuranceLeadValidation.new(lead).validate
         rescue HealthInsuranceLeadValidation::Error => validation_error
-          return render json: { errors: validation_error, other_client: all_po_client_list.to_json },
+          return render json: { errors: validation_error.message, other_client: all_po_client_list.to_json },
                         status: :unprocessable_entity
         end
 

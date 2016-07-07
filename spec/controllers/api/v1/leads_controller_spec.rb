@@ -40,14 +40,14 @@ describe API::V1::LeadsController, type: :request do
   let(:city) { 'New York' }
   let(:state) { 'NY' }
 
-  before do
-    stub_request(:get, "https://api.smartystreets.com/zipcode?auth-id=&auth-token=&zipcode=10004").
+  describe '#create with visitor' do
+    before do
+      stub_request(:get, "https://api.smartystreets.com/zipcode?auth-id=&auth-token=&zipcode=10004").
         with(headers: {'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent' => 'Ruby'}).
         to_return(status: 200, body: [{ city_states: [{ state_abbreviation: state, city: city }] }].to_json,
                   headers: {'Content-Type' => 'application/json'})
-  end
+    end
 
-  describe '#create with visitor' do
     let! (:visitor) { Visitor.create(session_hash: session_hash) }
 
     it 'returns success' do
@@ -76,6 +76,13 @@ describe API::V1::LeadsController, type: :request do
   end
 
   describe '#create without mandatory field' do
+    before do
+      stub_request(:get, "https://api.smartystreets.com/zipcode?auth-id=&auth-token=&zipcode=10004").
+        with(headers: {'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent' => 'Ruby'}).
+        to_return(status: 200, body: [{ city_states: [{ state_abbreviation: state, city: city }] }].to_json,
+                  headers: {'Content-Type' => 'application/json'})
+    end
+
     it 'returns error without vertical_id' do
       result = api_post 'leads', lead: wrong_data, pet: pet_data
 
@@ -316,7 +323,145 @@ describe API::V1::LeadsController, type: :request do
     end
   end
 
+  describe '#create with type 23' do
+    let (:params) { {
+      session_hash: 'session hash',
+      site_id: '1',
+      form_id: '1',
+      TYPE: '23',
+      Test_Lead: '1',
+      Skip_XSL: '1',
+      Match_With_Partner_ID: '22.456',
+      Redirect_URL: 'http://www.yoursite.com/',
+      SRC: 'test',
+      Landing_Page: 'landing',
+      IP_Address: '75.2.92.149',
+      Sub_ID: '12',
+      Pub_ID: '12345',
+      Optout: 'Optout',
+      imbx: 'imbx',
+      Ref: 'Ref',
+      user_agent: 'user_agent',
+      tsrc: 'tsrc',
+      First_Name: 'John',
+      Last_Name: 'Doe',
+      Address_1: 'Address_1',
+      Address_2: 'Address_2',
+      City: 'Chicago',
+      State: 'IL',
+      Zip: '60610',
+      Phone_Number: '3125554811',
+      Email_Address: 'test@nags.us',
+      DOB: '12/23/1980',
+      Gender: 'Male',
+      Age: '5',
+    } }
+    let(:lead_result) { {
+      session_hash: "session hash",
+      site_id: 1,
+      form_id: 1,
+      first_name: "John",
+      last_name: "Doe",
+      address_1: "Address_1",
+      address_2: 'Address_2',
+      city: "Chicago",
+      state: "IL",
+      zip: "60610",
+      day_phone: "3125554811",
+      email: "test@nags.us",
+      birth_date: Date.strptime('12/23/1980', '%m/%d/%Y'),
+      gender:"Male",
+      vertical_id: health_vertical.id,
+      visitor_ip: "75.2.92.149"
+    } }
+
+    let(:health_insurance_lead_result) { {
+      boberdoo_type: "23",
+      match_with_partner_id: "22.456",
+      skip_xsl: "1",
+      test_lead: "1",
+      redirect_url: "http://www.yoursite.com/",
+      src: "test",
+      sub_id: "12",
+      pub_id: "12345",
+      optout: "Optout",
+      imbx: "imbx",
+      ref: "Ref",
+      user_agent: "user_agent",
+      tsrc: "tsrc",
+      landing_page: "landing",
+      age: 5,
+    } }
+
+    it 'should create correct lead' do
+      expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
+      expect(Lead.last.attributes.symbolize_keys).to include (lead_result)
+    end
+
+    let(:hit) { create(:hit, id:1) }
+    it 'should create test lead' do
+      GethealthcareHit.delete_all
+
+      params[:Phone_Number] = '78700000' + hit.id.to_s
+      params[:First_Name] = 'test'
+      params[:Last_Name] = 'test'
+      params[:Email_Address] = 'test@test.com'
+      params[:Address_1] = 'test'
+
+      api_post 'leads', params
+      expect( GethealthcareHit.last.lead ).to eq Lead.last
+    end
+
+    it 'should create correct health insurance lead' do
+      expect{ api_post 'leads', params }.to change { HealthInsuranceLead.count }.from(0).to(1)
+
+      new_health_insurance_lead = HealthInsuranceLead.last
+
+      expect(new_health_insurance_lead.attributes.symbolize_keys).to include (health_insurance_lead_result)
+    end
+
+    describe 'validations' do
+      before do
+        clients_vertical.update_attributes!(vertical_id: vertical.id)
+        purchase_order = PurchaseOrder.create!(client_id: clients_vertical.id)
+        allow_any_instance_of(SendDataWorker).to receive(:perform) do |sender, lead_id|
+          Response.create!(lead_id: lead_id,
+                           purchase_order: purchase_order,
+                           client_name: clients_vertical.integration_name)
+        end
+      end
+
+      it 'grants uniqueness of lead email' do
+        expect(ForwardHealthInsuranceLead).to receive(:perform).once
+        expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
+        expect(Lead.last.status).to be_nil
+        expect{ api_post 'leads', params }.to change { Lead.count}.from(1).to(2)
+        expect(Lead.last.status).to eq (Lead::DUPLICATED)
+      end
+
+      it 'grants that ip is not blocked' do
+        BlockList.create(block_ip: params[:IP_Address], active: true)
+        api_post 'leads', params
+        expect(Lead.last.status).to eq(Lead::BLOCKED)
+      end
+
+      it 'grants that first and last names are not test' do
+        api_post 'leads', params.merge(First_Name: Lead::TEST_TERM, Last_Name: Lead::TEST_TERM)
+        expect(Lead.last.status).to eq(Lead::BLOCKED)
+        expect(Lead.last.disposition).to eq(Lead::TEST_NO_SALE)
+      end
+
+    end
+  end
+
   describe 'creation of pet insurance lead' do
+    before do
+      stub_request(:get, "https://api.smartystreets.com/zipcode?auth-id=&auth-token=&zipcode=10004").
+        with(headers: {'Accept' => '*/*', 'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'User-Agent' => 'Ruby'}).
+        to_return(status: 200, body: [{ city_states: [{ state_abbreviation: state, city: city }] }].to_json,
+                  headers: {'Content-Type' => 'application/json'})
+    end
+
     let(:client) { ClientsVertical.create!(vertical_id: vertical.id,
                                            integration_name: "vet_care_health",
                                            active: true,
