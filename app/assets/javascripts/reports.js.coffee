@@ -82,6 +82,8 @@ class @DatePicker
 #    $(".table-date-range").dateRangePicker().bind "datepicker-change", (_, period) ->
 #      LeadStatisticGraph.rebuildPage period.date1.format("fullUts"), period.date2.format("fullUts")
     LeadStatisticGraph.rebuildPage
+    $('.table.table-hover').dataTable
+      "paging": false
 
   @updateForGraph: ->
     LeadStatisticGraph.refresh DatePicker.graph_date_range_from, DatePicker.graph_date_range_to
