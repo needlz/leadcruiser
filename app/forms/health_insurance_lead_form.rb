@@ -8,6 +8,7 @@ class HealthInsuranceLeadForm
   end
 
   def lead_attributes
+    birth_date = params[:DOB] || params[:Bday]
     {
       session_hash: params[:session_hash],
       site_id: params[:site_id],
@@ -21,7 +22,7 @@ class HealthInsuranceLeadForm
       zip: params[:Zip],
       day_phone: params[:Phone_Number],
       email: params[:Email_Address],
-      birth_date: (Date.strptime(params[:DOB], "%m/%d/%Y") if params[:DOB]),
+      birth_date: (Date.strptime(birth_date, "%m/%d/%Y") if birth_date),
       gender: params[:Gender],
       vertical_id: Vertical.health_insurance.id,
       visitor_ip: params[:IP_Address]

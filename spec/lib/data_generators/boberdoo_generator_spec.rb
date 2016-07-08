@@ -3,7 +3,7 @@ require 'data_generators/request_to_boberdoo'
 
 RSpec.describe RequestToBoberdoo, type: :request do
   let(:lead) { create(:lead, :for_boberdoo) }
-  let!(:health_insurance_lead) { create(:health_insurance_lead, lead: lead) }
+  let!(:health_insurance_lead) { create(:health_insurance_lead, lead: lead, boberdoo_type: '21') }
 
   it 'returns lead given during instantiation' do
     generator = RequestToBoberdoo.new(lead)
