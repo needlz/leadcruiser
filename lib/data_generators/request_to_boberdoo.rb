@@ -50,7 +50,7 @@ class RequestToBoberdoo < RequestToClient
       Phone_Number: lead.day_phone,
       Email_Address: lead.email,
       FPL: health_insurance_lead.fpl,
-      DOB: lead.birth_date.strftime("%m/%d/%Y"),
+      DOB: birth_date,
       Gender: lead.gender,
       Age: health_insurance_lead.age,
       Height_Feet: health_insurance_lead.height_feet,
@@ -104,8 +104,12 @@ class RequestToBoberdoo < RequestToClient
       Zip: lead.zip,
       Phone_Number: lead.day_phone,
       Email_Address: lead.email,
-      Bday: lead.birth_date.strftime("%m/%d/%Y"),
+      Bday: birth_date,
     }
+  end
+
+  def birth_date
+    lead.birth_date.strftime("%m/%d/%Y") if lead.birth_date
   end
 
   def perform_http_request(exclusive)
