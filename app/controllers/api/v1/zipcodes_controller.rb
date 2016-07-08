@@ -1,5 +1,5 @@
 require 'request_to_client_generator'
-require 'workers/send_data_worker.rb'
+require 'workers/send_pet_data_worker.rb'
 
 class API::V1::ZipcodesController  < ActionController::API
   include ActionView::Helpers::NumberHelper

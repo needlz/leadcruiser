@@ -1,7 +1,7 @@
 require 'workers/response_petfirst_worker.rb'
 require 'workers/send_email_worker.rb'
 
-class SendDataWorker
+class SendPetDataWorker
   extend ActionView::Helpers::NumberHelper
 
   attr_accessor :client
@@ -16,19 +16,19 @@ class SendDataWorker
     lead = Lead.find(lead_id)
 
     # Get available exclusive and shared POs
-    po_builder = PurchaseOrderBuilder.new(lead)
+    po_builder = PurchaseOrderQuery.new(lead)
     exclusive_po_length = po_builder.exclusive_pos_length
     shared_po_length = po_builder.shared_pos_length
 
     if exclusive_po_length == 0
-      SendDataWorker.record_transaction(lead_id: lead_id,
-                                        success: false,
-                                        reason: NO_EXCLUSIVE_POS)
+      SendPetDataWorker.record_transaction(lead_id: lead_id,
+                                           success: false,
+                                           reason: NO_EXCLUSIVE_POS)
     end
     if shared_po_length == 0
-      SendDataWorker.record_transaction(lead_id: lead_id,
-                                        success: false,
-                                        reason: NO_SHARED_POS)
+      SendPetDataWorker.record_transaction(lead_id: lead_id,
+                                           success: false,
+                                           reason: NO_SHARED_POS)
     end
 
     # Initialize algorithm variables
@@ -81,14 +81,14 @@ class SendDataWorker
       # Exclusive selling is selected by price
       if is_exclusive && !exclusive_po.nil?
         client = ClientsVertical.where(active: true, id: exclusive_po[:client_id]).try(:first)
-        provider = RequestToClientGenerator.new(lead, client)
+        request = RequestToClientGenerator.new(lead, client)
 
         start = Time.now
-        response = provider.send_data
+        response = request.send_data
         finish = Time.now
         diff = finish - start
 
-        sold = SendDataWorker.check_response(lead, provider, client, exclusive_po, diff, true)
+        sold = SendPetDataWorker.check_response(response, lead, request, client, exclusive_po, diff, true)
         used_exclusive_po_id_list.push exclusive_po[:id]
         current_exclusive_po = exclusive_po
 
@@ -102,14 +102,14 @@ class SendDataWorker
         shared_selling = false
         for i in 0..current_shared_pos.length - 1
           client = ClientsVertical.where(active:true, id: current_shared_pos[i][:client_id]).try(:first)
-          provider = RequestToClientGenerator.new(lead, client)
+          request = RequestToClientGenerator.new(lead, client)
 
           start = Time.now
-          response = provider.send_data(false)
+          response = request.send_data(false)
           finish = Time.now
           diff = finish - start
 
-          sold = SendDataWorker.check_response(lead, provider, client, current_shared_pos[i], diff)
+          sold = SendPetDataWorker.check_response(response, lead, request, client, current_shared_pos[i], diff)
           used_shared_po_id_list.push current_shared_pos[i][:id]
           current_shared_po = current_shared_pos[i]
           if !sold
@@ -142,14 +142,14 @@ class SendDataWorker
 
             for i in 0..new_shared_pos.length - 1
               client = ClientsVertical.where(active:true, id: new_shared_pos[i][:client_id]).try(:first)
-              provider = RequestToClientGenerator.new(lead, client)
+              request = RequestToClientGenerator.new(lead, client)
               
               start = Time.now
-              response = provider.send_data(false)
+              response = request.send_data(false)
               finish = Time.now
               diff = finish - start
 
-              sold = SendDataWorker.check_response(lead, provider, client, new_shared_pos[i], diff)
+              sold = SendPetDataWorker.check_response(response, lead, request, client, new_shared_pos[i], diff)
 
               used_shared_po_id_list.push new_shared_pos[i][:id]
               current_shared_po = new_shared_pos[i]
@@ -172,11 +172,10 @@ class SendDataWorker
     TransactionAttempt.create(transaction_attributes) if transaction_attributes[:lead_id]
   end
 
-  def self.check_response(lead, generator, client, purchase_order, response_time, exclusive_selling=false)
-    response_time = number_with_precision(response_time, :precision => 2)
+  def self.check_response(response, lead, request, client, purchase_order, response_time, exclusive_selling = false)
+    response_time = number_with_precision(response_time, precision: 2)
     sold = false
-    response = generator.response
-    unless response.nil?
+    if response
       # Request timeout
       if response == "Timeout" || response == "IOError"
         resp_model = Response.create(
@@ -216,8 +215,8 @@ class SendDataWorker
           client_name: client.integration_name,
           response_time: response_time
       )
-      sold = generator.success?
-      rejection_reasons = generator.rejection_reason unless sold
+      sold = request.success?
+      rejection_reasons = request.rejection_reason unless sold
 
       if sold && !resp_model.nil?
         # Update reponse

@@ -5,7 +5,7 @@ require 'data_generators/request_to_healthy_paws'
 require 'data_generators/request_to_vet_care_health'
 require 'next_client_builder'
 require 'request_to_client_generator'
-require 'workers/send_data_worker.rb'
+require 'workers/send_pet_data_worker.rb'
 
 class AdminsController < ApplicationController
 	
@@ -47,7 +47,7 @@ class AdminsController < ApplicationController
         lead.update_attribute(:disposition, Lead::TEST_SALE)
       end
 
-   		SendDataWorker.new.perform(lead.id)
+   		SendPetDataWorker.new.perform(lead.id)
 
       response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
       if !response_list.nil? && response_list.length != 0

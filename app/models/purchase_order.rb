@@ -35,7 +35,7 @@ class PurchaseOrder < ActiveRecord::Base
   def states_array
     states_str = read_attribute(:states)
     if states_str.blank?
-      return ""
+      return []
     end
 
     states_str.split(/,\s+/)

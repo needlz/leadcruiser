@@ -1,4 +1,4 @@
-class PurchaseOrderBuilder
+class PurchaseOrderQuery
   include ActionView::Helpers::NumberHelper
 
   attr_accessor :lead, 
@@ -15,24 +15,31 @@ class PurchaseOrderBuilder
     @exclusive_pos_length = 0
     @shared_pos_length = 0
 
-    # Init exclusive_po list, price keys and legnth
-    @exclusive_pos = purchase_order_list(true)
-    @exclusive_price_keys = []
-    @exclusive_pos.keys.each do |key|
-      @exclusive_price_keys << number_with_precision(key, :precision => 2).to_f
-    end
-    @exclusive_price_keys = @exclusive_price_keys.sort {|a,b| b <=> a}
-
-    # Init shared_po list, price keys and legnth
-    @shared_pos = purchase_order_list(false)
-    @shared_price_keys = []
-    @shared_pos.keys.each do |key|
-      @shared_price_keys << number_with_precision(key, :precision => 2).to_f
-    end
-    @shared_price_keys = @shared_price_keys.sort {|a,b| b <=> a}
+    init_exclusive_purchase_orders
+    init_shared_purchase_orders
 
     # Init times_sold
     @times_sold = @lead.vertical.times_sold.to_i
+  end
+
+  def init_exclusive_purchase_orders
+    # Init exclusive_po list, price keys and legnth
+    @exclusive_pos = purchase_orders_by_exclusiveness(true)
+    @exclusive_price_keys = []
+    @exclusive_pos.keys.each do |key|
+      @exclusive_price_keys << number_with_precision(key, precision: 2).to_f
+    end
+    @exclusive_price_keys = @exclusive_price_keys.sort {|a,b| b <=> a}
+  end
+
+  def init_shared_purchase_orders
+    # Init shared_po list, price keys and legnth
+    @shared_pos = purchase_orders_by_exclusiveness(false)
+    @shared_price_keys = []
+    @shared_pos.keys.each do |key|
+      @shared_price_keys << number_with_precision(key, precision: 2).to_f
+    end
+    @shared_price_keys = @shared_price_keys.sort {|a,b| b <=> a}
   end
 
   def next_exclusive_po(current_po, rejected_po_id_list)
@@ -41,7 +48,7 @@ class PurchaseOrderBuilder
       if @exclusive_price_keys.length == 0
         return nil
       end
-      highest_price = number_with_precision(@exclusive_price_keys[0], :precision => 2)
+      highest_price = number_with_precision(@exclusive_price_keys[0], precision: 2)
       same_price_po_list = @exclusive_pos[highest_price.to_s]
       # Select randomized PO
       random = rand(0..same_price_po_list.length-1)
@@ -184,72 +191,57 @@ class PurchaseOrderBuilder
   private
 
   # Get available purchase list by lead
-  def purchase_order_list(exclusive)
-    pos = PurchaseOrder.where('vertical_id = ? and active = ? and exclusive = ?', @lead.vertical_id, true, exclusive)
+  def purchase_orders_by_exclusiveness(exclusive)
+    purchase_orders = PurchaseOrder.where('vertical_id = ? and active = ? and exclusive = ?', @lead.vertical_id, true, exclusive)
     available_pos = {}
-    if pos.nil? || pos.length == 0
-      available_pos
-    else
-      pos.each do |po|
+    if purchase_orders.present?
+      purchase_orders.each do |purchase_order|
         # Check client active status
-        client = po.clients_vertical
-        if client.nil? || !client.active
-          next
-        end
+        client = purchase_order.clients_vertical
+        next if client.nil? || !client.active
         # Check states
         state = lead.state || lead.try(:zip_code).try(:state)
-        unless po.states.nil?
-          state_filter_array = po.states.split(/,/)
-          # Remove whitespace in the code
-          for i in 0..state_filter_array.length-1
-            state_filter_array[i] = state_filter_array[i].strip
-          end
-          if state_filter_array.length > 0 and !state_filter_array.include? state
-            next
-          end
+        if purchase_order.states.present?
+          states = purchase_order.states_array
+          states.map(&:strip!)
+          next if states.present? and !states.include?(state)
         end
 
         # Check preexisting conditions
         if lead.pet_insurance?
           pet = lead.details_pets.first
-          if po.preexisting_conditions and po.preexisting_conditions != pet.conditions
-            next
-          end
+          next if purchase_order.preexisting_conditions and purchase_order.preexisting_conditions != pet.conditions
         end
 
         # Check Maximum leads limit
-        if po.leads_max_limit and !po.leads_count_sold.nil? and po.leads_count_sold >= po.leads_max_limit
+        if purchase_order.leads_max_limit and purchase_order.leads_count_sold and purchase_order.leads_count_sold >= purchase_order.leads_max_limit
           next
         end
 
         # Check Daily leads limit
-        if po.leads_daily_limit and !po.daily_leads_count.nil? and po.daily_leads_count >= po.leads_daily_limit
+        if purchase_order.leads_daily_limit and purchase_order.daily_leads_count and purchase_order.daily_leads_count >= purchase_order.leads_daily_limit
           next
         end
 
         # Check Date
-        if po.start_date and po.start_date > Date.today
+        if purchase_order.start_date and purchase_order.start_date > Date.today
           next
         end
 
-        if po.end_date and po.end_date < Date.today
+        if purchase_order.end_date and purchase_order.end_date < Date.today
           next
         end
 
-        if po.weight.nil?
-          po.weight = 0
-        end
+        purchase_order.weight = 0 if purchase_order.weight.nil?
 
-        real_price = number_with_precision(po.price + po.weight, :precision => 2)
+        real_price = number_with_precision(purchase_order.price + purchase_order.weight, precision: 2)
 
-        if available_pos[real_price].nil?
-          available_pos[real_price] = []
-        end
-         available_pos[real_price.to_s] << {
-          :id => po.id,
-          :client_id => po.client_id,
-          :price => po.price,
-          :real_price => real_price.to_f
+        available_pos[real_price] ||= []
+        available_pos[real_price.to_s] << {
+          id: purchase_order.id,
+          client_id: purchase_order.client_id,
+          price: purchase_order.price,
+          real_price: real_price.to_f
         }
 
         if exclusive
@@ -260,6 +252,6 @@ class PurchaseOrderBuilder
       end
     end
 
-     available_pos
+    available_pos
   end
 end

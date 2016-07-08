@@ -299,7 +299,7 @@ describe API::V1::LeadsController, type: :request do
       before do
         clients_vertical.update_attributes!(vertical_id: vertical.id)
         purchase_order = PurchaseOrder.create!(client_id: clients_vertical.id)
-        allow_any_instance_of(SendDataWorker).to receive(:perform) do |sender, lead_id|
+        allow_any_instance_of(SendPetDataWorker).to receive(:perform) do |sender, lead_id|
           Response.create!(lead_id: lead_id,
                            purchase_order: purchase_order,
                            client_name: clients_vertical.integration_name)
@@ -436,7 +436,7 @@ describe API::V1::LeadsController, type: :request do
       before do
         clients_vertical.update_attributes!(vertical_id: vertical.id)
         purchase_order = PurchaseOrder.create!(client_id: clients_vertical.id)
-        allow_any_instance_of(SendDataWorker).to receive(:perform) do |sender, lead_id|
+        allow_any_instance_of(SendPetDataWorker).to receive(:perform) do |sender, lead_id|
           Response.create!(lead_id: lead_id,
                            purchase_order: purchase_order,
                            client_name: clients_vertical.integration_name)
@@ -538,7 +538,7 @@ describe API::V1::LeadsController, type: :request do
                                      price: 10,
                                      clients_vertical_id: client_3.id) }
       before do
-        allow_any_instance_of(SendDataWorker).to receive(:perform) do |sender, lead_id|
+        allow_any_instance_of(SendPetDataWorker).to receive(:perform) do |sender, lead_id|
           Response.create!(lead_id: lead_id,
                            purchase_order: purchase_order,
                            client_name: client.integration_name)
@@ -585,7 +585,7 @@ describe API::V1::LeadsController, type: :request do
                                                    client_id: client.id) }
 
       before do
-        allow_any_instance_of(SendDataWorker).to receive(:perform) do |sender, lead_id|
+        allow_any_instance_of(SendPetDataWorker).to receive(:perform) do |sender, lead_id|
           Response.create!(lead_id: lead_id,
                            purchase_order: purchase_order,
                            client_name: client.integration_name,
@@ -602,7 +602,7 @@ describe API::V1::LeadsController, type: :request do
     describe 'validations' do
       before do
         purchase_order = PurchaseOrder.create!(client_id: clients_vertical.id)
-        allow_any_instance_of(SendDataWorker).to receive(:perform) do |sender, lead_id|
+        allow_any_instance_of(SendPetDataWorker).to receive(:perform) do |sender, lead_id|
           Response.create!(lead_id: lead_id,
                            purchase_order: purchase_order,
                            client_name: clients_vertical.integration_name)
