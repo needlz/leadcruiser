@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160628141443) do
+ActiveRecord::Schema.define(version: 20160630151337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,7 +160,9 @@ ActiveRecord::Schema.define(version: 20160628141443) do
   end
 
   create_table "editable_configurations", force: :cascade do |t|
-    t.integer "gethealthcare_form_monitor_delay_minutes", default: 30
+    t.integer "gethealthcare_form_monitor_delay_minutes",          default: 30
+    t.integer "gethealthcare_form_threshold_seconds",              default: 20
+    t.text    "gethealthcare_notified_recipients_comma_separated"
   end
 
   create_table "gethealthcare_hits", force: :cascade do |t|
@@ -169,6 +171,8 @@ ActiveRecord::Schema.define(version: 20160628141443) do
     t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "gethealthcare_notified_emails_comma_separated"
+    t.integer  "lead_id"
   end
 
   create_table "health_insurance_leads", force: :cascade do |t|

@@ -146,7 +146,7 @@ class API::V1::LeadsController  < ActionController::API
 
         HealthInsuranceLead.create!(form.health_insurance_lead_attributes.merge({ lead_id: lead.id }))
 
-        AutoResponseThankWorker.perform_async(lead.email)
+        HealthInsuranceMailWorker.perform_async(:thank_you, { site_name: lead.site.host, email: lead.email })
         ForwardHealthInsuranceLead.perform(lead) if lead.status.nil?
 
         render json: {

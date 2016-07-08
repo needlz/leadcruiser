@@ -40,6 +40,7 @@ describe API::V1::LeadsController, type: :request do
   let(:city) { 'New York' }
   let(:state) { 'NY' }
   let(:hit) { create(:hit, id: 1) }
+  let(:site) { create(:site) }
 
   describe '#create with visitor' do
     before do
@@ -113,7 +114,7 @@ describe API::V1::LeadsController, type: :request do
     let(:lead_result) {
       {
         session_hash: "session hash",
-        site_id: 1,
+        site_id: site.id,
         form_id: 1,
         first_name: "John",
         last_name: "Doe",
@@ -257,12 +258,12 @@ describe API::V1::LeadsController, type: :request do
 
   describe '#create with type 23' do
     let (:params) {
-      params_for_medsupp_lead
+      params_for_medsupp_lead(site_id: site.id)
     }
     let(:lead_result) {
       {
         session_hash: "session hash",
-        site_id: 1,
+        site_id: site.id,
         form_id: 1,
         first_name: "John",
         last_name: "Doe",
@@ -329,7 +330,6 @@ describe API::V1::LeadsController, type: :request do
     it 'sends autoresponse email' do
       expect(HealthInsuranceMailWorker).to receive(:perform_async).with(:thank_you,
                                                                         email: params[:Email_Address],
-                                                                        site_url: site.domain,
                                                                         site_name: site.host)
       api_post 'leads', params
     end

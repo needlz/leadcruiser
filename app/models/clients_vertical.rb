@@ -2,29 +2,30 @@
 #
 # Table name: clients_verticals
 #
-#  id                :integer          not null, primary key
-#  vertical_id       :integer
-#  integration_name  :string(255)
-#  active            :boolean
-#  weight            :integer
-#  exclusive         :boolean
-#  fixed_price       :float
-#  created_at        :datetime
-#  updated_at        :datetime
-#  service_url       :string(255)
-#  request_type      :string(255)
-#  logo_file_name    :string(255)
-#  logo_content_type :string(255)
-#  logo_file_size    :integer
-#  logo_updated_at   :datetime
-#  email             :string(255)
-#  phone_number      :string(255)
-#  website_url       :string(255)
-#  official_name     :string(255)
-#  description       :text
-#  sort_order        :integer
-#  display           :boolean          default(TRUE)
-#  timeout           :integer          default(20)
+#  id                            :integer          not null, primary key
+#  vertical_id                   :integer
+#  integration_name              :string(255)
+#  active                        :boolean
+#  weight                        :integer
+#  exclusive                     :boolean
+#  fixed_price                   :float
+#  created_at                    :datetime
+#  updated_at                    :datetime
+#  service_url                   :string(255)
+#  request_type                  :string(255)
+#  logo_file_name                :string(255)
+#  logo_content_type             :string(255)
+#  logo_file_size                :integer
+#  logo_updated_at               :datetime
+#  email                         :string(255)
+#  phone_number                  :string(255)
+#  website_url                   :string(255)
+#  official_name                 :string(255)
+#  description                   :text
+#  sort_order                    :integer
+#  display                       :boolean          default(TRUE)
+#  timeout                       :integer          default(20)
+#  lead_forwarding_delay_seconds :integer          default(0)
 #
 
 class ClientsVertical < ActiveRecord::Base

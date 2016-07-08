@@ -5,6 +5,7 @@
 #  id         :integer          not null, primary key
 #  domain     :string(255)
 #  host       :string(255)
+#  site_ip    :string(255)
 #  created_at :datetime
 #  updated_at :datetime
 #

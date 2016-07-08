@@ -6,7 +6,7 @@
 #  session_hash     :string(255)
 #  site_id          :integer
 #  visitor_ip       :string(255)
-#  referring_url    :string(255)
+#  referring_url    :text
 #  referring_domain :string(255)
 #  landing_page     :string(255)
 #  keywords         :string(255)

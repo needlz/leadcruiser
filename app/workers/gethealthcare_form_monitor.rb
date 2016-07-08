@@ -17,6 +17,7 @@ class GethealthcareFormMonitor
       if hit
         hit.update_attributes!(last_error: e.message)
       end
+      HealthInsuranceMailer.new.notify_about_gethealthcare_errors
       if Rails.env.development?
         save_screenshot('/tmp/screens/file.png')
         p page.current_url
@@ -61,8 +62,7 @@ class GethealthcareFormMonitor
 
   def check_threshold
     if hit.duration > EditableConfiguration.global.gethealthcare_form_threshold_seconds
-      recipients = EditableConfiguration.global.gethealthcare_notified_recipients_comma_separated.split(/,\s*/)
-      HealthInsuranceMailer.new.notify_about_gethealthcare_threshold(recipients)
+      HealthInsuranceMailer.new.notify_about_gethealthcare_threshold
     end
   end
 
