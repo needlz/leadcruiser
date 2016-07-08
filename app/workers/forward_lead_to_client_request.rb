@@ -9,15 +9,11 @@ class ForwardLeadToClientRequest
     request_data = RequestToClientGenerator.new(lead, client)
 
     start = Time.now
-    request_data.send_data
+    response = request_data.send_data
     finish = Time.now
     diff = finish - start
 
-    save_response(lead, request_data.generator, client, purchase_order, diff)
-  end
-
-  def save_response(*args)
-    SendDataWorker.check_response(*args)
+    SendPetDataWorker.check_response(response, lead, request_data.generator, client, purchase_order, diff)
   end
 
 end

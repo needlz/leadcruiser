@@ -1,6 +1,6 @@
 require 'next_client_builder'
 require 'request_to_client_generator'
-require 'workers/send_data_worker'
+require 'workers/send_pet_data_worker'
 require 'forward_health_insurance_lead'
 require 'lead_validation'
 
@@ -57,7 +57,7 @@ class API::V1::LeadsController  < ActionController::API
       end
 
       AutoResponseThankWorker.perform_async(lead.email)
-      SendDataWorker.new.perform(lead.id)
+      SendPetDataWorker.new.perform(lead.id)
 
       # Check Responses table and return with JSON response
       successful_clients_responses = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
