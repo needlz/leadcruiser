@@ -10,7 +10,7 @@ class RequestToBoberdoo < RequestToClient
   end
 
   def generate(exclusive)
-    boberdoo_params_for_type(health_insurance_lead.boberdoo_type)
+    send("params_for_type_#{ health_insurance_lead.boberdoo_type }")
   end
 
   def success?
@@ -106,15 +106,6 @@ class RequestToBoberdoo < RequestToClient
       Email_Address: lead.email,
       Bday: lead.birth_date.strftime("%m/%d/%Y"),
     }
-  end
-
-  def boberdoo_params_for_type(type)
-    case type
-      when '21'
-        params_for_type_21
-      when '23'
-        params_for_type_23
-    end
   end
 
   def perform_http_request(exclusive)
