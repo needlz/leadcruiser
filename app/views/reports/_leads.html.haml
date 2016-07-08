@@ -3,6 +3,7 @@
  reports_path(format: 'xls', firstDate: params[:firstDate], secondDate: params[:secondDate]),
  class: 'excel-icon'
 
+%p.sorting-notice= t('reports.use_shift')
 %table.table.table-hover
   %thead
     %tr
