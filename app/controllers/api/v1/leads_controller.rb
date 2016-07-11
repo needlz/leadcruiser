@@ -7,7 +7,7 @@ require 'lead_validation'
 class API::V1::LeadsController  < ActionController::API
   include ActionView::Helpers::NumberHelper
 
-  GETHEALTHCARE_LEAD_TYPES = ['21', '23']
+  GETHEALTHCARE_LEAD_TYPES = [RequestToBoberdoo::HEALTH_INSURANCE_TYPE, RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE]
 
   attr_reader :vertical
 

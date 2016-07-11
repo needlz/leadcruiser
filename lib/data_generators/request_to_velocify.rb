@@ -1,7 +1,17 @@
 class RequestToVelocify < RequestToClient
 
   LINK = ''
-  VELOCIFY_CAMPAIGN_ID = 31
+
+  VELOCIFY_CAMPAIGN_IDS = {
+    RequestToBoberdoo::HEALTH_INSURANCE_TYPE => {
+      'healthmatchup.com' => 33,
+      'gethealthcare.co' => 34
+    },
+    RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE => {
+        'healthmatchup.com' => 32,
+        'gethealthcare.co' => 31
+      },
+  }
 
   Velocify.configure do |config|
     config.username = "promiseinsurance@five9.com"
@@ -27,16 +37,20 @@ class RequestToVelocify < RequestToClient
     response['error']
   end
 
+  def campaign_id
+    VELOCIFY_CAMPAIGN_IDS[health_insurance_lead.boberdoo_type][lead.site.domain]
+  end
+
   private
 
   def perform_http_request(exclusive)
-    lead = Velocify::Lead.new
-    lead.campaign_id = VELOCIFY_CAMPAIGN_ID
+    velocify_lead = Velocify::Lead.new
+    velocify_lead.campaign_id = campaign_id
     velocify_params.each do |field_name, field|
-      lead.add_field id: field[:field_id], value: field[:value]
+      velocify_lead.add_field id: field[:field_id], value: field[:value]
     end
     
-    Velocify::Lead.add leads: [ lead ]
+    Velocify::Lead.add(leads: [velocify_lead])
   end
 
   def height_string(feet, inches)
@@ -59,12 +73,13 @@ class RequestToVelocify < RequestToClient
         Weight: { field_id: 758, value: health_insurance_lead.weight },
         Tobacco_Use: { field_id: 759, value: health_insurance_lead.tobacco_use },
         Preexisting_Conditions: { field_id: 764, value: health_insurance_lead.preexisting_conditions },
+
         Spouse_Gender: { field_id: 769, value: health_insurance_lead.spouse_gender },
         Spouse_Weight: { field_id: 776, value: health_insurance_lead.spouse_weight },
         Spouse_Tobacco_Use: { field_id: 777, value: health_insurance_lead.spouse_tobacco_use },
         Spouse_Preexisting_Conditions: { field_id: 782, value: health_insurance_lead.spouse_preexisting_conditions },
+
         Child_1_Gender: { field_id: 798, value: health_insurance_lead.child_1_gender },
-        # Child_1_DOB: { field_id: 1111, value: health_insurance_lead.child_1_dob },
         Child_1_Height: { field_id: 803, value: height_string(health_insurance_lead.child_1_height_feet, health_insurance_lead.child_1_height_inches) },
         Child_1_Weight: { field_id: 804, value: health_insurance_lead.child_1_weight },
         Child_1_Tobacco_Use: { field_id: 805, value: health_insurance_lead.child_1_tobacco_use },

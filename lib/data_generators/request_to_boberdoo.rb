@@ -1,6 +1,8 @@
 class RequestToBoberdoo < RequestToClient
 
   LINK = ''
+  HEALTH_INSURANCE_TYPE = '21'
+  MEDICARE_SUPPLEMENT_INSURANCE_TYPE = '23'
 
   attr_reader :health_insurance_lead
 
@@ -25,7 +27,7 @@ class RequestToBoberdoo < RequestToClient
 
   def params_for_type_21
     {
-      TYPE: '21',
+      TYPE: HEALTH_INSURANCE_TYPE,
       Test_Lead: health_insurance_lead.test_lead,
       Skip_XSL: health_insurance_lead.skip_xsl,
       Match_With_Partner_ID: health_insurance_lead.match_with_partner_id,
@@ -80,7 +82,7 @@ class RequestToBoberdoo < RequestToClient
 
   def params_for_type_23
     {
-      TYPE: '23',
+      TYPE: MEDICARE_SUPPLEMENT_INSURANCE_TYPE,
       Test_Lead: health_insurance_lead.test_lead,
       Skip_XSL: health_insurance_lead.skip_xsl,
       Match_With_Partner_ID: health_insurance_lead.match_with_partner_id,

@@ -5,7 +5,7 @@ RSpec.describe HealthInsuranceLead, type: :model do
   describe 'validations' do
     let(:required_attributes) {
       {
-        boberdoo_type: '21',
+        boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE,
         src: 'gethealthcare',
         landing_page: '1',
         age: '50'
