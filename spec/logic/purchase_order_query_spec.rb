@@ -27,25 +27,29 @@ RSpec.describe PurchaseOrderQuery, :type => :request do
                                                          vertical: vertical,
                                                          exclusive: true,
                                                          active: true,
-                                                         client_id: client.id) }
+                                                         client_id: client.id,
+                                                         states: 'Texas, Colorado, Washington') }
     let(:active_shared_purchase_orders) { create_list(:purchase_order,
                                                       2,
                                                       vertical: vertical,
                                                       exclusive: false,
                                                       active: true,
-                                                      client_id: client.id) }
+                                                      client_id: client.id,
+                                                      states: 'Texas, Colorado, Washington') }
     let(:inactive_exclusive_purchase_orders) { create_list(:purchase_order,
                                                            2,
                                                            vertical: vertical,
                                                            exclusive: true,
                                                            active: false,
-                                                           client_id: client.id) }
+                                                           client_id: client.id,
+                                                           states: 'Texas, Colorado, Washington') }
     let(:inactive_shared_purchase_orders) { create_list(:purchase_order,
                                                         2,
                                                         vertical: vertical,
                                                         exclusive: false,
                                                         active: false,
-                                                        client_id: client.id) }
+                                                        client_id: client.id,
+                                                        states: 'Texas, Colorado, Washington') }
 
     describe '#exclusive_pos' do
       context 'when purchase orders are active' do

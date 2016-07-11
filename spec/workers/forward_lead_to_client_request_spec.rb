@@ -16,6 +16,10 @@ RSpec.describe ForwardLeadToClientRequest do
           def initialize(lead); end
 
           def do_request(exclusive, client); end
+
+          def success?
+            true
+          end
         end
       )
     }
@@ -25,6 +29,13 @@ RSpec.describe ForwardLeadToClientRequest do
       expect_any_instance_of(request_to_dummy_client_class).to receive(:do_request).
         with(RequestToClientGenerator::DEFAULT_EXCLUSIVENESS, client)
       ForwardLeadToClientRequest.new.perform(lead.id, purchase_order.id)
+    end
+
+    it 'checks response' do
+      expect_any_instance_of(request_to_dummy_client_class).to receive(:initialize).with(lead)
+      expect_any_instance_of(request_to_dummy_client_class).to receive(:do_request).
+        with(RequestToClientGenerator::DEFAULT_EXCLUSIVENESS, client) { 'response' }
+      expect { ForwardLeadToClientRequest.new.perform(lead.id, purchase_order.id) }.to change{ Response.count }.from(0).to(1)
     end
 
   end

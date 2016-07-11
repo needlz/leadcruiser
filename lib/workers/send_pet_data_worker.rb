@@ -175,6 +175,7 @@ class SendPetDataWorker
   def self.check_response(response, lead, request, client, purchase_order, response_time, exclusive_selling = false)
     response_time = number_with_precision(response_time, precision: 2)
     sold = false
+
     if response
       # Request timeout
       if response == "Timeout" || response == "IOError"
