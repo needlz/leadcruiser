@@ -2,8 +2,8 @@ require 'rails_helper'
 require 'data_generators/request_to_boberdoo'
 
 RSpec.describe RequestToBoberdoo, type: :request do
-  let(:lead) { create(:lead, :for_boberdoo) }
-  let(:health_insurance_lead) { create(:health_insurance_lead, lead: lead, boberdoo_type: '21') }
+  let(:lead) { create(:lead, :from_boberdoo) }
+  let(:health_insurance_lead) { create(:health_insurance_lead, lead: lead, boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE) }
 
   it 'returns lead given during instantiation' do
     generator = RequestToBoberdoo.new(lead)
@@ -59,7 +59,7 @@ RSpec.describe RequestToBoberdoo, type: :request do
 
       context 'when lead is of type 21' do
         before do
-          create(:health_insurance_lead, lead: lead, boberdoo_type: '23')
+          create(:health_insurance_lead, lead: lead, boberdoo_type: RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE)
         end
 
         it 'returns nil for Bday field' do

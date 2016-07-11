@@ -29,7 +29,7 @@ module FactoryHelper
         state 'AL'
       end
 
-      trait :for_boberdoo do
+      trait :from_boberdoo do
         city 'Alabama'
         state 'AL'
         birth_date '06.07.1990'
@@ -101,6 +101,9 @@ module FactoryHelper
     end
 
     factory :hit, class: 'GethealthcareHit' do
+    end
+
+    factory :site, class: 'Site' do
     end
   end
 end
