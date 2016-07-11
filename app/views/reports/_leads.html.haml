@@ -4,6 +4,7 @@
  class: 'excel-icon'
 
 %p.sorting-notice= t('reports.use_shift')
+.clearfix
 %table.table.table-hover
   %thead
     %tr
@@ -20,20 +21,20 @@
           %td= lead.zip
           %td= lead.state.nil? ? lead.zip_code.try(:state) : lead.state
           %td= lead.email
-          %td= lead.details_pets.first.conditions? ? 'TRUE' : 'FALSE'
+          %td= (lead.details_pets.first.conditions? ? 'TRUE' : 'FALSE') if lead.details_pets.present?
           %td= lead.times_sold.nil? ? 0 : lead.times_sold
           %td= '$0.00'
           %td= ''
           %td= ''
           %td= UTCToPST(lead.created_at)
           %td= "tel:" + lead.day_phone
-          %td= lead.details_pets.first.pet_name
-          %td= lead.details_pets.first.species
-          %td= lead.details_pets.first.breed
-          %td= lead.details_pets.first.spayed_or_neutered? ? 'TRUE' : 'FALSE'
-          %td= lead.details_pets.first.birth_month
-          %td= lead.details_pets.first.birth_year
-          %td= lead.details_pets.first.gender
+          %td= lead.details_pets.first.pet_name if lead.details_pets.present?
+          %td= lead.details_pets.first.species if lead.details_pets.present?
+          %td= lead.details_pets.first.breed if lead.details_pets.present?
+          %td= (lead.details_pets.first.spayed_or_neutered? ? 'TRUE' : 'FALSE') if lead.details_pets.present?
+          %td= lead.details_pets.first.birth_month if lead.details_pets.present?
+          %td= lead.details_pets.first.birth_year if lead.details_pets.present?
+          %td= lead.details_pets.first.gender if lead.details_pets.present?
           %td= lead.visitor.nil? ? '' : lead.visitor.session_hash
           %td= lead.visitor.nil? ? '' : lead.visitor.referring_url
           %td= lead.visitor.nil? ? '' : lead.visitor.landing_page
@@ -48,20 +49,20 @@
             %td= lead.zip
             %td= lead.state.nil? ? lead.zip_code.try(:state) : lead.state
             %td= lead.email
-            %td= lead.details_pets.first.conditions? ? 'TRUE' : 'FALSE'
+            %td= (lead.details_pets.first.conditions? ? 'TRUE' : 'FALSE') if lead.details_pets
             %td= lead.times_sold.nil? ? 0 : lead.times_sold
             %td= '$' + lead.sold_po_price(response.purchase_order_id).to_s
             %td= lead.client_sold_to(response.client_name).try(:official_name)
             %td= lead.sold_type.exclusive_selling? ? 'Exclusive' : 'Shared'
             %td= UTCToPST(lead.created_at)
             %td= "tel:" + lead.day_phone
-            %td= lead.details_pets.first.pet_name
-            %td= lead.details_pets.first.species
-            %td= lead.details_pets.first.breed
-            %td= lead.details_pets.first.spayed_or_neutered? ? 'TRUE' : 'FALSE'
-            %td= lead.details_pets.first.birth_month
-            %td= lead.details_pets.first.birth_year
-            %td= lead.details_pets.first.gender
+            %td= lead.details_pets.first.pet_name if lead.details_pets.present?
+            %td= lead.details_pets.first.species if lead.details_pets.present?
+            %td= lead.details_pets.first.breed if lead.details_pets.present?
+            %td= (lead.details_pets.first.spayed_or_neutered? ? 'TRUE' : 'FALSE') if lead.details_pets.present?
+            %td= lead.details_pets.first.birth_month if lead.details_pets.present?
+            %td= lead.details_pets.first.birth_year if lead.details_pets.present?
+            %td= lead.details_pets.first.gender if lead.details_pets.present?
             %td= lead.visitor.nil? ? '' : lead.visitor.session_hash
             %td= lead.visitor.nil? ? '' : lead.visitor.referring_url
             %td= lead.visitor.nil? ? '' : lead.visitor.landing_page

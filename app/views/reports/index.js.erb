@@ -1,2 +1,3 @@
 $(".lead-table").html("<%= escape_javascript(render("leads")) %>");
 Pagination.initialize();
+$('.table.table-hover').dataTable({ "paging": false })
