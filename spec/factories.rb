@@ -64,6 +64,7 @@ module FactoryHelper
       active true
       exclusive true
       display true
+      service_url 'url'
     end
 
     factory :vertical do
@@ -79,8 +80,8 @@ module FactoryHelper
     end
 
     factory :purchase_order, class: 'PurchaseOrder' do
-      states 'Texas, Colorado, Washington'
       price 25
+      active true
     end
 
     factory :response, class: 'Response' do

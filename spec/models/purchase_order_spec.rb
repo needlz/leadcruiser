@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe PurchaseOrder, :type => :model do
-  let(:purchase_order) { create(:purchase_order) }
+  let(:purchase_order) { create(:purchase_order, states: 'Texas, Colorado, Washington') }
 
   describe '#states_array' do
     describe 'if states presents' do
