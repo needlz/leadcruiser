@@ -88,7 +88,7 @@ class SendPetDataWorker
         finish = Time.now
         diff = finish - start
 
-        sold = SendPetDataWorker.check_response(response, lead, request, client, exclusive_po, diff, true)
+        sold = SendPetDataWorker.check_response(response, lead, request.generator, client, exclusive_po, diff, true)
         used_exclusive_po_id_list.push exclusive_po[:id]
         current_exclusive_po = exclusive_po
 
@@ -109,7 +109,7 @@ class SendPetDataWorker
           finish = Time.now
           diff = finish - start
 
-          sold = SendPetDataWorker.check_response(response, lead, request, client, current_shared_pos[i], diff)
+          sold = SendPetDataWorker.check_response(response, lead, request.generator, client, current_shared_pos[i], diff)
           used_shared_po_id_list.push current_shared_pos[i][:id]
           current_shared_po = current_shared_pos[i]
           if !sold
@@ -149,7 +149,7 @@ class SendPetDataWorker
               finish = Time.now
               diff = finish - start
 
-              sold = SendPetDataWorker.check_response(response, lead, request, client, new_shared_pos[i], diff)
+              sold = SendPetDataWorker.check_response(response, lead, request.generator, client, new_shared_pos[i], diff)
 
               used_shared_po_id_list.push new_shared_pos[i][:id]
               current_shared_po = new_shared_pos[i]
