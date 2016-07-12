@@ -228,7 +228,9 @@ class API::V1::LeadsController  < ActionController::API
 
   def process_lead_created_by_crawler lead
     if lead.test?
-      hit = GethealthcareHit.find(get_id_from_phone_number(lead.day_phone))
+      hit_id = get_id_from_phone_number(lead.day_phone)
+      hit = GethealthcareHit.find_by_id(hit_id)
+      return unless hit
       hit.lead = lead
       hit.save!
     end

@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'sidekiq/testing'
 
 RSpec.describe ForwardLeadToClientRequest do
 
@@ -15,7 +16,9 @@ RSpec.describe ForwardLeadToClientRequest do
 
           def initialize(lead); end
 
-          def do_request(exclusive, client); end
+          def do_request(exclusive, client);
+            'response'
+          end
 
           def success?
             true
@@ -36,6 +39,24 @@ RSpec.describe ForwardLeadToClientRequest do
       expect_any_instance_of(request_to_dummy_client_class).to receive(:do_request).
         with(RequestToClientGenerator::DEFAULT_EXCLUSIVENESS, client) { 'response' }
       expect { ForwardLeadToClientRequest.new.perform(lead.id, purchase_order.id) }.to change{ Response.count }.from(0).to(1)
+    end
+
+    context 'when IOError occurs' do
+      before do
+        expect_any_instance_of(request_to_dummy_client_class).to receive(:do_request) { raise(Net::ReadTimeout) }
+      end
+
+      it 'schedules next try' do
+        expect { ForwardLeadToClientRequest.new.perform(lead.id, purchase_order.id) }.to(
+          change{ ForwardLeadToClientRequest.jobs.size }.from(0).to(1))
+      end
+    end
+
+    context 'when request ends successfully' do
+      it 'does not schedule next try' do
+        expect { ForwardLeadToClientRequest.new.perform(lead.id, purchase_order.id) }.to_not(
+          change{ ForwardLeadToClientRequest.jobs.size })
+      end
     end
 
   end

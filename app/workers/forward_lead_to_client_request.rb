@@ -10,6 +10,9 @@ class ForwardLeadToClientRequest
 
     start = Time.now
     response = request_data.send_data
+    if RequestToClientGenerator::HANDLED_CONNECTION_ERRORS.values.include?(response)
+      ForwardLeadToClientRequest.perform_in(10.seconds, lead_id, purchase_order_id)
+    end
     finish = Time.now
     diff = finish - start
 
