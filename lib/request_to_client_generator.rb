@@ -14,6 +14,11 @@ class RequestToClientGenerator
   end
 
   DEFAULT_EXCLUSIVENESS = true
+  HANDLED_CONNECTION_ERRORS = {
+    IOError => 'IOError',
+    Net::ReadTimeout => 'Timeout',
+    Net::OpenTimeout => 'Timeout'
+  }
 
   def initialize(lead, client)
     @lead = lead
@@ -61,12 +66,8 @@ class RequestToClientGenerator
     begin
       @generator = generator_class.new(lead)
       response = generator.do_request(exclusive, client)
-    rescue IOError
-      response = "IOError"
-    rescue Net::ReadTimeout
-      response = "Timeout"
-    rescue Net::OpenTimeout
-      response = "Timeout"
+    rescue *(HANDLED_CONNECTION_ERRORS.keys) => e
+      response = HANDLED_CONNECTION_ERRORS[e.class]
     end
 
     response
