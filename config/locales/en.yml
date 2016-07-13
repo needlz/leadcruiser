@@ -78,6 +78,7 @@ en:
     choose_range: 'Choose range:'
     range_from: 'From'
     range_to: 'To'
+    use_shift: 'Hint: Please hold SHIFT while choosing field to sort by if you want to sort data by multiple fields'
 
     clients_vertical_by_client_report:
       columns:

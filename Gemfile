@@ -89,3 +89,5 @@ end
 group :production do
   gem "pgbackups-archive"
 end
+
+gem 'jquery-datatables-rails', '~> 3.3.0'

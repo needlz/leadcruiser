@@ -42,8 +42,8 @@ module Reporting
     end
 
     def leads(first_date, last_date, page=nil)
-      leads = Lead.where(created_at: period(first_date, last_date))
-        .joins(:details_pets)
+      date_range = period(first_date, last_date)
+      leads = Lead.where(created_at: date_range)
         .order(created_at: :desc)
         .includes(:details_pets, :visitor)
       return leads unless page
@@ -59,8 +59,6 @@ module Reporting
 
       from = from.in_time_zone("UTC")
       to = to.in_time_zone("UTC")
-      # from = first_date.nil? || first_date == "" ? 14.days.ago : Time.parse(first_date).try(:beginning_of_day)
-      # to = last_date.nil? || last_date == "" ? Time.now : Time.parse(last_date).try(:end_of_day)
       from..to
     end
 
