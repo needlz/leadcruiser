@@ -49,7 +49,7 @@ RSpec.describe RequestToVelocify, type: :request do
 
         it 'uses campaign id 31' do
           request = RequestToVelocify.new(lead)
-          expect(request.campaign_id).to eq 31
+          expect(request.campaign_id).to eq 34
         end
       end
 
@@ -60,7 +60,7 @@ RSpec.describe RequestToVelocify, type: :request do
 
         it 'uses campaign id 34' do
           request = RequestToVelocify.new(lead)
-          expect(request.campaign_id).to eq 34
+          expect(request.campaign_id).to eq 31
         end
       end
     end
