@@ -107,6 +107,8 @@ class RequestToBoberdoo < RequestToClient
       Phone_Number: lead.day_phone,
       Email_Address: lead.email,
       Bday: birth_date,
+      Gender: lead.gender,
+      Age: health_insurance_lead.age
     }
   end
 
