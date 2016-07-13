@@ -5,11 +5,11 @@ class RequestToVelocify < RequestToClient
   VELOCIFY_CAMPAIGN_IDS = {
     RequestToBoberdoo::HEALTH_INSURANCE_TYPE => {
       'healthmatchup.com' => 33,
-      'gethealthcare.co' => 34
+      'gethealthcare.co' => 31
     },
     RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE => {
         'healthmatchup.com' => 32,
-        'gethealthcare.co' => 31
+        'gethealthcare.co' => 34
       },
   }
 
