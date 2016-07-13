@@ -2,8 +2,9 @@ require 'rails_helper'
 require 'data_generators/request_to_boberdoo'
 
 RSpec.describe RequestToBoberdoo, type: :request do
-  let(:lead) { create(:lead, :from_boberdoo) }
-  let(:health_insurance_lead) { create(:health_insurance_lead, lead: lead, boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE) }
+  let(:lead) { create(:lead,
+                      :from_boberdoo,
+                      gender: 'Female') }
 
   it 'returns lead given during instantiation' do
     generator = RequestToBoberdoo.new(lead)
@@ -11,34 +12,80 @@ RSpec.describe RequestToBoberdoo, type: :request do
   end
 
   describe '#generate' do
-    it 'generates parameters to be sent to Boberdoo' do
-      health_insurance_lead
-      generator = RequestToBoberdoo.new(lead)
+    context 'for health leads' do
+      let(:health_insurance_lead) { create(:health_insurance_lead,
+                                           lead: lead,
+                                           boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE,
+                                           age: 55) }
 
-      expect(generator.generate(true)).to be_present
+      it 'generates parameters to be sent to Boberdoo' do
+        health_insurance_lead
+        generator = RequestToBoberdoo.new(lead)
+
+        expect(generator.generate(true)).to be_present
+      end
+
+      it 'generates parameters from lead' do
+        health_insurance_lead
+        boberdoo_params = RequestToBoberdoo.new(lead).generate(true)
+
+        expect(boberdoo_params[:First_Name]).to eq lead.first_name
+        expect(boberdoo_params[:Last_Name]).to eq lead.last_name
+        expect(boberdoo_params[:Zip]).to eq lead.zip
+        expect(boberdoo_params[:Phone_Number]).to eq lead.day_phone
+        expect(boberdoo_params[:City]).to eq lead.city
+        expect(boberdoo_params[:State]).to eq lead.state
+        expect(boberdoo_params[:DOB]).to eq lead.birth_date.strftime("%m/%d/%Y")
+      end
+
+      it 'generates parameters from health insurance lead' do
+        health_insurance_lead
+        boberdoo_params = RequestToBoberdoo.new(lead).generate(true)
+
+        expect(boberdoo_params[:TYPE]).to eq health_insurance_lead.boberdoo_type
+        expect(boberdoo_params[:SRC]).to eq health_insurance_lead.src
+        expect(boberdoo_params[:Landing_Page]).to eq health_insurance_lead.landing_page
+        expect(boberdoo_params[:Age]).to eq health_insurance_lead.age
+      end
+
     end
 
-    it 'generates parameters from lead' do
-      health_insurance_lead
-      boberdoo_params = RequestToBoberdoo.new(lead).generate(true)
+    context 'for MedSupp leads' do
+      let(:health_insurance_lead) { create(:health_insurance_lead,
+                                           lead: lead,
+                                           boberdoo_type: RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE,
+                                           age: 55) }
 
-      expect(boberdoo_params[:First_Name]).to eq lead.first_name
-      expect(boberdoo_params[:Last_Name]).to eq lead.last_name
-      expect(boberdoo_params[:Zip]).to eq lead.zip
-      expect(boberdoo_params[:Phone_Number]).to eq lead.day_phone
-      expect(boberdoo_params[:City]).to eq lead.city
-      expect(boberdoo_params[:State]).to eq lead.state
-      expect(boberdoo_params[:DOB]).to eq lead.birth_date.strftime("%m/%d/%Y")
-    end
+      it 'generates parameters to be sent to Boberdoo' do
+        health_insurance_lead
+        generator = RequestToBoberdoo.new(lead)
 
-    it 'generates parameters from health insurance lead' do
-      health_insurance_lead
-      boberdoo_params = RequestToBoberdoo.new(lead).generate(true)
+        expect(generator.generate(true)).to be_present
+      end
 
-      expect(boberdoo_params[:TYPE]).to eq health_insurance_lead.boberdoo_type
-      expect(boberdoo_params[:SRC]).to eq health_insurance_lead.src
-      expect(boberdoo_params[:Landing_Page]).to eq health_insurance_lead.landing_page
-      expect(boberdoo_params[:Age]).to eq health_insurance_lead.age
+      it 'generates parameters from lead' do
+        health_insurance_lead
+        boberdoo_params = RequestToBoberdoo.new(lead).generate(true)
+
+        expect(boberdoo_params[:First_Name]).to eq lead.first_name
+        expect(boberdoo_params[:Last_Name]).to eq lead.last_name
+        expect(boberdoo_params[:Zip]).to eq lead.zip
+        expect(boberdoo_params[:Phone_Number]).to eq lead.day_phone
+        expect(boberdoo_params[:City]).to eq lead.city
+        expect(boberdoo_params[:State]).to eq lead.state
+        expect(boberdoo_params[:Gender]).to eq lead.gender
+        expect(boberdoo_params[:Bday]).to eq lead.birth_date.strftime("%m/%d/%Y")
+      end
+
+      it 'generates parameters from health insurance lead' do
+        health_insurance_lead
+        boberdoo_params = RequestToBoberdoo.new(lead).generate(true)
+
+        expect(boberdoo_params[:TYPE]).to eq health_insurance_lead.boberdoo_type
+        expect(boberdoo_params[:SRC]).to eq health_insurance_lead.src
+        expect(boberdoo_params[:Landing_Page]).to eq health_insurance_lead.landing_page
+        expect(boberdoo_params[:Age]).to eq health_insurance_lead.age
+      end
     end
 
     context 'birth date is nil' do
