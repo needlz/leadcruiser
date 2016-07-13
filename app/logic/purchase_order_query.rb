@@ -23,7 +23,6 @@ class PurchaseOrderQuery
   end
 
   def init_exclusive_purchase_orders
-    # Init exclusive_po list, price keys and legnth
     @exclusive_pos = purchase_orders_by_exclusiveness(true)
     @exclusive_price_keys = []
     @exclusive_pos.keys.each do |key|
@@ -33,7 +32,6 @@ class PurchaseOrderQuery
   end
 
   def init_shared_purchase_orders
-    # Init shared_po list, price keys and legnth
     @shared_pos = purchase_orders_by_exclusiveness(false)
     @shared_price_keys = []
     @shared_pos.keys.each do |key|
@@ -42,65 +40,43 @@ class PurchaseOrderQuery
     @shared_price_keys = @shared_price_keys.sort {|a,b| b <=> a}
   end
 
-  def next_exclusive_po(current_po, rejected_po_id_list)
-    if current_po.nil?
+  def next_exclusive_purchase_order(current_purchase_order, rejected_orders_ids)
+    if current_purchase_order.nil?
       # Select highest price list
-      if @exclusive_price_keys.length == 0
-        return nil
-      end
+      return nil if @exclusive_price_keys.blank?
       highest_price = number_with_precision(@exclusive_price_keys[0], precision: 2)
-      same_price_po_list = @exclusive_pos[highest_price.to_s]
+      orders_with_highest_price = @exclusive_pos[highest_price.to_s]
       # Select randomized PO
-      random = rand(0..same_price_po_list.length-1)
-      same_price_po_list[random]
+      orders_with_highest_price.sample
     else
-      if @exclusive_price_keys.length == 0
-        return nil
-      end
+      return nil if @exclusive_price_keys.blank?
+
       # Select selectable price level
-      current_price = current_po[:real_price]
-      current_price_idx = 0
+      price_of_current_order = current_purchase_order[:real_price]
+      index_of_price_of_current_order = 0
       for i in 0..@exclusive_price_keys.length-1
-        if current_price == @exclusive_price_keys[i]
-          current_price_idx = i
-        end
+        index_of_price_of_current_order = i if price_of_current_order == @exclusive_price_keys[i]
       end
 
-      for i in current_price_idx..@exclusive_price_keys.length-1
-        pr = number_with_precision(@exclusive_price_keys[i], :precision => 2)
-        same_price_po_list = @exclusive_pos[pr]
+      for i in index_of_price_of_current_order..@exclusive_price_keys.length-1
+        price = number_with_precision(@exclusive_price_keys[i], :precision => 2)
+        orders_of_same_price = @exclusive_pos[price]
 
-        rejected_po_count = 0
-        for j in 0..same_price_po_list.length-1
-          if rejected_po_id_list.include? same_price_po_list[j][:id]
-            rejected_po_count = rejected_po_count + 1 # All POs in this price level are rejected
-          end
-        end
+        non_rejected_orders = orders_of_same_price.reject { |order| rejected_orders_ids.include?(order[:id]) }
 
-        if rejected_po_count == same_price_po_list.length
-          next # Go to next highest price
-        end
+        next if non_rejected_orders.empty? # Go to next price
 
-        selected = false
-        try_count = 0
-        while try_count != same_price_po_list.length
-          random = rand(0..same_price_po_list.length-1)
-          random_po = same_price_po_list[random]
-          try_count = try_count + 1
-          unless rejected_po_id_list.include? random_po[:id]
-            return random_po
-          end
-        end
+        return non_rejected_orders.sample
       end
 
       return nil
     end
   end
 
-  def next_shared_pos(current_po, rejected_po_id_list, limit)
+  def next_shared_purchase_orders(current_purchase_order, rejected_orders_ids, limit)
     returned_pos = []
     total_count = 0
-    if current_po.nil?
+    if current_purchase_order.nil?
       
       # Get same price list and select by random
       if @shared_price_keys.length == 0
@@ -139,7 +115,7 @@ class PurchaseOrderQuery
         return returned_pos
       end
       # Select selectable price level
-      current_price = current_po[:real_price]
+      current_price = current_purchase_order[:real_price]
       current_price_idx = 0
       for i in 0..@shared_price_keys.length-1
         if current_price == @shared_price_keys[i]
@@ -153,7 +129,7 @@ class PurchaseOrderQuery
 
         rejected_po_count = 0
         for j in 0..same_price_po_list.length-1
-          if rejected_po_id_list.include? same_price_po_list[j][:id]
+          if rejected_orders_ids.include? same_price_po_list[j][:id]
             rejected_po_count = rejected_po_count + 1 # All POs in this price level are rejected
           end
         end
@@ -173,7 +149,7 @@ class PurchaseOrderQuery
           random = rand(0..same_price_po_list_temp.length-1)
           random_po = same_price_po_list_temp[random]
           try_count = try_count + 1
-          unless rejected_po_id_list.include? random_po[:id]
+          unless rejected_orders_ids.include? random_po[:id]
             returned_pos.push random_po
           end
           same_price_po_list_temp.delete_at random

@@ -80,7 +80,7 @@ module FactoryHelper
     end
 
     factory :purchase_order, class: 'PurchaseOrder' do
-      price 25
+      price { rand(10..100) }
       active true
     end
 
