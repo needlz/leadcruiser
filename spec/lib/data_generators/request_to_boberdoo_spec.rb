@@ -48,6 +48,22 @@ RSpec.describe RequestToBoberdoo, type: :request do
         expect(boberdoo_params[:Age]).to eq health_insurance_lead.age
       end
 
+      context 'birth date is nil' do
+        before do
+          lead.update_attributes!(birth_date: nil)
+        end
+
+        context 'when lead is of type 21' do
+          before do
+            health_insurance_lead
+          end
+
+          it 'returns nil for Bday field' do
+            boberdoo_params = RequestToBoberdoo.new(lead).generate(true)
+            expect(boberdoo_params[:Bday]).to be_nil
+          end
+        end
+      end
     end
 
     context 'for MedSupp leads' do
@@ -86,34 +102,26 @@ RSpec.describe RequestToBoberdoo, type: :request do
         expect(boberdoo_params[:Landing_Page]).to eq health_insurance_lead.landing_page
         expect(boberdoo_params[:Age]).to eq health_insurance_lead.age
       end
+
+      context 'birth date is nil' do
+        before do
+          lead.update_attributes!(birth_date: nil)
+        end
+
+        context 'when lead is of type 23' do
+          before do
+            health_insurance_lead
+          end
+
+          it 'returns nil for DOB field' do
+            boberdoo_params = RequestToBoberdoo.new(lead).generate(true)
+            expect(boberdoo_params[:DOB]).to be_nil
+          end
+        end
+
+      end
     end
 
-    context 'birth date is nil' do
-      before do
-        lead.update_attributes!(birth_date: nil)
-      end
 
-      context 'when lead is of type 23' do
-        before do
-          health_insurance_lead
-        end
-
-        it 'returns nil for DOB field' do
-          boberdoo_params = RequestToBoberdoo.new(lead).generate(true)
-          expect(boberdoo_params[:DOB]).to be_nil
-        end
-      end
-
-      context 'when lead is of type 21' do
-        before do
-          create(:health_insurance_lead, lead: lead, boberdoo_type: RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE)
-        end
-
-        it 'returns nil for Bday field' do
-          boberdoo_params = RequestToBoberdoo.new(lead).generate(true)
-          expect(boberdoo_params[:Bday]).to be_nil
-        end
-      end
-    end
   end
 end

@@ -16,9 +16,9 @@ class SendPetDataWorker
     lead = Lead.find(lead_id)
 
     # Get available exclusive and shared POs
-    po_builder = PurchaseOrderQuery.new(lead)
-    exclusive_po_length = po_builder.exclusive_pos_length
-    shared_po_length = po_builder.shared_pos_length
+    purchase_orders_query = PurchaseOrderQuery.new(lead)
+    exclusive_po_length = purchase_orders_query.exclusive_pos_length
+    shared_po_length = purchase_orders_query.shared_pos_length
 
     if exclusive_po_length == 0
       SendPetDataWorker.record_transaction(lead_id: lead_id,
@@ -39,8 +39,8 @@ class SendPetDataWorker
     current_shared_po = nil
 
     while used_exclusive_po_id_list.length != exclusive_po_length || used_shared_po_id_list.length != shared_po_length
-      exclusive_po = po_builder.next_exclusive_po(current_exclusive_po, used_exclusive_po_id_list)
-      current_shared_pos = po_builder.next_shared_pos(current_shared_po, used_shared_po_id_list, lead.vertical.times_sold)
+      exclusive_po = purchase_orders_query.next_exclusive_purchase_order(current_exclusive_po, used_exclusive_po_id_list)
+      current_shared_pos = purchase_orders_query.next_shared_purchase_orders(current_shared_po, used_shared_po_id_list, lead.vertical.times_sold)
       shared_pos_price_sum = 0
 
       # Calculate exclusive and shared POs' price
@@ -135,7 +135,7 @@ class SendPetDataWorker
         if shared_selling
           new_shared_pos = []
           while failed_count != 0
-            new_shared_pos = po_builder.next_shared_pos(current_shared_po, used_shared_po_id_list, failed_count)
+            new_shared_pos = purchase_orders_query.next_shared_purchase_orders(current_shared_po, used_shared_po_id_list, failed_count)
             if new_shared_pos.length == 0
               break
             end
