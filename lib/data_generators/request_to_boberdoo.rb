@@ -26,7 +26,7 @@ class RequestToBoberdoo < RequestToClient
   private
 
   def params_for_type_21
-    {
+    params = {
       TYPE: HEALTH_INSURANCE_TYPE,
       Test_Lead: health_insurance_lead.test_lead,
       Skip_XSL: health_insurance_lead.skip_xsl,
@@ -78,10 +78,12 @@ class RequestToBoberdoo < RequestToClient
       Child_1_Tobacco_Use: health_insurance_lead.child_1_tobacco_use,
       Child_1_Preexisting_Conditions: health_insurance_lead.child_1_preexisting_conditions,
     }
+    append_skip_dupe_check(params)
+    params
   end
 
   def params_for_type_23
-    {
+    params = {
       TYPE: MEDICARE_SUPPLEMENT_INSURANCE_TYPE,
       Test_Lead: health_insurance_lead.test_lead,
       Skip_XSL: health_insurance_lead.skip_xsl,
@@ -110,6 +112,8 @@ class RequestToBoberdoo < RequestToClient
       Gender: lead.gender,
       Age: health_insurance_lead.age
     }
+    append_skip_dupe_check(params)
+    params
   end
 
   def birth_date
@@ -121,6 +125,10 @@ class RequestToBoberdoo < RequestToClient
                  query: generate(exclusive),
                  headers: request_header,
                  timeout: client.timeout
+  end
+
+  def append_skip_dupe_check(params)
+    params.merge!(Skip_Dupe_Check: '1') if Settings.boberdoo_skip_dupe_check
   end
 
 end
