@@ -40,7 +40,7 @@ describe API::V1::LeadsController, type: :request do
   let(:city) { 'New York' }
   let(:state) { 'NY' }
   let(:hit) { create(:hit, id: 1) }
-  let(:site) { create(:site) }
+  let(:site) { create(:site, domain: 'gethealthcare.co') }
 
   describe '#create with visitor' do
     before do
@@ -328,9 +328,10 @@ describe API::V1::LeadsController, type: :request do
     end
 
     it 'sends autoresponse email' do
-      expect(HealthInsuranceMailWorker).to receive(:perform_async).with(:thank_you,
-                                                                        email: params[:Email_Address],
-                                                                        site_name: site.host)
+      expect(HealthInsuranceMailWorker).to receive(:perform_async) do |mailer_method, lead_id|
+        expect(mailer_method).to eq :thank_you
+        expect(lead_id).to eq Lead.last.id
+      end
       api_post 'leads', params
     end
 

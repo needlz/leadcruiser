@@ -5,9 +5,7 @@
 #  id                       :integer          not null, primary key
 #  visitor_ip               :string(255)
 #  clients_vertical_id      :integer
-#  site_id                  :integer
 #  page_id                  :integer
-#  partner_id               :integer
 #  created_at               :datetime
 #  updated_at               :datetime
 #  clicks_purchase_order_id :integer
