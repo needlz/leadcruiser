@@ -22,7 +22,7 @@ class HealthInsuranceLeadForm
       zip: params[:Zip],
       day_phone: params[:Phone_Number],
       email: params[:Email_Address],
-      birth_date: (Date.strptime(birth_date, "%m/%d/%Y") if birth_date),
+      birth_date: (Date.strptime(birth_date, "%m/%d/%Y") if birth_date.present?),
       gender: params[:Gender],
       vertical_id: Vertical.health_insurance.id,
       visitor_ip: params[:IP_Address]
