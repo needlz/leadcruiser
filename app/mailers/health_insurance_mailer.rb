@@ -13,12 +13,18 @@ class HealthInsuranceMailer
     },
   }
 
+  FROM_ADDRESSES = {
+    'healthmatchup.com' => 'justin@healthmatchup.com',
+    'gethealthcare.co' => 'justin@gethealthcare.co'
+  }
+
   def thank_you(lead_id)
     lead = Lead.find(lead_id)
     mail = prepare_email do |personalization|
       personalization.to = Email.new(email: lead.email, name: lead.name)
       personalization.substitutions = Substitution.new(key: '&lt;%FirstName%&gt;', value: lead.first_name)
     end
+    mail.from = Email.new(email: from_address(lead))
     mail.template_id = autoresponder_template_id(lead)
     send_mail(mail)
   end
@@ -31,6 +37,7 @@ class HealthInsuranceMailer
     mail = prepare_email do |personalization|
       owners.each { |owner_email| personalization.to = Email.new(email: owner_email) }
     end
+    mail.from = Email.new(email: "#{ Rails.env }@leadcruiser.com")
     mail.template_id = sendgrid_template_id(:notify_about_gethealthcare_threshold)
     send_mail(mail)
   end
@@ -39,6 +46,7 @@ class HealthInsuranceMailer
     mail = prepare_email do |personalization|
       owners.each { |owner_email| personalization.to = Email.new(email: owner_email) }
     end
+    mail.from = Email.new(email: "#{ Rails.env }@leadcruiser.com")
     mail.template_id = sendgrid_template_id(:notify_about_gethealthcare_errors)
     send_mail(mail)
   end
@@ -54,7 +62,6 @@ class HealthInsuranceMailer
 
   def prepare_email(&personalization_block)
     mail = Mail.new
-    mail.from = Email.new(email: from_address)
     mail.contents = Content.new(type: 'text/html', value: '?')
     personalization = Personalization.new
     personalization_block.call(personalization)
@@ -66,8 +73,8 @@ class HealthInsuranceMailer
     api.client.mail._('send').post(request_body: mail.to_json)
   end
 
-  def from_address
-    "#{ Rails.env }@leadcruiser.com"
+  def from_address(lead)
+    FROM_ADDRESSES[lead.site.domain]
   end
 
   def api
