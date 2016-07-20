@@ -24,7 +24,7 @@ class HealthInsuranceMailer
       personalization.to = Email.new(email: lead.email, name: lead.name)
       personalization.substitutions = Substitution.new(key: '&lt;%FirstName%&gt;', value: lead.first_name)
     end
-    mail.from = Email.new(email: from_address(lead))
+    mail.from = Email.new(email: from_address(lead), name: 'Justin')
     mail.template_id = autoresponder_template_id(lead)
     send_mail(mail)
   end
@@ -86,6 +86,7 @@ class HealthInsuranceMailer
   end
 
   def owners
+    return [] unless EditableConfiguration.global.gethealthcare_notified_recipients_comma_separated.present?
     EditableConfiguration.global.gethealthcare_notified_recipients_comma_separated.split(/,\s*/)
   end
 end

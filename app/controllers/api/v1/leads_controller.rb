@@ -131,6 +131,7 @@ class API::V1::LeadsController  < ActionController::API
   def handle_health_insurance_lead
     @vertical = Vertical.health_insurance
     form = HealthInsuranceLeadForm.new(params)
+    lead_for_email = nil
     ActiveRecord::Base.transaction do
       lead = Lead.new(form.lead_attributes)
 
@@ -146,7 +147,7 @@ class API::V1::LeadsController  < ActionController::API
 
         HealthInsuranceLead.create!(form.health_insurance_lead_attributes.merge({ lead_id: lead.id }))
 
-        send_thank_you_email(lead)
+        lead_for_email = lead
         ForwardHealthInsuranceLead.perform(lead) if lead.status.nil?
 
         render json: {
@@ -157,9 +158,11 @@ class API::V1::LeadsController  < ActionController::API
                status: :unprocessable_entity
       end
     end
+    send_thank_you_email(lead_for_email)
   end
 
   def send_thank_you_email(lead)
+    return unless lead
     HealthInsuranceMailWorker.perform_async(:thank_you, lead.id)
   end
 
