@@ -2,6 +2,7 @@ class RequestToVelocify < RequestToClient
 
   LINK = ''
 
+
   VELOCIFY_CAMPAIGN_IDS = {
     RequestToBoberdoo::HEALTH_INSURANCE_TYPE => {
       'healthmatchup.com' => 33,
@@ -12,6 +13,7 @@ class RequestToVelocify < RequestToClient
       'gethealthcare.co' => 34
     },
   }
+  STATUS_ID = 1
 
   Velocify.configure do |config|
     config.username = "promiseinsurance@five9.com"
@@ -46,6 +48,7 @@ class RequestToVelocify < RequestToClient
   def perform_http_request(exclusive)
     velocify_lead = Velocify::Lead.new
     velocify_lead.campaign_id = campaign_id
+    velocify_lead.status_id = STATUS_ID
     velocify_params.each do |field_name, field|
       velocify_lead.add_field id: field[:field_id], value: field[:value]
     end
