@@ -18,13 +18,15 @@ class HealthInsuranceMailer
     'gethealthcare.co' => 'justin@gethealthcare.co'
   }
 
+  AUTORESPONDER_FROM_NAME = 'Justin'
+
   def thank_you(lead_id)
     lead = Lead.find(lead_id)
     mail = prepare_email do |personalization|
       personalization.to = Email.new(email: lead.email, name: lead.name)
       personalization.substitutions = Substitution.new(key: '&lt;%FirstName%&gt;', value: lead.first_name)
     end
-    mail.from = Email.new(email: from_address(lead), name: 'Justin')
+    mail.from = Email.new(email: from_address(lead), name: AUTORESPONDER_FROM_NAME)
     mail.template_id = autoresponder_template_id(lead)
     send_mail(mail)
   end
