@@ -62,4 +62,11 @@ RSpec.describe Lead, :type => :model do
       expect(lead.sold_type).to eq transaction_attempt
     end
   end
+
+  describe '#name' do
+    it 'returns concatenated first nad last name' do
+      lead.update_attributes!(first_name: '1', last_name: '2')
+      expect(lead.name).to eq '1 2'
+    end
+  end
 end

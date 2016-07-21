@@ -7,7 +7,7 @@ require 'lead_validation'
 class API::V1::LeadsController  < ActionController::API
   include ActionView::Helpers::NumberHelper
 
-  GETHEALTHCARE_LEAD_TYPES = [RequestToBoberdoo::HEALTH_INSURANCE_TYPE, RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE]
+  HEALTH_LEAD_TYPES = [RequestToBoberdoo::HEALTH_INSURANCE_TYPE, RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE]
 
   attr_reader :vertical
 
@@ -23,7 +23,7 @@ class API::V1::LeadsController  < ActionController::API
   private
 
   def health_insurace_lead?
-     GETHEALTHCARE_LEAD_TYPES.include?(params[:TYPE])
+     HEALTH_LEAD_TYPES.include?(params[:TYPE])
   end
 
   def handle_pet_insurance_lead
@@ -131,6 +131,7 @@ class API::V1::LeadsController  < ActionController::API
   def handle_health_insurance_lead
     @vertical = Vertical.health_insurance
     form = HealthInsuranceLeadForm.new(params)
+    lead_for_email = nil
     ActiveRecord::Base.transaction do
       lead = Lead.new(form.lead_attributes)
 
@@ -146,7 +147,7 @@ class API::V1::LeadsController  < ActionController::API
 
         HealthInsuranceLead.create!(form.health_insurance_lead_attributes.merge({ lead_id: lead.id }))
 
-        AutoResponseThankWorker.perform_async(lead.email)
+        lead_for_email = lead
         ForwardHealthInsuranceLead.perform(lead) if lead.status.nil?
 
         render json: {
@@ -157,6 +158,12 @@ class API::V1::LeadsController  < ActionController::API
                status: :unprocessable_entity
       end
     end
+    send_thank_you_email(lead_for_email)
+  end
+
+  def send_thank_you_email(lead)
+    return unless lead
+    HealthInsuranceMailWorker.perform_async(:thank_you, lead.id)
   end
 
   def all_po_client_list

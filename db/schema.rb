@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160628141443) do
+ActiveRecord::Schema.define(version: 20160630151337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,9 +66,7 @@ ActiveRecord::Schema.define(version: 20160628141443) do
   create_table "clicks", force: :cascade do |t|
     t.string   "visitor_ip",               limit: 255
     t.integer  "clients_vertical_id"
-    t.integer  "site_id"
     t.integer  "page_id"
-    t.integer  "partner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "clicks_purchase_order_id"
@@ -77,16 +75,12 @@ ActiveRecord::Schema.define(version: 20160628141443) do
 
   create_table "clicks_purchase_orders", force: :cascade do |t|
     t.integer  "clients_vertical_id"
-    t.integer  "site_id"
     t.integer  "page_id"
-    t.string   "redirect_url",        limit: 255
     t.float    "price"
     t.float    "weight"
     t.boolean  "active"
     t.integer  "total_limit"
-    t.integer  "daily_limit"
-    t.integer  "total_count",                     default: 0
-    t.integer  "daily_count",                     default: 0
+    t.integer  "total_count",         default: 0
     t.date     "start_date"
     t.date     "end_date"
     t.datetime "created_at"
@@ -147,7 +141,6 @@ ActiveRecord::Schema.define(version: 20160628141443) do
     t.integer  "birth_year"
     t.string   "gender",             limit: 255
     t.boolean  "conditions"
-    t.string   "list_of_conditions", limit: 255
     t.integer  "lead_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -160,7 +153,9 @@ ActiveRecord::Schema.define(version: 20160628141443) do
   end
 
   create_table "editable_configurations", force: :cascade do |t|
-    t.integer "gethealthcare_form_monitor_delay_minutes", default: 30
+    t.integer "gethealthcare_form_monitor_delay_minutes",          default: 30
+    t.integer "gethealthcare_form_threshold_seconds",              default: 20
+    t.text    "gethealthcare_notified_recipients_comma_separated"
   end
 
   create_table "gethealthcare_hits", force: :cascade do |t|
@@ -169,6 +164,7 @@ ActiveRecord::Schema.define(version: 20160628141443) do
     t.datetime "finished_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "lead_id"
   end
 
   create_table "health_insurance_leads", force: :cascade do |t|
@@ -263,14 +259,6 @@ ActiveRecord::Schema.define(version: 20160628141443) do
     t.string   "disposition",       limit: 255
   end
 
-  create_table "leads_details_verticals", force: :cascade do |t|
-    t.integer  "lead_id"
-    t.integer  "detail_id"
-    t.integer  "vertical_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "purchase_orders", force: :cascade do |t|
     t.integer  "vertical_id"
     t.float    "weight"
@@ -293,15 +281,11 @@ ActiveRecord::Schema.define(version: 20160628141443) do
 
   create_table "responses", force: :cascade do |t|
     t.text     "response"
-    t.string   "client_times_sold",   limit: 255
-    t.string   "client_offer_amount", limit: 255
-    t.boolean  "client_offer_accept"
-    t.text     "error_reasons"
     t.text     "rejection_reasons"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "lead_id"
-    t.string   "client_name",         limit: 255
+    t.string   "client_name",       limit: 255
     t.float    "price"
     t.integer  "purchase_order_id"
     t.float    "response_time"
@@ -310,7 +294,6 @@ ActiveRecord::Schema.define(version: 20160628141443) do
   create_table "sites", force: :cascade do |t|
     t.string   "domain",     limit: 255
     t.string   "host",       limit: 255
-    t.string   "site_ip",    limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -326,13 +309,6 @@ ActiveRecord::Schema.define(version: 20160628141443) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "clients_vertical_id"
-  end
-
-  create_table "tracking_sites", force: :cascade do |t|
-    t.string   "site_name",     limit: 255
-    t.integer  "display_order"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "transaction_attempts", force: :cascade do |t|

@@ -3,7 +3,7 @@ require 'capybara/dsl'
 
 class GethealthcareFormMonitor
   include Sidekiq::Worker
-  sidekiq_options queue: "high"
+  sidekiq_options queue: 'high'
 
   PHONE_NUMBER_STATE_CODE = '787'
   TOTAL_PHONE_NUMBER_DIGITS = 10
@@ -17,6 +17,7 @@ class GethealthcareFormMonitor
       if hit
         hit.update_attributes!(last_error: e.message)
       end
+      HealthInsuranceMailer.new.notify_about_gethealthcare_errors
       if Rails.env.development?
         save_screenshot('/tmp/screens/file.png')
         p page.current_url
@@ -61,8 +62,7 @@ class GethealthcareFormMonitor
 
   def check_threshold
     if hit.duration > EditableConfiguration.global.gethealthcare_form_threshold_seconds
-      # do anything yet
-      
+      HealthInsuranceMailer.new.notify_about_gethealthcare_threshold
     end
   end
 
@@ -118,7 +118,7 @@ class GethealthcareFormMonitor
   def build_phone_number
     zero_count = phone_number_without_code_digits_count - next_hit_id.length
 
-    PHONE_NUMBER_STATE_CODE + '0'*zero_count + next_hit_id
+    PHONE_NUMBER_STATE_CODE + '0' * zero_count + next_hit_id
   end
   
   def next_hit_id

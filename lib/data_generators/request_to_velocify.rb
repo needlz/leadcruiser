@@ -8,9 +8,9 @@ class RequestToVelocify < RequestToClient
       'gethealthcare.co' => 31
     },
     RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE => {
-        'healthmatchup.com' => 32,
-        'gethealthcare.co' => 34
-      },
+      'healthmatchup.com' => 32,
+      'gethealthcare.co' => 34
+    },
   }
 
   Velocify.configure do |config|

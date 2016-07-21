@@ -40,6 +40,7 @@ describe API::V1::LeadsController, type: :request do
   let(:city) { 'New York' }
   let(:state) { 'NY' }
   let(:hit) { create(:hit, id: 1) }
+  let(:site) { create(:site, domain: 'gethealthcare.co') }
 
   describe '#create with visitor' do
     before do
@@ -106,13 +107,14 @@ describe API::V1::LeadsController, type: :request do
   end
 
   describe '#create with type 21' do
+    let(:site) { create(:site) }
     let (:params) {
-      params_for_health_lead
+      params_for_health_lead(site_id: site.id)
     }
     let(:lead_result) {
       {
         session_hash: "session hash",
-        site_id: 1,
+        site_id: site.id,
         form_id: 1,
         first_name: "John",
         last_name: "Doe",
@@ -194,12 +196,12 @@ describe API::V1::LeadsController, type: :request do
       }
     }
 
-    it 'should create correct lead' do
+    it 'creates correct lead' do
       expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
       expect(Lead.last.attributes.symbolize_keys).to include (lead_result)
     end
 
-    it 'should create test lead' do
+    it 'creates test lead' do
       GethealthcareHit.delete_all
 
       params[:Phone_Number] = '78700000' + hit.id.to_s
@@ -212,7 +214,7 @@ describe API::V1::LeadsController, type: :request do
       expect( GethealthcareHit.last.lead ).to eq Lead.last
     end
 
-    it 'should create correct health insurance lead' do
+    it 'creates correct health insurance lead' do
       expect{ api_post 'leads', params }.to change { HealthInsuranceLead.count }.from(0).to(1)
 
       new_health_insurance_lead = HealthInsuranceLead.last
@@ -256,12 +258,12 @@ describe API::V1::LeadsController, type: :request do
 
   describe '#create with type 23' do
     let (:params) {
-      params_for_medsupp_lead
+      params_for_medsupp_lead(site_id: site.id)
     }
     let(:lead_result) {
       {
         session_hash: "session hash",
-        site_id: 1,
+        site_id: site.id,
         form_id: 1,
         first_name: "John",
         last_name: "Doe",
@@ -299,12 +301,12 @@ describe API::V1::LeadsController, type: :request do
       }
     }
 
-    it 'should create correct lead' do
+    it 'creates correct lead' do
       expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
       expect(Lead.last.attributes.symbolize_keys).to include (lead_result)
     end
 
-    it 'should create test lead' do
+    it 'creates test lead' do
       GethealthcareHit.delete_all
 
       params[:Phone_Number] = '78700000' + hit.id.to_s
@@ -317,12 +319,20 @@ describe API::V1::LeadsController, type: :request do
       expect( GethealthcareHit.last.lead ).to eq Lead.last
     end
 
-    it 'should create correct health insurance lead' do
+    it 'creates correct health insurance lead' do
       expect{ api_post 'leads', params }.to change { HealthInsuranceLead.count }.from(0).to(1)
 
       new_health_insurance_lead = HealthInsuranceLead.last
 
       expect(new_health_insurance_lead.attributes.symbolize_keys).to include (health_insurance_lead_result)
+    end
+
+    it 'sends autoresponse email' do
+      expect(HealthInsuranceMailWorker).to receive(:perform_async) do |mailer_method, lead_id|
+        expect(mailer_method).to eq :thank_you
+        expect(lead_id).to eq Lead.last.id
+      end
+      api_post 'leads', params
     end
 
     describe 'validations' do

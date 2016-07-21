@@ -119,6 +119,10 @@ class Lead < ActiveRecord::Base
     first_name == 'test' && last_name == 'test' && address_1 == 'test' && email == 'test@test.com'
   end
 
+  def name
+    [first_name, last_name].join(' ')
+  end
+
   private
 
   def populate_state
