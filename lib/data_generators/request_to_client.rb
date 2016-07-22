@@ -24,10 +24,14 @@ class RequestToClient
   end
 
   def perform_http_request(exclusive)
-    HTTParty.post request_url,
-                  :body => generate(exclusive),
-                  :headers => request_header,
-                  :timeout => client.timeout
+    if Rails.env.development
+      'response'
+    else
+      HTTParty.post request_url,
+                    body: generate(exclusive),
+                    headers: request_header,
+                    timeout: client.timeout
+    end
   end
 
   def success?

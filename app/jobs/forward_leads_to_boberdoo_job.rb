@@ -1,14 +1,12 @@
 class ForwardLeadsToBoberdooJob < ActiveJob::Base
   queue_as :high
 
-  INTERVAL = 5.minutes
+  DEFAULT_INTERVAL_MINUTES = 5
 
-  def self.max_leads_per_batch
-    10
-  end
+  attr_reader :purchase_order, :client
 
-  def self.leads_to_be_forwarded
-    Lead.without_responses_from_boberdoo.limit(max_leads_per_batch)
+  def self.not_yet_forwarded_leads
+    Lead.health_insurance.without_responses_from_boberdoo.where(status: nil)
   end
 
   def self.schedule(minimal_postpone: 0)
@@ -17,8 +15,8 @@ class ForwardLeadsToBoberdooJob < ActiveJob::Base
     perform_in =
       if now < EditableConfiguration.global.today_forwarding_range_start
         EditableConfiguration.global.today_forwarding_range_start
-      elsif Time.current.between?(EditableConfiguration.global.today_forwarding_range_start, EditableConfiguration.global.today_forwarding_range_end)
-        (Time.current + minimal_postpone).change(usec: 0)
+      elsif EditableConfiguration.global.inside_forwarding_range?
+        (Time.current + minimal_postpone)
       else
         EditableConfiguration.global.at_day(EditableConfiguration.global.forwarding_range_start, Date.current.tomorrow)
       end
@@ -26,22 +24,40 @@ class ForwardLeadsToBoberdooJob < ActiveJob::Base
   end
 
   def perform(*args)
-    ForwardLeadsToBoberdooJob.schedule(minimal_postpone: INTERVAL)
     return unless EditableConfiguration.global.forwarding_range?
-    return unless Time.current.between?(EditableConfiguration.global.today_forwarding_range_start, EditableConfiguration.global.today_forwarding_range_end)
-    ForwardLeadsToBoberdooJob.leads_to_be_forwarded.each do |lead|
-      Vertical.health_insurance.purchase_orders.active.each do |purchase_order|
-        perform_for_lead_and_order(lead, purchase_order) unless lead.responses.where(purchase_order_id: purchase_order.id).exists?
-      end
-    end
+    return unless EditableConfiguration.global.inside_forwarding_range?
+    @client = ClientsVertical.find_by_integration_name(ClientsVertical::BOBERDOO)
+    @purchase_order = PurchaseOrder.find_by_client_id(client.id)
+    forward_leads
+    ForwardLeadsToBoberdooJob.schedule(minimal_postpone: EditableConfiguration.global.forwarding_interval_minutes.minutes)
   end
 
-  def perform_for_lead_and_order(lead, purchase_order)
+  def perform_for_lead_and_order(lead)
     if Rails.env.development?
-      logger.info lead.id
+      logger.info(lead.id)
     else
       ForwardLeadToClientRequest.new.perform(lead.id, purchase_order.id)
     end
+  end
+
+  def self.leads_per_batch
+    interval = EditableConfiguration.global.forwarding_interval_minutes || DEFAULT_INTERVAL_MINUTES
+    needed_requests_count = (EditableConfiguration.global.forwarding_range_length_mins.to_f / interval).ceil
+    (ForwardLeadsToBoberdooJob.not_yet_forwarded_leads.count.to_f / needed_requests_count).ceil
+  end
+
+  def forward_lead(lead)
+    begin
+      perform_for_lead_and_order(lead) unless lead.responses.where(purchase_order_id: purchase_order.id).exists?
+    rescue StandardError => e
+      Rollbar.error(e)
+    end
+  end
+
+  def forward_leads
+    limit = ForwardLeadsToBoberdooJob.leads_per_batch
+    leads = ForwardLeadsToBoberdooJob.not_yet_forwarded_leads.limit(limit)
+    leads.each { |lead| forward_lead(lead) }
   end
 
 end

@@ -4,7 +4,7 @@ class ForwardHealthInsuranceLead
     Vertical.health_insurance.purchase_orders.active.each do |purchase_order|
       client = purchase_order.clients_vertical
 
-      return if client.boberdoo? && EditableConfiguration.global.inside_non_forwarding_range?
+      return if client.boberdoo? && EditableConfiguration.global.inside_afterhours_range?
 
       delay_for_client = client.lead_forwarding_delay_seconds
       if delay_for_client > 0

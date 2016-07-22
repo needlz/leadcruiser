@@ -6,32 +6,32 @@ RSpec.describe EditableConfiguration, type: :model do
     EditableConfiguration.create!
   end
 
-  describe '#inside_non_forwarding_range?' do
+  describe '#inside_afterhours_range?' do
     context 'when inside non forwarding time range' do
       before do
-        EditableConfiguration.global.update_attributes!(non_forwarding_range_start: Time.current - 1.minute,
-                                                        non_forwarding_range_end: Time.current + 2.minutes)
+        EditableConfiguration.global.update_attributes!(afterhours_range_start: Time.current - 1.minute,
+                                                        afterhours_range_end: Time.current + 2.minutes)
       end
 
       it 'returns true' do
-        expect(EditableConfiguration.global.inside_non_forwarding_range?).to be_truthy
+        expect(EditableConfiguration.global.inside_afterhours_range?).to be_truthy
       end
     end
 
     context 'when outside non forwarding time range' do
       before do
-        EditableConfiguration.global.update_attributes!(non_forwarding_range_start: Time.current + 1.minute,
-                                                        non_forwarding_range_end: Time.current + 2.minutes)
+        EditableConfiguration.global.update_attributes!(afterhours_range_start: Time.current + 1.minute,
+                                                        afterhours_range_end: Time.current + 2.minutes)
       end
 
       it 'returns false' do
-        expect(EditableConfiguration.global.inside_non_forwarding_range?).to be_falsey
+        expect(EditableConfiguration.global.inside_afterhours_range?).to be_falsey
       end
     end
 
     context 'when non forwarding time range not set' do
       it 'returns false' do
-        expect(EditableConfiguration.global.inside_non_forwarding_range?).to be_falsey
+        expect(EditableConfiguration.global.inside_afterhours_range?).to be_falsey
       end
     end
   end

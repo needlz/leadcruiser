@@ -14,10 +14,13 @@ class EditableConfiguration < ActiveRecord::Base
     first
   end
 
-  def inside_non_forwarding_range?
-    return if !non_forwarding_range_start || !non_forwarding_range_end
-    today_range_start(non_forwarding_range_start) < Time.current &&
-      Time.current < today_range_end(non_forwarding_range_start, non_forwarding_range_end)
+  def inside_afterhours_range?
+    return if !afterhours_range_start || !afterhours_range_end
+    Time.current.between?(today_afterhours_range_start, today_afterhours_range_end)
+  end
+
+  def inside_forwarding_range?
+    Time.current.between?(today_forwarding_range_start, today_forwarding_range_end)
   end
 
   def forwarding_range?
@@ -26,6 +29,14 @@ class EditableConfiguration < ActiveRecord::Base
 
   def today_range_start(time)
     at_day(time)
+  end
+
+  def today_afterhours_range_start
+    today_range_start(afterhours_range_start)
+  end
+
+  def today_afterhours_range_end
+    today_range_end(afterhours_range_start, afterhours_range_end)
   end
 
   def today_forwarding_range_start
@@ -49,4 +60,9 @@ class EditableConfiguration < ActiveRecord::Base
                  time.min,
                  time.sec)
   end
+
+  def forwarding_range_length_mins
+    ((today_forwarding_range_end - today_forwarding_range_start) * 24 * 60).to_i
+  end
+
 end

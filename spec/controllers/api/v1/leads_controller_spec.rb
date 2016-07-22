@@ -368,13 +368,13 @@ describe API::V1::LeadsController, type: :request do
     context 'when request to Boberdoo needed' do
       before do
         EditableConfiguration.create!
-        clients_vertical.update_attributes!(integration_name: 'boberdoo')
+        clients_vertical.update_attributes!(integration_name: ClientsVertical::BOBERDOO)
       end
 
       context 'during non-forwarding time range' do
         before do
-          EditableConfiguration.global.update_attributes!(non_forwarding_range_start: 10.minutes.ago,
-                                                          non_forwarding_range_end: 10.minutes.from_now)
+          EditableConfiguration.global.update_attributes!(afterhours_range_start: 10.minutes.ago,
+                                                          afterhours_range_end: 10.minutes.from_now)
         end
 
         it 'does not schedule request to Boberdoo' do

@@ -50,7 +50,8 @@ class Lead < ActiveRecord::Base
   has_many :transaction_attempts
   has_one :health_insurance_lead
 
-  scope :without_responses_from_boberdoo, ->{ joins('LEFT JOIN responses ON responses.lead_id = leads.id').where(Response.arel_table[:id].eq(nil).or(Response.arel_table[:client_name].not_eq('boberdoo'))) }
+  scope :without_responses_from_boberdoo, ->{ joins('LEFT JOIN responses ON responses.lead_id = leads.id').where(Response.arel_table[:id].eq(nil).or(Response.arel_table[:client_name].not_eq(ClientsVertical::BOBERDOO))) }
+  scope :health_insurance, ->{ where(vertical_id: Vertical.health_insurance.id) }
 
   # constant
   DUPLICATED  = "duplicated"
