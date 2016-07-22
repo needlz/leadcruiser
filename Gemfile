@@ -86,6 +86,7 @@ group :test do
   gem 'webmock'
   gem 'fork_break'
   gem 'database_cleaner'
+  gem 'rspec-activejob'
 end
 
 group :production do

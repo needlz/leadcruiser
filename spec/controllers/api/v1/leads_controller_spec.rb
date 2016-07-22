@@ -10,6 +10,7 @@ describe API::V1::LeadsController, type: :request do
   let!(:vertical) { create(:vertical, name: Vertical::PET_INSURANCE) }
   let!(:health_vertical) { create(:vertical, name: Vertical::HEALTH_INSURANCE) }
   let!(:clients_vertical) { create(:clients_vertical, vertical_id: vertical.id) }
+  let!(:purchase_order) { create(:purchase_order, vertical_id: health_vertical.id, client_id: clients_vertical.id) }
   let(:correct_data) { {first_name: 'John',
                          last_name: 'Doe',
                          session_hash: session_hash,
@@ -106,6 +107,10 @@ describe API::V1::LeadsController, type: :request do
   end
 
   describe '#create with type 21' do
+    before do
+      allow_any_instance_of(RequestToClient).to receive(:do_request)
+    end
+
     let(:site) { create(:site) }
     let (:params) {
       params_for_health_lead(site_id: site.id)
@@ -262,6 +267,10 @@ describe API::V1::LeadsController, type: :request do
   end
 
   describe '#create with type 23' do
+    before do
+      allow_any_instance_of(RequestToClient).to receive(:do_request)
+    end
+
     let (:params) {
       params_for_medsupp_lead(site_id: site.id)
     }
@@ -354,6 +363,32 @@ describe API::V1::LeadsController, type: :request do
         expect(lead_id).to eq Lead.last.id
       end
       api_post 'leads', params
+    end
+
+    context 'when request to Boberdoo needed' do
+      before do
+        EditableConfiguration.create!
+        clients_vertical.update_attributes!(integration_name: 'boberdoo')
+      end
+
+      context 'during non-forwarding time range' do
+        before do
+          EditableConfiguration.global.update_attributes!(non_forwarding_range_start: 10.minutes.ago,
+                                                          non_forwarding_range_end: 10.minutes.from_now)
+        end
+
+        it 'does not schedule request to Boberdoo' do
+          expect_any_instance_of(ForwardLeadToClientRequest).to_not receive(:perform)
+          api_post 'leads', params
+        end
+      end
+
+      context 'during forwarding time range' do
+        it 'schedules request to Boberdoo' do
+          expect_any_instance_of(ForwardLeadToClientRequest).to receive(:perform)
+          api_post 'leads', params
+        end
+      end
     end
 
     describe 'validations' do

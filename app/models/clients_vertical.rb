@@ -65,4 +65,8 @@ class ClientsVertical < ActiveRecord::Base
   def display_name
     self.integration_name
   end
+
+  def boberdoo?
+    integration_name == BOBERDOO
+  end
 end

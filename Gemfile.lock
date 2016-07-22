@@ -363,6 +363,9 @@ GEM
       netrc (~> 0.8)
     rollbar (2.11.5)
       multi_json
+    rspec-activejob (0.6.1)
+      activejob (>= 4.2)
+      rspec-mocks
     rspec-core (3.4.4)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
@@ -512,6 +515,7 @@ DEPENDENCIES
   redis-rails
   redis-store
   rollbar
+  rspec-activejob
   rspec-rails
   sass-rails (~> 5.0.0)
   sdoc (~> 0.4.0)
