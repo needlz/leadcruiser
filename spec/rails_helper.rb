@@ -28,26 +28,63 @@ RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
-  # If you're not using ActiveRecord, or you'd prefer not to run each of your
-  # examples within a transaction, remove the following line or assign false
-  # instead of true.
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
 
-  # RSpec Rails can automatically mix in different behaviours to your tests
-  # based on their file location, for example enabling you to call `get` and
-  # `post` in specs under `spec/controllers`.
-  #
-  # You can disable this behaviour by removing the line below, and instead
-  # explicitly tag your specs with their type, e.g.:
-  #
-  #     RSpec.describe UsersController, :type => :controller do
-  #       # ...
-  #     end
-  #
-  # The different available types are documented in the features, such as in
-  # https://relishapp.com/rspec/rspec-rails/docs
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:transaction)
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.before(:each, concurrent: true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
+  config.before(:each) do
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+
   config.infer_spec_type_from_file_location!
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
+
+  class Fork
+    def return_value
+      # causes <Errno::EPIPE: Broken pipe> exception in ForkBreak process
+    end
+  end
+
+  class Object
+    def concurrent_calls(stubbed_methods, called_method, options={}, &block)
+      ActiveRecord::Base.connection.disconnect!
+      options.reverse_merge!(count: 2)
+      processes = options[:count].times.map do |i|
+        ForkBreak::Process.new do |breakpoints|
+          ActiveRecord::Base.establish_connection
+
+          # Add a breakpoint after invoking the method
+          stubbed_methods.each do |stubbed_method|
+            original_method = self.method(stubbed_method)
+            self.stub(stubbed_method) do |*args|
+              res = original_method.call(*args)
+              breakpoints << stubbed_method
+              res
+            end
+          end
+
+          self.send(called_method)
+        end
+      end
+      block.call(processes)
+    ensure
+      ActiveRecord::Base.establish_connection
+    end
+  end
 
   def params_for_health_lead(hash = {})
     {

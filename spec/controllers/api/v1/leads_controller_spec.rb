@@ -103,7 +103,6 @@ describe API::V1::LeadsController, type: :request do
 
       expect(Visitor.count).to eq(0)
     end
-
   end
 
   describe '#create with type 21' do
@@ -300,6 +299,22 @@ describe API::V1::LeadsController, type: :request do
         age: 5,
       }
     }
+
+    context 'on concurrent creation of leads with same email' do
+      it 'marks second lead as duplicated', concurrent: true do
+        form = HealthInsuranceLeadForm.new(params)
+        lead_creation = CreateHealthLead.new(form)
+        expect(Lead.count).to eq 0
+        lead_creation.concurrent_calls([:run_validations], :perform) do |processes|
+          processes[0].run_until(:run_validations)
+          processes[1].run_until(:run_validations)
+          processes[1].finish.wait
+          processes[0].finish.wait
+        end
+        expect(Lead.count).to eq 2
+        expect(Lead.all.pluck(:status)).to match_array [nil, 'duplicated']
+      end
+    end
 
     it 'creates correct lead' do
       expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
