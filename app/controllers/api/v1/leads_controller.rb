@@ -131,34 +131,16 @@ class API::V1::LeadsController  < ActionController::API
   def handle_health_insurance_lead
     @vertical = Vertical.health_insurance
     form = HealthInsuranceLeadForm.new(params)
-    lead_for_email = nil
-    ActiveRecord::Base.transaction do
-      lead = Lead.new(form.lead_attributes)
 
-      process_lead_created_by_crawler lead
-
-      if lead.save
-        begin
-          HealthInsuranceLeadValidation.new(lead).validate
-        rescue HealthInsuranceLeadValidation::Error => validation_error
-          return render json: { errors: validation_error.message, other_client: all_po_client_list.to_json },
-                        status: :unprocessable_entity
-        end
-
-        HealthInsuranceLead.create!(form.health_insurance_lead_attributes.merge({ lead_id: lead.id }))
-
-        lead_for_email = lead
-        ForwardHealthInsuranceLead.perform(lead) if lead.status.nil?
-
-        render json: {
-          success: true,
-        }, status: :created
-      else
-        render json: { errors: lead.error_messages, other_client: all_po_client_list.to_json },
-               status: :unprocessable_entity
-      end
+    lead_creation = CreateHealthLead.new(form)
+    lead_creation.perform
+    if lead_creation.errors
+      render json: { errors: lead_creation.errors, other_client: all_po_client_list.to_json },
+             status: :unprocessable_entity
+    else
+      send_thank_you_email(lead_creation.lead)
+      render json: { success: true }, status: :created
     end
-    send_thank_you_email(lead_for_email)
   end
 
   def send_thank_you_email(lead)
@@ -228,18 +210,4 @@ class API::V1::LeadsController  < ActionController::API
                                 :birth_year, :gender, :conditions)
   end
 
-  def get_id_from_phone_number phone_number
-    number_without_code = phone_number.to_s[3..-1]
-    number_without_code.to_i
-  end
-
-  def process_lead_created_by_crawler lead
-    if lead.test?
-      hit_id = get_id_from_phone_number(lead.day_phone)
-      hit = GethealthcareHit.find_by_id(hit_id)
-      return unless hit
-      hit.lead = lead
-      hit.save!
-    end
-  end
 end
