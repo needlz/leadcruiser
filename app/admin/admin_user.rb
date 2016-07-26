@@ -9,11 +9,11 @@ ActiveAdmin.register AdminUser do
     id_column
     column :email
     column "Signed at" do |admin|
-      UTCToPST(admin.current_sign_in_at)
+      admin.current_sign_in_at
     end
     column :sign_in_count
     column "Created Date" do |admin|
-      UTCToPST(admin.created_at)
+      admin.created_at
     end
     actions
   end

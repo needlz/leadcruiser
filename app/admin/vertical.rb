@@ -21,10 +21,10 @@ ActiveAdmin.register Vertical do
     column :name
     column :times_sold
     column "Created At" do |v|
-      UTCToPST(v.created_at)
+      v.created_at
     end
     column "Updated At" do |v|
-      UTCToPST(v.updated_at)
+      v.updated_at
     end
     actions
   end

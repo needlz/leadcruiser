@@ -11,7 +11,7 @@ ActiveAdmin.register BlockList do
     column :active
     column :description
     column "created_at" do |block|
-      UTCToPST(block.created_at)
+      block.created_at
     end
 
     actions

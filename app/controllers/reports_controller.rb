@@ -1,8 +1,6 @@
 require 'axlsx'
 
 class ReportsController < ApplicationController
-  include ApplicationHelper
-
   http_basic_authenticate_with(name: LOGIN_NAME, password: LOGIN_PASSWORD) if Settings.use_authentication
 
   def index
@@ -64,7 +62,7 @@ class ReportsController < ApplicationController
                       '$0.00',
                       '',
                       '',
-                      UTCToPST(lead.created_at),
+                      lead.created_at,
                       "tel:" + lead.day_phone,
                       lead.details_pets.first.try(:pet_name),
                       lead.details_pets.first.try(:species),
@@ -93,7 +91,7 @@ class ReportsController < ApplicationController
                         '$' + lead.sold_po_price(response.purchase_order_id).to_s,
                         lead.client_sold_to(response.client_name).try(:official_name),
                         lead.sold_type.nil? ? 'Exclusive' : lead.sold_type.exclusive_selling? ? 'Exclusive' : 'Shared',
-                        UTCToPST(lead.created_at),
+                        lead.created_at,
                         "tel:" + lead.day_phone,
                         lead.details_pets.first.try(:pet_name),
                         lead.details_pets.first.try(:species),

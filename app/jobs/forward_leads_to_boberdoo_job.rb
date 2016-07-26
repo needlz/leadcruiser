@@ -41,6 +41,7 @@ class ForwardLeadsToBoberdooJob < ActiveJob::Base
   end
 
   def self.leads_per_batch
+    return unless EditableConfiguration.global.forwarding_range?
     interval = EditableConfiguration.global.forwarding_interval_minutes || DEFAULT_INTERVAL_MINUTES
     needed_requests_count = (EditableConfiguration.global.forwarding_range_length_mins.to_f / interval).ceil
     (ForwardLeadsToBoberdooJob.not_yet_forwarded_leads.count.to_f / needed_requests_count).ceil

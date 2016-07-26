@@ -35,7 +35,7 @@ ActiveAdmin.register TransactionAttempt do
     column :reason
     column :response_id
     column "Created At" do |response|
-      UTCToPST(response.created_at)
+      response.created_at
     end
   end
 end

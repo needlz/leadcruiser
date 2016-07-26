@@ -129,7 +129,7 @@ describe API::V1::LeadsController, type: :request do
         zip: "60610",
         day_phone: "3125554811",
         email: "test@nags.us",
-        birth_date: Date.strptime('12/23/1980', '%m/%d/%Y'),
+        birth_date: Date.strptime('12/23/1980', '%m/%d/%Y').in_time_zone,
         gender:"Male",
         vertical_id: health_vertical.id,
         visitor_ip: "75.2.92.149"
@@ -288,7 +288,7 @@ describe API::V1::LeadsController, type: :request do
         zip: "60610",
         day_phone: "3125554811",
         email: "test@nags.us",
-        birth_date: Date.strptime('12/23/1980', '%m/%d/%Y'),
+        birth_date: Date.strptime('12/23/1980', '%m/%d/%Y').in_time_zone,
         gender:"Male",
         vertical_id: health_vertical.id,
         visitor_ip: "75.2.92.149"

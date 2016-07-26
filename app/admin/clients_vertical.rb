@@ -38,7 +38,7 @@ ActiveAdmin.register ClientsVertical do
       link_to(image_tag(client.logo.url(:thumb), :height => '30'))
     end
     column "created_at" do |client|
-      UTCToPST(client.created_at)
+      client.created_at
     end
     actions
   end

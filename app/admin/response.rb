@@ -27,7 +27,7 @@ ActiveAdmin.register Response do
     column :purchase_order_id
     column :response_time
     column "Created At" do |response|
-      UTCToPST(response.created_at)
+      response.created_at
     end
   end
 end
