@@ -27,10 +27,12 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
     end
 
     context 'when in forwarding range' do
-      let(:range_start) { (Time.now - 1.minutes) }
+      let(:range_start) { (Time.current - 1.minutes) }
 
       before do
-        EditableConfiguration.global.update_attributes!(forwarding_range_start: range_start, forwarding_range_end: range_start + 20.minutes)
+        day_name = Ranges.days[Time.current.wday]
+        EditableConfiguration.global.update_attributes!("#{ day_name }_forwarding_range_start" => range_start,
+                                                        "#{ day_name }_forwarding_range_end" => range_start + 20.minutes)
       end
 
       context 'when no responses from same client' do
@@ -91,7 +93,9 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
       let(:range_start) { (Time.now + 1.minutes) }
 
       before do
-        EditableConfiguration.global.update_attributes!(forwarding_range_start: range_start, forwarding_range_end: range_start + 20.minutes)
+        day_name = Ranges.days[Time.current.wday]
+        EditableConfiguration.global.update_attributes!("#{ day_name }_forwarding_range_start" => range_start,
+                                                        "#{ day_name }_forwarding_range_end" => range_start + 20.minutes)
       end
 
       it 'does not reschedule itself' do
@@ -133,7 +137,6 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
       let!(:unprocessed_leads) { create_list(:lead, leads_count, :from_boberdoo, vertical: vertical) }
 
       it 'returns some of leads' do
-        pending
         expect(ForwardLeadsToBoberdooJob.not_yet_forwarded_leads.count).to eq leads_count
       end
     end
@@ -144,7 +147,9 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
       let(:range_start) { (Time.current + 10.minutes) }
 
       before do
-        EditableConfiguration.global.update_attributes!(forwarding_range_start: range_start, forwarding_range_end: range_start + 10.minutes)
+        day_name = Ranges.days[Time.current.wday]
+        EditableConfiguration.global.update_attributes!("#{ day_name }_forwarding_range_start" => range_start,
+                                                        "#{ day_name }_forwarding_range_end" => range_start + 10.minutes)
       end
 
       it 'schedules job' do

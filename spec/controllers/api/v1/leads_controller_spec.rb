@@ -373,8 +373,9 @@ describe API::V1::LeadsController, type: :request do
 
       context 'during non-forwarding time range' do
         before do
-          EditableConfiguration.global.update_attributes!(afterhours_range_start: 10.minutes.ago,
-                                                          afterhours_range_end: 10.minutes.from_now)
+          day_name = Ranges.days[Time.current.wday]
+          EditableConfiguration.global.update_attributes!("#{ day_name }_afterhours_range_start" => 10.minutes.ago,
+                                                          "#{ day_name }_afterhours_range_end" => 10.minutes.from_now)
         end
 
         it 'does not schedule request to Boberdoo' do

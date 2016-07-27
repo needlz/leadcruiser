@@ -1,7 +1,7 @@
 ActiveAdmin.register EditableConfiguration do
   actions :all, except: [:new, :destroy]
 
-  permit_params EditableConfiguration.column_names
+  permit_params EditableConfiguration.column_names if ActiveRecord::Base.connection.table_exists?('editable_configurations')
 
   show do
     def format_time(time)
@@ -12,24 +12,19 @@ ActiveAdmin.register EditableConfiguration do
       row :gethealthcare_form_monitor_delay_minutes
       row :gethealthcare_form_threshold_seconds
       row :gethealthcare_notified_recipients_comma_separated
-      row :afterhours_range_start do |config|
-        config.afterhours_range_start.try(:in_time_zone)
-      end
-      row :afterhours_range_end do |config|
-        config.afterhours_range_end.try(:in_time_zone)
-      end
-      row :forwarding_range_start do |config|
-        config.forwarding_range_start.try(:in_time_zone)
-      end
-      row :forwarding_range_end do |config|
-        config.forwarding_range_end.try(:in_time_zone)
-      end
+
       row :forwarding_interval_minutes
       row 'Leads to be frowarded' do
         ForwardLeadsToBoberdooJob.not_yet_forwarded_leads.count
       end
       row 'Leads per forward request' do
         ForwardLeadsToBoberdooJob.leads_per_batch
+      end
+
+      Ranges.fullname_attributes.each do |attribute|
+        row attribute do |config|
+          config.send(attribute).try(:in_time_zone)
+        end
       end
     end
   end
@@ -39,11 +34,17 @@ ActiveAdmin.register EditableConfiguration do
       input :gethealthcare_form_monitor_delay_minutes
       input :gethealthcare_form_threshold_seconds
       input :gethealthcare_notified_recipients_comma_separated
-      input :afterhours_range_start, as: :time_select, input_html: {value: Time.zone.local_to_utc(f.object.afterhours_range_start.in_time_zone) }
-      input :afterhours_range_end, as: :time_select, input_html: {value: Time.zone.local_to_utc(f.object.afterhours_range_end.in_time_zone) }
-      input :forwarding_range_start, as: :time_select, input_html: {value: Time.zone.local_to_utc(f.object.forwarding_range_start.in_time_zone) }
-      input :forwarding_range_end, as: :time_select, input_html: {value: Time.zone.local_to_utc(f.object.forwarding_range_end.in_time_zone) }
-      input :forwarding_interval_minutes
+      panel 'Forwarding ranges' do
+        input :forwarding_interval_minutes
+        Date::DAYNAMES.each do |dayname|
+          inputs dayname do
+            Ranges.attributes.each do |attr|
+              attribute = Ranges.attr_name(dayname.first(3).downcase, attr)
+              input attribute, as: :time_select, input_html: {value: Time.zone.local_to_utc(f.object.send(attribute).try(:in_time_zone)) }
+            end
+          end
+        end
+      end
     end
     actions
   end
@@ -51,13 +52,9 @@ ActiveAdmin.register EditableConfiguration do
   controller do
     def edit
       super do |format|
-        [:afterhours_range_start, :afterhours_range_end, :forwarding_range_start, :forwarding_range_end].each do |attribute|
+        Ranges.fullname_attributes.each do |attribute|
           @editable_configuration.send("#{ attribute }=", @editable_configuration.send(attribute).try(:in_time_zone))
         end
-
-        @editable_configuration.afterhours_range_start = @editable_configuration.afterhours_range_start.in_time_zone
-        @editable_configuration.afterhours_range_start = @editable_configuration.afterhours_range_start.in_time_zone
-        @editable_configuration.afterhours_range_start = @editable_configuration.afterhours_range_start.in_time_zone
       end
     end
 
@@ -66,31 +63,29 @@ ActiveAdmin.register EditableConfiguration do
     end
 
     def update
-        names = %w[afterhours_range_start afterhours_range_end forwarding_range_start forwarding_range_end]
-        names.each do |name|
-          if params[:editable_configuration]["#{ name }(4i)"].blank? || params[:editable_configuration]["#{ name }(5i)"].blank?
-            params[:editable_configuration]["#{ name }(5i)"] = ''
-            params[:editable_configuration]["#{ name }(4i)"] = ''
-            params[:editable_configuration]["#{ name }(3i)"] = ''
-            params[:editable_configuration]["#{ name }(2i)"] = ''
-            params[:editable_configuration]["#{ name }(1i)"] = ''
+      Ranges.fullname_attributes.each do |attribute|
+        if params[:editable_configuration]["#{ attribute }(4i)"].blank? || params[:editable_configuration]["#{ attribute }(5i)"].blank?
+          (1..5).each do |index|
+            params[:editable_configuration]["#{ attribute }(#{ index }i)"] = ''
           end
         end
+      end
+      @closest_range_before_update = resource.closest_or_current_forwarding_range
       super
     end
   end
 
-  after_update do |config|
-    [:afterhours_range_start, :afterhours_range_end, :forwarding_range_start, :forwarding_range_end].each do |attribute|
+  before_update do |config|
+    Ranges.fullname_attributes.each do |attribute|
       value = config.send(attribute)
       if value
         config.send("#{ attribute }=", Time.zone.local_to_utc(value))
       end
-      if config.forwarding_range_start_changed? || config.forwarding_range_end_changed?
-        ForwardLeadsToBoberdooJob.schedule
-      end
-      config.save!
     end
+  end
+
+  after_update do |config|
+    ForwardLeadsToBoberdooJob.schedule if config.closest_or_current_forwarding_range != @closest_range_before_update
   end
 
 end

@@ -9,8 +9,9 @@ RSpec.describe EditableConfiguration, type: :model do
   describe '#inside_afterhours_range?' do
     context 'when inside non forwarding time range' do
       before do
-        EditableConfiguration.global.update_attributes!(afterhours_range_start: Time.current - 1.minute,
-                                                        afterhours_range_end: Time.current + 2.minutes)
+        day_name = Ranges.days[Time.current.wday]
+        EditableConfiguration.global.update_attributes!("#{ day_name }_afterhours_range_start" => Time.current - 1.minute,
+                                                        "#{ day_name }_afterhours_range_end" => Time.current + 2.minutes)
       end
 
       it 'returns true' do
@@ -20,8 +21,9 @@ RSpec.describe EditableConfiguration, type: :model do
 
     context 'when outside non forwarding time range' do
       before do
-        EditableConfiguration.global.update_attributes!(afterhours_range_start: Time.current + 1.minute,
-                                                        afterhours_range_end: Time.current + 2.minutes)
+        day_name = Ranges.days[Time.current.wday]
+        EditableConfiguration.global.update_attributes!("#{ day_name }_afterhours_range_start" => Time.current + 1.minute,
+                                                        "#{ day_name }_afterhours_range_end" => Time.current + 2.minutes)
       end
 
       it 'returns false' do

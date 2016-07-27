@@ -20,41 +20,74 @@ class EditableConfiguration < ActiveRecord::Base
   end
 
   def inside_afterhours_range?
-    return if !afterhours_range_start || !afterhours_range_end
-    Time.current.between?(today_afterhours_range_start, today_afterhours_range_end)
+    range = closest_or_current_range('afterhours')
+    return unless range
+
+    Time.current.between?(range[:start], range[:end])
   end
 
   def inside_forwarding_range?
-    Time.current.between?(today_forwarding_range_start, today_forwarding_range_end)
+    range = closest_or_current_forwarding_range
+    return unless range
+
+    Time.current.between?(range[:start], range[:end])
   end
 
-  def forwarding_range?
-    forwarding_range_start && forwarding_range_end && (forwarding_range_start < forwarding_range_end)
+  def any_forwarding_range?
+    Ranges.days.each do |day|
+      range_start = send("#{ day }_forwarding_range_start")
+      range_end = send("#{ day }_forwarding_range_end")
+      return true if range_start && range_end
+    end
+    false
   end
 
-  def today_range_start(time)
-    at_day(time)
+  def closest_or_current_forwarding_range
+    closest_or_current_range('forwarding')
   end
 
-  def today_afterhours_range_start
-    today_range_start(afterhours_range_start)
+  def closest_forwarding_range
+    closest_range('forwarding')
   end
 
-  def today_afterhours_range_end
-    today_range_end(afterhours_range_start, afterhours_range_end)
+  def closest_or_current_range(range_type)
+    each_range(range_type) do |range_start, range_end|
+      range_in_future = Time.current < range_start
+      inside_range = range_start < Time.current && Time.current < range_end
+      break { start: range_start, end: range_end } if range_in_future || inside_range
+    end
   end
 
-  def today_forwarding_range_start
-    today_range_start(forwarding_range_start)
+  def closest_range(range_type)
+    each_range(range_type) do |range_start, range_end|
+      range_in_future = Time.current < range_start
+      break { start: range_start, end: range_end } if range_in_future
+    end
   end
 
-  def today_forwarding_range_end
-    today_range_end(forwarding_range_start, forwarding_range_end)
+  def each_range(range_type, &block)
+    Ranges.days.rotate(Time.current.wday).each_with_index do |day, day_offset|
+      start_time = send Ranges.attr_name(day, "#{ range_type }_range_start")
+      end_time = send Ranges.attr_name(day, "#{ range_type }_range_end")
+      date = Date.current.days_since(day_offset)
+
+      next if start_time.nil? || end_time.nil?
+
+      range_start = range_start_of_day(start_time, date)
+      range_end = range_end_of_day(start_time, end_time, date)
+
+      block.call(range_start, range_end)
+    end
+    nil
   end
 
-  def today_range_end(start_time, time)
-    today_end = at_day(time)
-    today_end < start_time ? at_day(time, Date.current.tomorrow) : today_end
+  def range_start_of_day(time, date)
+    at_day(time, date)
+  end
+
+  def range_end_of_day(start_time, time, date)
+    today_end = at_day(time, date)
+    today_end < start_time ? at_day(time, date.tomorrow) : today_end
   end
 
   def at_day(time, day = Date.current)
@@ -66,8 +99,15 @@ class EditableConfiguration < ActiveRecord::Base
                  time.sec)
   end
 
-  def forwarding_range_length_mins
-    ((today_forwarding_range_end - today_forwarding_range_start) * 24 * 60).to_i
+  def closest_forwarding_range_length_mins
+    range = closest_or_current_forwarding_range
+    return unless range
+
+    if inside_forwarding_range?
+      (range[:end].to_i - Time.current.to_i) * 24 * 60
+    else
+      (range[:end].to_i - range[:start].to_i) * 24 * 60
+    end
   end
 
 end
