@@ -37,8 +37,7 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
 
       context 'when no responses from same client' do
         it 'forwards batch of leads' do
-          pending
-          expect_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order).exactly(unprocessed_leads_count).times
+          expect_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order).exactly(ForwardLeadsToBoberdooJob.leads_per_batch).times
           ForwardLeadsToBoberdooJob.new.perform
         end
 
@@ -63,11 +62,10 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
 
       context 'when response from same client created during job' do
         before do
-          allow(ForwardLeadsToBoberdooJob).to receive(:not_yet_forwarded_leads) { processed_leads }
+          allow(ForwardLeadsToBoberdooJob).to receive(:not_yet_forwarded_leads) { Lead.with_responses }
         end
 
         it 'does not send request' do
-          pending
           expect_any_instance_of(ForwardLeadsToBoberdooJob).to_not receive(:perform_for_lead_and_order)
           ForwardLeadsToBoberdooJob.new.perform
         end
@@ -78,11 +76,10 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
           processed_leads.each do |lead|
             lead.responses.where(purchase_order_id: purchase_order.id).update_all(purchase_order_id: nil)
           end
-          allow(ForwardLeadsToBoberdooJob).to receive(:not_yet_forwarded_leads) { processed_leads }
+          allow(ForwardLeadsToBoberdooJob).to receive(:not_yet_forwarded_leads) { Lead.with_responses }
         end
 
         it 'sends requests' do
-          pending
           expect_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order).exactly(processed_leads.count).times
           ForwardLeadsToBoberdooJob.new.perform
         end
@@ -120,23 +117,12 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
     end
   end
 
-  describe '#leads_to_be_forwarded' do
-
-    context 'when there are many unprocessed leads' do
-      let!(:leads_count) { 1 }
-      let!(:unprocessed_leads) { create_list(:lead, leads_count, :from_boberdoo, vertical: vertical) }
-
-      it 'returns some of leads' do
-        pending
-        expect(ForwardLeadsToBoberdooJob.not_yet_forwarded_leads.count).to eq ForwardLeadsToBoberdooJob.max_leads_per_batch
-      end
-    end
-
+  describe '#not_yet_forwarded_leads' do
     context 'when there are few unprocessed leads' do
-      let(:leads_count) { 1 }
+      let(:leads_count) { 3 }
       let!(:unprocessed_leads) { create_list(:lead, leads_count, :from_boberdoo, vertical: vertical) }
 
-      it 'returns some of leads' do
+      it 'returns all unprocessed leads' do
         expect(ForwardLeadsToBoberdooJob.not_yet_forwarded_leads.count).to eq leads_count
       end
     end
