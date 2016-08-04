@@ -252,6 +252,12 @@ describe API::V1::LeadsController, type: :request do
         expect(Lead.last.disposition).to eq(Lead::TEST_NO_SALE)
       end
 
+      it 'grants that there are no profanities in name and email' do
+        api_post 'leads', params.merge(First_Name: 'ass', Last_Name: 'name')
+        expect(Lead.last.status).to eq(Lead::BLOCKED)
+        expect(Lead.last.disposition).to eq(Lead::PROFANITY)
+      end
+
     end
   end
 
