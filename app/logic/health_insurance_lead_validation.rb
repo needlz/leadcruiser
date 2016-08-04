@@ -13,6 +13,7 @@ class HealthInsuranceLeadValidation
     check_duplicated
     check_blocked
     check_disposition
+    check_profanities
   end
 
   def check_duplicated
@@ -42,6 +43,15 @@ class HealthInsuranceLeadValidation
       raise Error.new(Lead::TEST_NO_SALE)
     end
   end
+
+  def check_profanities
+    filter_text = [lead.first_name, lead.last_name, lead.email].join(' ')
+    if Obscenity.profane?(filter_text)
+      lead.update_attributes(status: Lead::BLOCKED, disposition: Lead::PROFANITY) if update_status
+      raise Error.new(Lead::PROFANITY)
+    end
+  end
+
 
   # Check the incoming lead with email was sold before
   def self.duplicated_lead(email, vertical_id, site_id)
