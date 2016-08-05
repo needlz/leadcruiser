@@ -18,6 +18,7 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
       end
       leads
     }
+    let(:now) { Time.current }
 
     let(:unprocessed_leads) { create_list(:lead, unprocessed_leads_count, :from_boberdoo, vertical: vertical) }
 
@@ -30,9 +31,10 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
       let(:range_start) { (Time.current - 1.minutes) }
 
       before do
-        day_name = Ranges.days[Time.current.wday]
-        EditableConfiguration.global.update_attributes!("#{ day_name }_forwarding_range_start" => range_start,
-                                                        "#{ day_name }_forwarding_range_end" => range_start + 20.minutes)
+        ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday],
+                                               begin_time: range_start,
+                                               end_day: Date::DAYNAMES[(now.wday + 1) % 7],
+                                               end_time: range_start + 20.minutes)
       end
 
       context 'when no responses from same client' do
@@ -80,7 +82,7 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
         end
 
         it 'sends requests' do
-          expect_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order).exactly(processed_leads.count).times
+          expect_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order).exactly(ForwardLeadsToBoberdooJob.leads_per_batch).times
           ForwardLeadsToBoberdooJob.new.perform
         end
       end
@@ -90,9 +92,12 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
       let(:range_start) { (Time.now + 1.minutes) }
 
       before do
-        day_name = Ranges.days[Time.current.wday]
-        EditableConfiguration.global.update_attributes!("#{ day_name }_forwarding_range_start" => range_start,
-                                                        "#{ day_name }_forwarding_range_end" => range_start + 20.minutes)
+        day_name = Date::DAYNAMES[Time.current.wday]
+        ForwardingTimeRange.create!(kind: 'forwarding',
+                                    begin_day: day_name,
+                                    begin_time: range_start,
+                                    end_day: day_name,
+                                    end_time: range_start + 20.minutes)
       end
 
       it 'does not reschedule itself' do
@@ -131,22 +136,43 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
   describe '#schedule' do
     context 'forwarding range is set' do
       let(:range_start) { (Time.current + 10.minutes) }
+      let(:range_end) { (Time.current + 20.minutes) }
 
       before do
-        day_name = Ranges.days[Time.current.wday]
-        EditableConfiguration.global.update_attributes!("#{ day_name }_forwarding_range_start" => range_start,
-                                                        "#{ day_name }_forwarding_range_end" => range_start + 10.minutes)
+        date = Time.parse('2000-1-1')
+        ForwardingTimeRange.create!(kind: 'forwarding',
+                                    begin_day: Date::DAYNAMES[range_start.wday],
+                                    begin_time: date.in_time_zone(-8).change(hour: range_start.hour, min: range_start.min),
+                                    end_day: Date::DAYNAMES[range_end.wday],
+                                    end_time: date.in_time_zone(-8).change(hour: range_end.hour, min: range_end.min))
       end
 
       it 'schedules job' do
-        expect { ForwardLeadsToBoberdooJob.schedule }.to enqueue_a(ForwardLeadsToBoberdooJob).be_within(2.seconds).of(range_start)
+        expect { ForwardLeadsToBoberdooJob.schedule }.to enqueue_a(ForwardLeadsToBoberdooJob).be_within(1.minute).of(range_start)
       end
     end
+  end
 
-    context 'forwarding range is not set' do
-      it 'do nothing' do
+  describe '#leads_per_batch' do
+    let(:range_hours_length) { 2 }
+    let(:range_mins_length) { 3 }
+    let(:range_duration_mins) { (range_hours_length * 60 + range_mins_length) }
+    let(:interval_mins) { 5 }
+    let(:leads_count) { 500 }
+    before do
+      date = Time.parse('2000-1-1')
+      ForwardingTimeRange.create!(kind: 'forwarding',
+                                  begin_day: Date::DAYNAMES[(Time.current.wday + 1) % 7],
+                                  begin_time: date.in_time_zone(-8).change(hour: 0, min: 0),
+                                  end_day: Date::DAYNAMES[(Time.current.wday + 1) % 7],
+                                  end_time: date.in_time_zone(-8).change(hour: range_hours_length, min: range_mins_length))
 
-      end
+      EditableConfiguration.global.update_attributes!(forwarding_interval_minutes: interval_mins)
+      allow(ForwardLeadsToBoberdooJob).to receive(:not_yet_forwarded_leads) { Array.new(leads_count) }
+    end
+
+    it 'returns count of leads to be sent in next request' do
+      expect(ForwardLeadsToBoberdooJob.leads_per_batch).to eq (leads_count.to_f / (range_duration_mins.to_f / interval_mins).ceil)
     end
   end
 

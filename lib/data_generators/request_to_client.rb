@@ -16,15 +16,15 @@ class RequestToClient
   end
 
   def request_header
-    if client.request_type == "JSON"
+    if client.request_type == 'JSON'
       { 'Content-type' => 'application/json' }
-    elsif client.request_type == "XML"
+    elsif client.request_type == 'XML'
       { 'Content-type' => 'application/xml' }
     end
   end
 
   def perform_http_request(exclusive)
-    if Rails.env.development
+    if Rails.env.development?
       'response'
     else
       HTTParty.post request_url,
@@ -35,11 +35,11 @@ class RequestToClient
   end
 
   def success?
-    response["success"]
+    response['success']
   end
 
   def rejection_reason
-    "Test Failure"
+    'Test Failure'
   end
 
 end

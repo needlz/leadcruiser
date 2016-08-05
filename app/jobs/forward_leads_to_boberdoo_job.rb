@@ -10,22 +10,22 @@ class ForwardLeadsToBoberdooJob < ActiveJob::Base
   end
 
   def self.schedule(minimal_postpone: 0)
-    return unless EditableConfiguration.global.any_forwarding_range?
+    return unless ForwardingTimeRange.any_forwarding_range?
     now = Time.current
     perform_in =
-      if now < EditableConfiguration.global.closest_or_current_forwarding_range[:start]
-        EditableConfiguration.global.closest_or_current_forwarding_range[:start]
-      elsif EditableConfiguration.global.inside_forwarding_range?
+      if now < ForwardingTimeRange.closest_or_current_forwarding_range[:start]
+        ForwardingTimeRange.closest_or_current_forwarding_range[:start]
+      elsif ForwardingTimeRange.inside_forwarding_range?
         (Time.current + minimal_postpone)
       else
-        EditableConfiguration.global.closest_forwarding_range[:start]
+        ForwardingTimeRange.closest_forwarding_range[:start]
       end
     set(wait_until: perform_in).perform_later
   end
 
   def perform(*args)
-    return unless EditableConfiguration.global.any_forwarding_range?
-    return unless EditableConfiguration.global.inside_forwarding_range?
+    return unless ForwardingTimeRange.any_forwarding_range?
+    return unless ForwardingTimeRange.inside_forwarding_range?
     @client = ClientsVertical.find_by_integration_name(ClientsVertical::BOBERDOO)
     @purchase_order = PurchaseOrder.find_by_client_id(client.id)
     forward_leads
@@ -41,9 +41,9 @@ class ForwardLeadsToBoberdooJob < ActiveJob::Base
   end
 
   def self.leads_per_batch
-    return unless EditableConfiguration.global.any_forwarding_range?
+    return unless ForwardingTimeRange.any_forwarding_range?
     interval = EditableConfiguration.global.forwarding_interval_minutes || DEFAULT_INTERVAL_MINUTES
-    needed_requests_count = (EditableConfiguration.global.closest_forwarding_range_length_mins.to_f / interval).ceil
+    needed_requests_count = (ForwardingTimeRange.closest_forwarding_range_length_mins.to_f / interval).ceil
     (ForwardLeadsToBoberdooJob.not_yet_forwarded_leads.count.to_f / needed_requests_count).ceil
   end
 

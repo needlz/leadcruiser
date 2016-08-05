@@ -373,9 +373,12 @@ describe API::V1::LeadsController, type: :request do
 
       context 'during non-forwarding time range' do
         before do
-          day_name = Ranges.days[Time.current.wday]
-          EditableConfiguration.global.update_attributes!("#{ day_name }_afterhours_range_start" => 10.minutes.ago,
-                                                          "#{ day_name }_afterhours_range_end" => 10.minutes.from_now)
+          day_name = Date::DAYNAMES[Time.current.wday]
+          ForwardingTimeRange.create!(begin_day: day_name,
+                                      begin_time: Time.parse('2000-1-1').in_time_zone(-8).change(hour: Time.current.in_time_zone(-8).hour, min: Time.current.in_time_zone(-8).min) - 10.minutes,
+                                      end_day: day_name,
+                                      end_time: Time.parse('2000-1-1').in_time_zone(-8).change(hour: Time.current.in_time_zone(-8).hour, min: Time.current.in_time_zone(-8).min) + 10.minutes,
+                                      kind: 'afterhours')
         end
 
         it 'does not schedule request to Boberdoo' do
