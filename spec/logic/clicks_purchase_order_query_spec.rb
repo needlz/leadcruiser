@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe ClicksPurchaseOrderQuery, type: :request do
+RSpec.describe ClicksPurchaseOrderQuery do
   let(:vertical) { create(:vertical) }
   let!(:clients_vertical1) { create(:clients_vertical, vertical: vertical) }
   let!(:clients_vertical2) { create(:clients_vertical, vertical: vertical) }
