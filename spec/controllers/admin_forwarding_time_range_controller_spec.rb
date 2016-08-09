@@ -14,14 +14,14 @@ RSpec.describe Admin::ForwardingTimeRangesController, type: :controller do
          'begin_time(2i)' => now.month,
          'begin_time(3i)' => now.day,
          'begin_time(4i)' => begin_hour,
-         'begin_time(5i)' => '00',
+         'begin_time(5i)' => '30',
 
          'end_day' => 'Monday',
          'end_time(1i)' => now.year,
          'end_time(2i)' => now.month,
          'end_time(3i)' => now.day,
          'end_time(4i)' => '04',
-         'end_time(5i)' => '00'
+         'end_time(5i)' => '30'
         }
       }
     }
@@ -37,6 +37,7 @@ RSpec.describe Admin::ForwardingTimeRangesController, type: :controller do
         time = range.begin_time.in_time_zone
         expect(time.zone).to eq 'PST'
         expect(time.hour).to eq begin_hour
+        expect(time.min).to eq 30
       end
     end
 

@@ -70,10 +70,13 @@ ActiveAdmin.register ForwardingTimeRange do
     [:begin_time, :end_time].each do |attribute|
       value = range.send(attribute)
       if value
-        range.send("#{ attribute }=", value.in_time_zone(-8).change(year: 2000,
-                                                                    month: 1,
-                                                                    day: 1,
-                                                                    hour: params['forwarding_time_range']["#{ attribute }(4i)"]))
+        range.send("#{ attribute }=",
+                   value.in_time_zone(-8).change(year: 2000,
+                                                 month: 1,
+                                                 day: 1,
+                                                 hour: params['forwarding_time_range']["#{ attribute }(4i)"],
+                                                 min: params['forwarding_time_range']["#{ attribute }(5i)"])
+        )
       end
     end
   end
@@ -82,7 +85,8 @@ ActiveAdmin.register ForwardingTimeRange do
     [:begin_time, :end_time].each do |attribute|
       value = range.send(attribute)
       if value
-        range.send("#{ attribute }=", value.in_time_zone(-8).change(hour: params['forwarding_time_range']["#{ attribute }(4i)"]))
+        range.send("#{ attribute }=", value.in_time_zone(-8).change(hour: params['forwarding_time_range']["#{ attribute }(4i)"],
+                                                                    min: params['forwarding_time_range']["#{ attribute }(5i)"]))
       end
     end
   end

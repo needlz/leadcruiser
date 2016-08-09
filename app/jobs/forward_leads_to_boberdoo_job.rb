@@ -44,6 +44,7 @@ class ForwardLeadsToBoberdooJob < ActiveJob::Base
     return unless ForwardingTimeRange.any_forwarding_range?
     interval = EditableConfiguration.global.forwarding_interval_minutes || DEFAULT_INTERVAL_MINUTES
     needed_requests_count = (ForwardingTimeRange.closest_forwarding_range_length_mins.to_f / interval).ceil
+    return if needed_requests_count.zero?
     (ForwardLeadsToBoberdooJob.not_yet_forwarded_leads.count.to_f / needed_requests_count).ceil
   end
 
