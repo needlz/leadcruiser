@@ -2,14 +2,39 @@ class HealthInsuranceMailer
 
   include SendGrid
 
-  SENDGRID_TEMPLATE_IDS = {
+  SENDGRID_TEMPLATE_IDS =
+    if Rails.env.production?
+      {
+        RequestToBoberdoo::HEALTH_INSURANCE_TYPE => {
+          'healthmatchup.com' => '14c4b97a-5685-4780-9232-4bb7b567a7e4',
+          'gethealthcare.co' => '6d52562d-2b4d-4790-99e5-fc99118b5bb1'
+        },
+        RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE => {
+          'healthmatchup.com' => 'f6e0c20f-9c17-4c2a-a450-38ea32064591',
+          'gethealthcare.co' => 'e2338983-4c54-4ab4-8ba1-6817ede29cf1'
+        },
+      }
+    else
+      {
+        RequestToBoberdoo::HEALTH_INSURANCE_TYPE => {
+          'healthmatchup.com' => 'e9ce4afd-92dc-4d77-b153-0cc5812dec1f',
+          'gethealthcare.co' => '5055f760-8d8b-4088-85e6-394bc121c83c'
+        },
+        RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE => {
+          'healthmatchup.com' => '7a776324-4309-4af9-918d-94aba4d95a68',
+          'gethealthcare.co' => '922ded5c-a957-42c8-b9e9-ec880b31717a'
+        },
+      }
+    end
+
+  PERSONALIZED_URL = {
     RequestToBoberdoo::HEALTH_INSURANCE_TYPE => {
-      'healthmatchup.com' => '14c4b97a-5685-4780-9232-4bb7b567a7e4',
-      'gethealthcare.co' => '6d52562d-2b4d-4790-99e5-fc99118b5bb1'
+      'healthmatchup.com' => 'http://healthmatchup.com/results/?zip=%{zip}',
+      'gethealthcare.co' => 'http://gethealthcare.co/results/?zip=%{zip}'
     },
     RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE => {
-      'healthmatchup.com' => 'f6e0c20f-9c17-4c2a-a450-38ea32064591',
-      'gethealthcare.co' => 'e2338983-4c54-4ab4-8ba1-6817ede29cf1'
+      'healthmatchup.com' => 'http://healthmatchup.com/results/?zip=%{zip}&medicare=yes',
+      'gethealthcare.co' => 'http://gethealthcare.co/results/?zip=%{zip}&medicare=yes'
     },
   }
 
@@ -25,6 +50,7 @@ class HealthInsuranceMailer
     mail = prepare_email do |personalization|
       personalization.to = Email.new(email: lead.email, name: lead.name)
       personalization.substitutions = Substitution.new(key: '&lt;%FirstName%&gt;', value: lead.first_name)
+      personalization.substitutions = Substitution.new(key: '&lt;%PersonalizedQuotesUrl%&gt;', value: personalized_quotes_url(lead))
     end
     mail.from = Email.new(email: from_address(lead), name: AUTORESPONDER_FROM_NAME)
     mail.template_id = autoresponder_template_id(lead)
@@ -90,5 +116,10 @@ class HealthInsuranceMailer
   def owners
     return [] unless EditableConfiguration.global.gethealthcare_notified_recipients_comma_separated.present?
     EditableConfiguration.global.gethealthcare_notified_recipients_comma_separated.split(/,\s*/)
+  end
+
+  def personalized_quotes_url(lead)
+    url_template = PERSONALIZED_URL[lead.health_insurance_lead.boberdoo_type][lead.site.domain]
+    url_template % { zip: lead.zip }
   end
 end
