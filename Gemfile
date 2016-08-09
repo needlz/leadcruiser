@@ -22,8 +22,6 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 gem 'rails-api'
-gem 'fakeweb'
-gem 'timecop'
 gem 'mandrill-rails'
 gem 'mandrill-api'
 gem 'httparty'
@@ -79,13 +77,15 @@ gem 'poltergeist'
 gem 'awesome_print', require: 'ap'
 gem 'quiet_assets'
 gem 'velocify'
-gem 'faker', group: :test
+gem 'faker'
 gem 'sendgrid-ruby'
 
 group :test do
   gem 'webmock'
   gem 'fork_break'
   gem 'database_cleaner'
+  gem 'rspec-activejob'
+  gem 'timecop'
 end
 
 group :production do

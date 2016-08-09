@@ -14,11 +14,11 @@ ActiveAdmin.register Site do
     column :host
 
     column "Created Date" do |site|
-      UTCToPST(site.created_at)
+      site.created_at
     end
 
     column :updated_at do |site|
-      UTCToPST(site.updated_at)
+      site.updated_at
     end
 
     actions

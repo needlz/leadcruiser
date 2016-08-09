@@ -34,10 +34,10 @@ ActiveAdmin.register ClicksPurchaseOrder do
       end
     end
     column "Created Date" do |po|
-      UTCToPST(po.created_at)
+      po.created_at
     end
     column "Updated Date" do |po|
-      UTCToPST(po.updated_at)
+      po.updated_at
     end
 
     actions

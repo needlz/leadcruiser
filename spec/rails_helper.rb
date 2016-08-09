@@ -86,6 +86,46 @@ RSpec.configure do |config|
     end
   end
 
+  # 'rspec-activejob' gem lacks of precision matchers
+  module RSpec
+    module ActiveJob
+      module Matchers
+        class EnqueueA
+          def at_correct_time_with_within?
+            if @time
+              !new_jobs_with_correct_class.find { |job| (job[:at].to_f - @time.to_f).abs < @within_radius.to_f }.nil?
+            else
+              at_correct_time_without_within?
+            end
+          end
+
+          def enqueued_at_wrong_time_message_with_within
+            return if at_correct_time?
+            if @time
+              "expected to run job at #{Time.at(@time).utc}, but enqueued to " \
+              "run at #{format_enqueued_times}"
+            else
+              enqueued_at_wrong_time_message_without_within
+            end
+          end
+
+          alias_method_chain :at_correct_time?, :within
+          alias_method_chain :enqueued_at_wrong_time_message, :within
+
+          def of(time)
+            @time = time
+            self
+          end
+
+          def be_within(radius_secs)
+            @within_radius = radius_secs
+            self
+          end
+        end
+      end
+    end
+  end
+
   def params_for_health_lead(hash = {})
     {
       session_hash: 'session hash',

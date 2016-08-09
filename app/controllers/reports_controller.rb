@@ -1,8 +1,6 @@
 require 'axlsx'
 
 class ReportsController < ApplicationController
-  include ApplicationHelper
-
   http_basic_authenticate_with(name: LOGIN_NAME, password: LOGIN_PASSWORD) if Settings.use_authentication
 
   def index
@@ -59,17 +57,17 @@ class ReportsController < ApplicationController
                       lead.zip,
                       lead.state,
                       lead.email,
-                      lead.details_pets.first.try(:conditions?) ? 'TRUE' : 'FALSE',
+                      ((lead.details_pets.first.conditions? ? 'TRUE' : 'FALSE') if lead.pet_insurance?),
                       lead.times_sold.nil? ? 0 : lead.times_sold,
                       '$0.00',
                       '',
                       '',
-                      UTCToPST(lead.created_at),
+                      lead.created_at,
                       "tel:" + lead.day_phone,
                       lead.details_pets.first.try(:pet_name),
                       lead.details_pets.first.try(:species),
                       lead.details_pets.first.try(:breed),
-                      lead.details_pets.first.try(:spayed_or_neutered?) ? 'TRUE' : 'FALSE',
+                      ((lead.details_pets.first.spayed_or_neutered? ? 'TRUE' : 'FALSE') if lead.pet_insurance?),
                       lead.details_pets.first.try(:birth_month),
                       lead.details_pets.first.try(:birth_year),
                       lead.details_pets.first.try(:gender),
@@ -88,17 +86,17 @@ class ReportsController < ApplicationController
                         lead.zip,
                         lead.state,
                         lead.email,
-                        lead.details_pets.first.try(:conditions?) ? 'TRUE' : 'FALSE',
+                        ((lead.details_pets.first.conditions? ? 'TRUE' : 'FALSE') if lead.pet_insurance?),
                         lead.times_sold.nil? ? 0 : lead.times_sold,
                         '$' + lead.sold_po_price(response.purchase_order_id).to_s,
                         lead.client_sold_to(response.client_name).try(:official_name),
                         lead.sold_type.nil? ? 'Exclusive' : lead.sold_type.exclusive_selling? ? 'Exclusive' : 'Shared',
-                        UTCToPST(lead.created_at),
+                        lead.created_at,
                         "tel:" + lead.day_phone,
                         lead.details_pets.first.try(:pet_name),
                         lead.details_pets.first.try(:species),
                         lead.details_pets.first.try(:breed),
-                        lead.details_pets.first.try(:spayed_or_neutered?) ? 'TRUE' : 'FALSE',
+                        ((lead.details_pets.first.spayed_or_neutered? ? 'TRUE' : 'FALSE') if lead.pet_insurance?),
                         lead.details_pets.first.try(:birth_month),
                         lead.details_pets.first.try(:birth_year),
                         lead.details_pets.first.try(:gender),
@@ -113,8 +111,6 @@ class ReportsController < ApplicationController
               end
             end
           end
-          end_time = Time.now
-          diff = end_time - start_time
           send_data axlsx_package.to_stream.read, :filename => "Report.xlsx"
         end
       end

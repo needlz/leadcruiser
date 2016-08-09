@@ -81,7 +81,7 @@ ActiveAdmin.register Lead do
     end
     column :disposition
     column "Created At" do |lead|
-      UTCToPST(lead.created_at)
+      lead.created_at
     end
 
     actions :defaults => false do |post|

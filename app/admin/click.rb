@@ -26,7 +26,7 @@ ActiveAdmin.register Click do
       end
     end
     column "Created Date" do |click|
-      UTCToPST(click.created_at)
+      click.created_at
     end
   end
   

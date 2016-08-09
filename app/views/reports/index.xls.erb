@@ -26,7 +26,7 @@
             <Cell><Data ss:Type="String"><%= '$0.00' %></Data></Cell>
             <Cell><Data ss:Type="String"><%= '' %></Data></Cell>
             <Cell><Data ss:Type="String"><%= '' %></Data></Cell>
-            <Cell><Data ss:Type="String"><%= UTCToPST(lead.created_at) %></Data></Cell>
+            <Cell><Data ss:Type="String"><%= lead.created_at %></Data></Cell>
             <Cell><Data ss:Type="String"><%= "tel:" + lead.day_phone %></Data></Cell>
             <Cell><Data ss:Type="String"><%= lead.details_pets.first.pet_name %></Data></Cell>
             <Cell><Data ss:Type="String"><%= lead.details_pets.first.species %></Data></Cell>
@@ -55,7 +55,7 @@
               <Cell><Data ss:Type="String"><%= '$' + lead.sold_po_price(response.purchase_order_id).to_s %></Data></Cell>
               <Cell><Data ss:Type="String"><%= lead.client_sold_to(response.client_name).try(:official_name) %></Data></Cell>
               <Cell><Data ss:Type="String"><%= lead.sold_type.exclusive_selling? ? 'Exclusive' : 'Shared' %></Data></Cell>
-              <Cell><Data ss:Type="String"><%= UTCToPST(lead.created_at) %></Data></Cell>
+              <Cell><Data ss:Type="String"><%= lead.created_at %></Data></Cell>
               <Cell><Data ss:Type="String"><%= "tel:" + lead.day_phone %></Data></Cell>
               <Cell><Data ss:Type="String"><%= lead.details_pets.first.pet_name %></Data></Cell>
               <Cell><Data ss:Type="String"><%= lead.details_pets.first.species %></Data></Cell>

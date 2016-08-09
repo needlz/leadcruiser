@@ -26,7 +26,7 @@
           %td= '$0.00'
           %td= ''
           %td= ''
-          %td= UTCToPST(lead.created_at)
+          %td= lead.created_at
           %td= "tel:" + lead.day_phone
           %td= lead.details_pets.first.pet_name if lead.details_pets.present?
           %td= lead.details_pets.first.species if lead.details_pets.present?
@@ -54,7 +54,7 @@
             %td= '$' + lead.sold_po_price(response.purchase_order_id).to_s
             %td= lead.client_sold_to(response.client_name).try(:official_name)
             %td= lead.sold_type.exclusive_selling? ? 'Exclusive' : 'Shared'
-            %td= UTCToPST(lead.created_at)
+            %td= lead.created_at
             %td= "tel:" + lead.day_phone
             %td= lead.details_pets.first.pet_name if lead.details_pets.present?
             %td= lead.details_pets.first.species if lead.details_pets.present?

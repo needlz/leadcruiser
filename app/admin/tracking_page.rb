@@ -14,7 +14,7 @@ ActiveAdmin.register TrackingPage do
     column :display_order
 
     column "Created Date" do |page|
-      UTCToPST(page.created_at)
+      page.created_at
     end
 
     actions
@@ -42,7 +42,7 @@ ActiveAdmin.register TrackingPage do
       row :display_order
 
       row "Created Date" do |page|
-        UTCToPST(page.created_at)
+        page.created_at
       end
     end
   end
