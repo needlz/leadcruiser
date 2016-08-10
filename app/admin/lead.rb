@@ -1,5 +1,7 @@
 ActiveAdmin.register Lead do
 
+  permit_params Lead.column_names if ActiveRecord::Base.connection.table_exists?('leads')
+
   menu priority: 4
 
   batch_action :resend do |selection|
@@ -10,30 +12,6 @@ ActiveAdmin.register Lead do
     redirect_to admin_leads_path
   end
 
-  # before_filter only: :index do
-  #   # Increate to_date by one day
-  #   unless params[:commit].blank?
-  #     created_at_lteq = params[:q][:created_at_lteq]
-  #     unless created_at_lteq.blank?
-  #       created_at_lteq_date = created_at_lteq.to_date + 1.day
-  #       binding.pry
-  #       params[:q][:created_at_lteq] = created_at_lteq_date.to_s(:db)
-  #     end
-  #   end
-  # end
-
-  # after_filter only: :index do
-  #   # Decrease to_date by one day
-  #   unless params[:commit].blank?
-  #     created_at_lteq = params[:q][:created_at_lteq]
-  #     unless created_at_lteq.blank?
-  #       created_at_lteq_date = created_at_lteq.to_date - 1.day
-  #       binding.pry
-  #       params[:q][:created_at_lteq] = created_at_lteq_date.to_s(:db)
-  #     end
-  #   end
-  # end
-
   filter :id
   filter :vertical
   filter :last_name
@@ -41,7 +19,6 @@ ActiveAdmin.register Lead do
   filter :email
   filter :preexisting_conditions
   filter :status
-  # filter :created_at_range, :lable => "Created At", :as => :date_range
   filter :created_at, :as => :date_range
 
   index do

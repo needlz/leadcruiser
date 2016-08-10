@@ -37,7 +37,7 @@ class RequestToClientGenerator
     "request_to_#{ client.integration_name }".camelize.constantize
   end
 
-  def send_data (exclusive = DEFAULT_EXCLUSIVENESS)
+  def send_data(exclusive = DEFAULT_EXCLUSIVENESS)
     return if client.service_url.nil? && link.blank?
 
     ########## For Hartville from here ##############
