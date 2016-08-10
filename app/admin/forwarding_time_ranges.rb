@@ -64,6 +64,11 @@ ActiveAdmin.register ForwardingTimeRange do
       @closest_range_before_update = ForwardingTimeRange.closest_or_current_forwarding_range
       super
     end
+
+    def create
+      @closest_range_before_update = ForwardingTimeRange.closest_or_current_forwarding_range
+      super
+    end
   end
 
   before_create do |range|
@@ -89,6 +94,10 @@ ActiveAdmin.register ForwardingTimeRange do
                                                                     min: params['forwarding_time_range']["#{ attribute }(5i)"]))
       end
     end
+  end
+
+  after_create do
+    ForwardLeadsToBoberdooJob.schedule if ForwardingTimeRange.closest_or_current_forwarding_range != @closest_range_before_update
   end
 
   after_update do
