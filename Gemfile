@@ -93,3 +93,4 @@ group :production do
 end
 
 gem 'jquery-datatables-rails', '~> 3.3.0'
+gem 'where_exists'
