@@ -69,4 +69,23 @@ RSpec.describe Lead, :type => :model do
       expect(lead.name).to eq '1 2'
     end
   end
+
+  describe "#without_responses_from_boberdoo" do
+      let(:vertical) { create(:vertical, name: Vertical::HEALTH_INSURANCE) }
+      let!(:lead_without_responses) do
+        create(:lead, vertical: vertical)
+      end
+      let!(:lead_with_boberdoo_response) do
+        lead = create(:lead, vertical: vertical)
+        create(:response, client_name: ClientsVertical::BOBERDOO, lead: lead)
+      end
+      let!(:lead_without_boberdoo_response) do
+        lead = create(:lead, vertical: vertical)
+        create(:response, client_name: '', lead: lead)
+      end
+
+    it 'returns leads that has no response from Boberdoo' do
+      expect(Lead.health_insurance.without_responses_from_boberdoo.count).to eq 1
+    end
+  end
 end

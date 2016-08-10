@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160630151337) do
+ActiveRecord::Schema.define(version: 20160729114024) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -156,6 +156,17 @@ ActiveRecord::Schema.define(version: 20160630151337) do
     t.integer "gethealthcare_form_monitor_delay_minutes",          default: 30
     t.integer "gethealthcare_form_threshold_seconds",              default: 20
     t.text    "gethealthcare_notified_recipients_comma_separated"
+    t.integer "forwarding_interval_minutes",                       default: 5
+  end
+
+  create_table "forwarding_time_ranges", force: :cascade do |t|
+    t.string   "begin_day",  null: false
+    t.time     "begin_time", null: false
+    t.string   "end_day",    null: false
+    t.time     "end_time",   null: false
+    t.string   "kind",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "gethealthcare_hits", force: :cascade do |t|
