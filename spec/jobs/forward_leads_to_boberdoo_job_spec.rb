@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
   let(:vertical) { create(:vertical, name: Vertical::HEALTH_INSURANCE) }
-  let!(:client) { create(:clients_vertical, vertical: vertical, integration_name: ClientsVertical::BOBERDOO) }
-  let!(:purchase_order) { create(:purchase_order, vertical: vertical, client_id: client.id) }
+  let!(:boberdoo) { create(:clients_vertical, vertical: vertical, integration_name: ClientsVertical::BOBERDOO) }
+  let!(:boberdoo_order) { create(:purchase_order, vertical: vertical, client_id: boberdoo.id) }
 
   before do
     EditableConfiguration.create!(forwarding_interval_minutes: 5)
@@ -14,13 +14,15 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
     let(:processed_leads) {
       leads = create_list(:lead, 2, :from_boberdoo, vertical: vertical)
       leads.each do |lead|
-        lead.responses << Response.create!(purchase_order: purchase_order)
+        lead.responses << Response.create!(purchase_order: boberdoo_order, client_name: boberdoo.integration_name)
       end
       leads
     }
+    let(:unprocessed_leads) { create_list(:lead,
+                                          unprocessed_leads_count,
+                                          :from_boberdoo,
+                                          vertical: vertical) }
     let(:now) { Time.current }
-
-    let(:unprocessed_leads) { create_list(:lead, unprocessed_leads_count, :from_boberdoo, vertical: vertical) }
 
     before do
       processed_leads
@@ -76,7 +78,7 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
       context 'when response from another client created during job' do
         before do
           processed_leads.each do |lead|
-            lead.responses.where(purchase_order_id: purchase_order.id).update_all(purchase_order_id: nil)
+            lead.responses.where(purchase_order_id: boberdoo_order.id).update_all(purchase_order_id: nil)
           end
           allow(ForwardLeadsToBoberdooJob).to receive(:not_yet_forwarded_leads) { Lead.with_responses }
         end
@@ -172,7 +174,11 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
     end
 
     it 'returns count of leads to be sent in next request' do
-      expect(ForwardLeadsToBoberdooJob.leads_per_batch).to eq (leads_count.to_f / (range_duration_mins.to_f / interval_mins).ceil)
+      Timecop.travel(ForwardingTimeRange.closest_or_current_forwarding_range[:start])
+      expect(ForwardLeadsToBoberdooJob.leads_per_batch).to eq(leads_count.to_f / (range_duration_mins.to_f / interval_mins).ceil)
+
+      Timecop.travel(ForwardingTimeRange.closest_or_current_forwarding_range[:end] - interval_mins.minutes)
+      expect(ForwardLeadsToBoberdooJob.leads_per_batch).to eq(leads_count.to_f / (5.to_f / interval_mins).ceil)
     end
   end
 
