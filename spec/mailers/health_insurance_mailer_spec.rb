@@ -17,7 +17,7 @@ RSpec.describe HealthInsuranceMailer do
     it 'creates valid email' do
       template_id = HealthInsuranceMailer::SENDGRID_TEMPLATE_IDS[RequestToBoberdoo::HEALTH_INSURANCE_TYPE][site_domain]
       stub_request(:post, "https://api.sendgrid.com/v3/mail/send").
-        with(:body => "{\"from\":{\"email\":\"justin@healthmatchup.com\",\"name\":\"#{ HealthInsuranceMailer::AUTORESPONDER_FROM_NAME }\"},\"personalizations\":[{\"to\":[{\"email\":\"#{ email }\",\"name\":\"#{ name }\"}],\"substitutions\":{\"\\u0026lt;%FirstName%\\u0026gt;\":\"#{ lead.first_name }\"}}],\"content\":[{\"type\":\"text/html\",\"value\":\"?\"}],\"template_id\":\"#{ template_id }\"}",
+        with(:body => "{\"from\":{\"email\":\"justin@healthmatchup.com\",\"name\":\"#{ HealthInsuranceMailer::AUTORESPONDER_FROM_NAME }\"},\"personalizations\":[{\"to\":[{\"email\":\"#{ email }\",\"name\":\"#{ name }\"}],\"substitutions\":{\"\\u0026lt;%FirstName%\\u0026gt;\":\"#{ lead.first_name }\",\"\\u0026lt;%PersonalizedQuotesUrl%\\u0026gt;\":\"http://healthmatchup.com/results/?zip=#{ lead.zip }\"}}],\"content\":[{\"type\":\"text/html\",\"value\":\"?\"}],\"template_id\":\"#{ template_id }\"}",
              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>"Bearer #{ Settings.sendgrid_api_key }", 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby'}).
         to_return(:status => 200, :body => '', :headers => {})
 
