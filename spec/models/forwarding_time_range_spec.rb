@@ -17,11 +17,10 @@ RSpec.describe ForwardingTimeRange, type: :model do
       context 'when inside afterhours time range' do
         context 'when range covers two days' do
           before do
-            default_year = Time.parse('2000-01-01')
             ForwardingTimeRange.afterhours.create!(begin_day: Date::DAYNAMES[now.wday],
-                                                   begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                                   begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 1.minute,
                                                    end_day: Date::DAYNAMES[(now.wday + 1) % 7],
-                                                   end_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 2.minutes)
+                                                   end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 2.minutes)
           end
 
           it 'returns true' do
@@ -31,11 +30,10 @@ RSpec.describe ForwardingTimeRange, type: :model do
 
         context 'when range covers one day' do
           before do
-            default_year = Time.parse('2000-01-01')
             ForwardingTimeRange.afterhours.create!(begin_day: Date::DAYNAMES[now.wday],
-                                                   begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                                   begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 1.minute,
                                                    end_day: Date::DAYNAMES[now.wday],
-                                                   end_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) + 2.minutes)
+                                                   end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) + 2.minutes)
           end
 
           it 'returns true' do
@@ -45,11 +43,10 @@ RSpec.describe ForwardingTimeRange, type: :model do
 
         context 'when range covers different weeks' do
           before do
-            default_year = Time.parse('2000-01-01')
             ForwardingTimeRange.afterhours.create!(begin_day: Date::DAYNAMES[now.wday],
-                                                   begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                                   begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 1.minute,
                                                    end_day: Date::DAYNAMES[0],
-                                                   end_time: default_year.in_time_zone(-8).change(hour: 0, min: 0))
+                                                   end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 0, min: 0))
           end
 
           it 'returns true' do
@@ -67,11 +64,10 @@ RSpec.describe ForwardingTimeRange, type: :model do
       context 'when inside afterhours time range' do
         context 'when range covers two days' do
           before do
-            default_year = Time.parse('2000-01-01')
             ForwardingTimeRange.afterhours.create!(begin_day: Date::DAYNAMES[now.wday],
-                                                   begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                                   begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 1.minute,
                                                    end_day: Date::DAYNAMES[(now.wday + 1) % 7],
-                                                   end_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 2.minutes)
+                                                   end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 2.minutes)
           end
 
           it 'returns true' do
@@ -81,11 +77,10 @@ RSpec.describe ForwardingTimeRange, type: :model do
 
         context 'when range covers one day' do
           before do
-            default_year = Time.parse('2000-01-01')
             ForwardingTimeRange.afterhours.create!(begin_day: Date::DAYNAMES[now.wday],
-                                                   begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                                   begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 1.minute,
                                                    end_day: Date::DAYNAMES[now.wday],
-                                                   end_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) + 2.minutes)
+                                                   end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) + 2.minutes)
           end
 
           it 'returns true' do
@@ -95,11 +90,10 @@ RSpec.describe ForwardingTimeRange, type: :model do
 
         context 'when range covers different weeks' do
           before do
-            default_year = Time.parse('2000-01-01')
             ForwardingTimeRange.afterhours.create!(begin_day: Date::DAYNAMES[now.wday],
-                                                   begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                                   begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 1.minute,
                                                    end_day: Date::DAYNAMES[0],
-                                                   end_time: default_year.in_time_zone(-8).change(hour: 0, min: 0))
+                                                   end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 0, min: 0))
           end
 
           it 'returns true' do
@@ -119,18 +113,16 @@ RSpec.describe ForwardingTimeRange, type: :model do
   describe '#closest_or_current_forwarding_range' do
     context 'closest range is in future' do
       let!(:later_range) do
-        default_year = Time.parse('2000-01-01')
         ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday + 2] % 7,
-                                               begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                               begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 1.minute,
                                                end_day: Date::DAYNAMES[now.wday + 2] % 7,
-                                               end_time: default_year.in_time_zone(-8).change(hour: 1, min: 1))
+                                               end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 1, min: 1))
       end
       let!(:earlier_range) do
-        default_year = Time.parse('2000-01-01')
         ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday + 1] % 7,
-                                               begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                               begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 1.minute,
                                                end_day: Date::DAYNAMES[now.wday + 1] % 7,
-                                               end_time: default_year.in_time_zone(-8).change(hour: 2, min: 2))
+                                               end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 2, min: 2))
       end
 
       it 'returns earlier range' do
@@ -140,25 +132,22 @@ RSpec.describe ForwardingTimeRange, type: :model do
 
     context 'closest range is in future' do
       let!(:later_range) do
-        default_year = Time.parse('2000-01-01')
         ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday + 2] % 7,
-                                               begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                               begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 1.minute,
                                                end_day: Date::DAYNAMES[now.wday + 2] % 7,
-                                               end_time: default_year.in_time_zone(-8).change(hour: 1, min: 1))
+                                               end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 1, min: 1))
       end
       let!(:earlier_range) do
-        default_year = Time.parse('2000-01-01')
         ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday + 1] % 7,
-                                               begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                               begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: now.hour, min: now.min) - 1.minute,
                                                end_day: Date::DAYNAMES[now.wday + 1] % 7,
-                                               end_time: default_year.in_time_zone(-8).change(hour: 2, min: 2))
+                                               end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 2, min: 2))
       end
       let!(:running_range) do
-        default_year = Time.parse('2000-01-01')
         ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday],
-                                               begin_time: default_year.in_time_zone(-8).change(hour: 0, min: 0),
+                                               begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 0, min: 0),
                                                end_day: Date::DAYNAMES[now.wday + 1] % 7,
-                                               end_time: default_year.in_time_zone(-8).change(hour: 3, min: 3))
+                                               end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 3, min: 3))
       end
 
       it 'returns earlier range' do

@@ -30,42 +30,9 @@ ActiveAdmin.register EditableConfiguration do
   end
 
   controller do
-    # def edit
-    #   super do |format|
-    #     Ranges.fullname_attributes.each do |attribute|
-    #       @editable_configuration.send("#{ attribute }=", @editable_configuration.send(attribute).try(:in_time_zone))
-    #     end
-    #   end
-    # end
-
     def index
       redirect_to(controller: 'admin/editable_configurations', action: 'show', id: EditableConfiguration.global.id)
     end
-
-    # def update
-    #   Ranges.fullname_attributes.each do |attribute|
-    #     if params[:editable_configuration]["#{ attribute }(4i)"].blank? || params[:editable_configuration]["#{ attribute }(5i)"].blank?
-    #       (1..5).each do |index|
-    #         params[:editable_configuration]["#{ attribute }(#{ index }i)"] = ''
-    #       end
-    #     end
-    #   end
-    #   @closest_range_before_update = resource.closest_or_current_forwarding_range
-    #   super
-    # end
   end
-  #
-  # before_update do |config|
-  #   Ranges.fullname_attributes.each do |attribute|
-  #     value = config.send(attribute)
-  #     if value
-  #       config.send("#{ attribute }=", Time.zone.local_to_utc(value))
-  #     end
-  #   end
-  # end
-  #
-  # after_update do |config|
-  #   ForwardLeadsToBoberdooJob.schedule if config.closest_or_current_forwarding_range != @closest_range_before_update
-  # end
 
 end

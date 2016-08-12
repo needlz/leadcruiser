@@ -34,12 +34,11 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
       let(:range_end) { (Time.current + 20.minutes) }
 
       before do
-        date = Time.parse('2000-1-1')
         ForwardingTimeRange.create!(kind: 'forwarding',
                                     begin_day: Date::DAYNAMES[range_start.wday],
-                                    begin_time: date.in_time_zone(-8).change(hour: range_start.hour, min: range_start.min),
+                                    begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: range_start.hour, min: range_start.min),
                                     end_day: Date::DAYNAMES[range_start.wday],
-                                    end_time: date.in_time_zone(-8).change(hour: range_end.hour, min: range_end.min))
+                                    end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: range_end.hour, min: range_end.min))
       end
 
       context 'when no responses from same client' do
@@ -149,12 +148,11 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
       let(:range_end) { (Time.current + 20.minutes) }
 
       before do
-        date = Time.parse('2000-1-1')
         ForwardingTimeRange.create!(kind: 'forwarding',
                                     begin_day: Date::DAYNAMES[range_start.wday],
-                                    begin_time: date.in_time_zone(-8).change(hour: range_start.hour, min: range_start.min),
+                                    begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: range_start.hour, min: range_start.min),
                                     end_day: Date::DAYNAMES[range_end.wday],
-                                    end_time: date.in_time_zone(-8).change(hour: range_end.hour, min: range_end.min))
+                                    end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: range_end.hour, min: range_end.min))
       end
 
       it 'schedules job' do
@@ -170,12 +168,11 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
     let(:interval_mins) { 5 }
     let(:leads_count) { 500 }
     before do
-      date = Time.parse('2000-1-1')
       ForwardingTimeRange.create!(kind: 'forwarding',
                                   begin_day: Date::DAYNAMES[(Time.current.wday + 1) % 7],
-                                  begin_time: date.in_time_zone(-8).change(hour: 0, min: 0),
+                                  begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 0, min: 0),
                                   end_day: Date::DAYNAMES[(Time.current.wday + 1) % 7],
-                                  end_time: date.in_time_zone(-8).change(hour: range_hours_length, min: range_mins_length))
+                                  end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: range_hours_length, min: range_mins_length))
 
       EditableConfiguration.global.update_attributes!(forwarding_interval_minutes: interval_mins)
       allow(ForwardLeadsToBoberdooJob).to receive(:not_yet_forwarded_leads) { Array.new(leads_count) }

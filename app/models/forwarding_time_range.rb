@@ -3,6 +3,10 @@ class ForwardingTimeRange < ActiveRecord::Base
   FORWARDING = 'forwarding'
   AFTERHOURS = 'afterhours'
 
+  TIME_ZONE = -8
+  ACTIVE_RECORD_TIME_ADAPTER_DEFAULT = Time.parse('2000-1-1')
+  DEFAULT_YEAR = ACTIVE_RECORD_TIME_ADAPTER_DEFAULT.in_time_zone(TIME_ZONE)
+
   validates_inclusion_of :kind, in: [FORWARDING, AFTERHOURS]
   validates_inclusion_of :begin_day, :end_day, in: Date::DAYNAMES
   validates_presence_of :kind, :begin_day, :begin_time, :end_day, :end_time
