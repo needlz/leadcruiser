@@ -6,13 +6,13 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
   let!(:boberdoo_order) { create(:purchase_order, vertical: vertical, client_id: boberdoo.id) }
 
   before do
-    EditableConfiguration.create!(forwarding_interval_minutes: 5)
+    EditableConfiguration.create!(forwarding_interval_minutes: 10)
   end
 
   describe '#perform' do
-    let(:unprocessed_leads_count) { 3 }
+    let(:unprocessed_leads_count) { 5 }
     let(:processed_leads) {
-      leads = create_list(:lead, 2, :from_boberdoo, vertical: vertical)
+      leads = create_list(:lead, 5, :from_boberdoo, vertical: vertical)
       leads.each do |lead|
         lead.responses << Response.create!(purchase_order: boberdoo_order, client_name: boberdoo.integration_name)
       end
@@ -31,12 +31,15 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
 
     context 'when in forwarding range' do
       let(:range_start) { (Time.current - 1.minutes) }
+      let(:range_end) { (Time.current + 20.minutes) }
 
       before do
-        ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday],
-                                               begin_time: range_start,
-                                               end_day: Date::DAYNAMES[(now.wday + 1) % 7],
-                                               end_time: range_start + 20.minutes)
+        date = Time.parse('2000-1-1')
+        ForwardingTimeRange.create!(kind: 'forwarding',
+                                    begin_day: Date::DAYNAMES[range_start.wday],
+                                    begin_time: date.in_time_zone(-8).change(hour: range_start.hour, min: range_start.min),
+                                    end_day: Date::DAYNAMES[range_start.wday],
+                                    end_time: date.in_time_zone(-8).change(hour: range_end.hour, min: range_end.min))
       end
 
       context 'when no responses from same client' do
@@ -60,6 +63,11 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
             expect_any_instance_of(ForwardLeadToClientRequest).to_not receive(:perform)
             expect { ForwardLeadsToBoberdooJob.new.perform }.to enqueue_a(ForwardLeadsToBoberdooJob).
               be_within(2.seconds).of(Time.current + EditableConfiguration.global.forwarding_interval_minutes.minutes)
+          end
+
+          it 'tries to send other leads' do
+            expect_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order).exactly(ForwardLeadsToBoberdooJob.leads_per_batch).times
+            expect { ForwardLeadsToBoberdooJob.new.perform }.to_not raise_error
           end
         end
       end
