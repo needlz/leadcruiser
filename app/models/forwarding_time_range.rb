@@ -37,18 +37,22 @@ class ForwardingTimeRange < ActiveRecord::Base
   end
 
   def self.closest_or_current_range(range_type)
+    closest = nil
     each_range(range_type) do |range_start, range_end|
       range_in_future = Time.current < range_start
       inside_range = range_start < Time.current && Time.current < range_end
-      break { start: range_start, end: range_end } if range_in_future || inside_range
+      closest = { start: range_start, end: range_end } if (range_in_future || inside_range) && (!closest || (range_start < closest[:start]))
     end
+    closest
   end
 
   def self.closest_range(range_type)
+    closest = nil
     each_range(range_type) do |range_start, range_end|
       range_in_future = Time.current < range_start
-      break { start: range_start, end: range_end } if range_in_future
+      closest = { start: range_start, end: range_end } if (range_in_future) && (!closest || (range_start < closest[:start]))
     end
+    closest
   end
 
   def self.each_range(range_kind, &block)
@@ -84,7 +88,7 @@ class ForwardingTimeRange < ActiveRecord::Base
                time.sec).days_since(Date::DAYS_INTO_WEEK[day.downcase.to_sym]).in_time_zone
   end
 
-  def self.closest_forwarding_range_length_mins
+  def self.mins_till_end_of_closest_forwarding_range
     range = closest_or_current_forwarding_range
     return unless range
 

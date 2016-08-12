@@ -116,4 +116,55 @@ RSpec.describe ForwardingTimeRange, type: :model do
     end
   end
 
+  describe '#closest_or_current_forwarding_range' do
+    context 'closest range is in future' do
+      let!(:later_range) do
+        default_year = Time.parse('2000-01-01')
+        ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday + 2] % 7,
+                                               begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                               end_day: Date::DAYNAMES[now.wday + 2] % 7,
+                                               end_time: default_year.in_time_zone(-8).change(hour: 1, min: 1))
+      end
+      let!(:earlier_range) do
+        default_year = Time.parse('2000-01-01')
+        ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday + 1] % 7,
+                                               begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                               end_day: Date::DAYNAMES[now.wday + 1] % 7,
+                                               end_time: default_year.in_time_zone(-8).change(hour: 2, min: 2))
+      end
+
+      it 'returns earlier range' do
+        expect(ForwardingTimeRange.closest_or_current_forwarding_range[:end].min).to eq(2)
+      end
+    end
+
+    context 'closest range is in future' do
+      let!(:later_range) do
+        default_year = Time.parse('2000-01-01')
+        ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday + 2] % 7,
+                                               begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                               end_day: Date::DAYNAMES[now.wday + 2] % 7,
+                                               end_time: default_year.in_time_zone(-8).change(hour: 1, min: 1))
+      end
+      let!(:earlier_range) do
+        default_year = Time.parse('2000-01-01')
+        ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday + 1] % 7,
+                                               begin_time: default_year.in_time_zone(-8).change(hour: now.hour, min: now.min) - 1.minute,
+                                               end_day: Date::DAYNAMES[now.wday + 1] % 7,
+                                               end_time: default_year.in_time_zone(-8).change(hour: 2, min: 2))
+      end
+      let!(:running_range) do
+        default_year = Time.parse('2000-01-01')
+        ForwardingTimeRange.forwarding.create!(begin_day: Date::DAYNAMES[now.wday],
+                                               begin_time: default_year.in_time_zone(-8).change(hour: 0, min: 0),
+                                               end_day: Date::DAYNAMES[now.wday + 1] % 7,
+                                               end_time: default_year.in_time_zone(-8).change(hour: 3, min: 3))
+      end
+
+      it 'returns earlier range' do
+        expect(ForwardingTimeRange.closest_or_current_forwarding_range[:end].min).to eq(3)
+      end
+    end
+  end
+
 end

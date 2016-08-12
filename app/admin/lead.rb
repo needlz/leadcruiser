@@ -21,6 +21,15 @@ ActiveAdmin.register Lead do
   filter :status
   filter :created_at, :as => :date_range
 
+  form do |f|
+    inputs do
+      Lead.column_names.each do |column_name|
+        input column_name
+      end
+    end
+    actions
+  end
+
   index do
     selectable_column
     id_column
