@@ -44,18 +44,19 @@ ActiveAdmin.register ForwardingTimeRange do
       li "Please make sure no times overlap between selected filters"
       input :kind, as: :select, collection: [ForwardingTimeRange::FORWARDING, ForwardingTimeRange::AFTERHOURS].map { |kind| [kind, kind] }
       input :begin_day, as: :select, collection: Date::DAYNAMES.map { |daymname| [daymname, daymname] }
-      input :begin_time, as: :time_select, input_html: {value: Time.zone.local_to_utc(f.object.begin_time.try(:in_time_zone, -8)) }
+      input :begin_time, as: :time_select, input_html: { value: Time.zone.local_to_utc(f.object.begin_time.try(:in_time_zone, ForwardingTimeRange::TIME_ZONE)) }
       input :end_day, as: :select, collection: Date::DAYNAMES.map { |daymname| [daymname, daymname] }
-      input :end_time, as: :time_select, input_html: {value: Time.zone.local_to_utc(f.object.end_time.try(:in_time_zone, -8)) }
+      input :end_time, as: :time_select, input_html: { value: Time.zone.local_to_utc(f.object.end_time.try(:in_time_zone, ForwardingTimeRange::TIME_ZONE)) }
     end
     actions
   end
 
   controller do
+
     def edit
       super do |format|
         [:begin_time, :end_time].each do |attribute|
-          @forwarding_time_range.send("#{ attribute }=", @forwarding_time_range.send(attribute).try(:in_time_zone, -8))
+          @forwarding_time_range.send("#{ attribute }=", @forwarding_time_range.send(attribute).try(:in_time_zone, ForwardingTimeRange::TIME_ZONE))
         end
       end
     end
@@ -69,6 +70,11 @@ ActiveAdmin.register ForwardingTimeRange do
       @closest_range_before_update = ForwardingTimeRange.closest_or_current_forwarding_range
       super
     end
+
+    def schedule_if_changed
+      ForwardLeadsToBoberdooJob.schedule if ForwardingTimeRange.closest_or_current_forwarding_range != @closest_range_before_update
+    end
+
   end
 
   before_create do |range|
@@ -76,9 +82,9 @@ ActiveAdmin.register ForwardingTimeRange do
       value = range.send(attribute)
       if value
         range.send("#{ attribute }=",
-                   value.in_time_zone(-8).change(year: 2000,
-                                                 month: 1,
-                                                 day: 1,
+                   value.in_time_zone(ForwardingTimeRange::TIME_ZONE).change(year: ForwardingTimeRange::DEFAULT_YEAR.year,
+                                                 month: ForwardingTimeRange::DEFAULT_YEAR.month,
+                                                 day: ForwardingTimeRange::DEFAULT_YEAR.day,
                                                  hour: params['forwarding_time_range']["#{ attribute }(4i)"],
                                                  min: params['forwarding_time_range']["#{ attribute }(5i)"])
         )
@@ -90,18 +96,18 @@ ActiveAdmin.register ForwardingTimeRange do
     [:begin_time, :end_time].each do |attribute|
       value = range.send(attribute)
       if value
-        range.send("#{ attribute }=", value.in_time_zone(-8).change(hour: params['forwarding_time_range']["#{ attribute }(4i)"],
+        range.send("#{ attribute }=", value.in_time_zone(ForwardingTimeRange::TIME_ZONE).change(hour: params['forwarding_time_range']["#{ attribute }(4i)"],
                                                                     min: params['forwarding_time_range']["#{ attribute }(5i)"]))
       end
     end
   end
 
   after_create do
-    ForwardLeadsToBoberdooJob.schedule if ForwardingTimeRange.closest_or_current_forwarding_range != @closest_range_before_update
+    schedule_if_changed
   end
 
   after_update do
-    ForwardLeadsToBoberdooJob.schedule if ForwardingTimeRange.closest_or_current_forwarding_range != @closest_range_before_update
+    schedule_if_changed
   end
 
 end

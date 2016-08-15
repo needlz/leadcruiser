@@ -375,9 +375,11 @@ describe API::V1::LeadsController, type: :request do
         before do
           day_name = Date::DAYNAMES[Time.current.wday]
           ForwardingTimeRange.create!(begin_day: day_name,
-                                      begin_time: Time.parse('2000-1-1').in_time_zone(-8).change(hour: Time.current.in_time_zone(-8).hour, min: Time.current.in_time_zone(-8).min) - 10.minutes,
+                                      begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: Time.current.in_time_zone(ForwardingTimeRange::TIME_ZONE).hour,
+                                                                                                                             min: Time.current.in_time_zone(ForwardingTimeRange::TIME_ZONE).min) - 10.minutes,
                                       end_day: day_name,
-                                      end_time: Time.parse('2000-1-1').in_time_zone(-8).change(hour: Time.current.in_time_zone(-8).hour, min: Time.current.in_time_zone(-8).min) + 10.minutes,
+                                      end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: Time.current.in_time_zone(ForwardingTimeRange::TIME_ZONE).hour,
+                                                                                                                           min: Time.current.in_time_zone(ForwardingTimeRange::TIME_ZONE).min) + 10.minutes,
                                       kind: 'afterhours')
         end
 
