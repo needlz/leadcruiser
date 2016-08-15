@@ -42,45 +42,41 @@ class ForwardingTimeRange < ActiveRecord::Base
 
   def self.closest_or_current_range(range_type)
     closest = nil
-    each_range(range_type) do |range_start, range_end|
-      range_in_future = Time.current < range_start
-      inside_range = range_start < Time.current && Time.current < range_end
-      closest = { start: range_start, end: range_end } if (range_in_future || inside_range) && (!closest || (range_start < closest[:start]))
+    each_range(range_type) do |specific_range|
+      range_in_future = Time.current < specific_range[:start]
+      inside_range = specific_range[:start] < Time.current && Time.current < specific_range[:end]
+      closest = specific_range if (range_in_future || inside_range) && (!closest || (specific_range[:start] < closest[:start]))
     end
     closest
   end
 
   def self.closest_range(range_type)
     closest = nil
-    each_range(range_type) do |range_start, range_end|
-      range_in_future = Time.current < range_start
-      closest = { start: range_start, end: range_end } if (range_in_future) && (!closest || (range_start < closest[:start]))
+    each_range(range_type) do |specific_range|
+      range_in_future = Time.current < specific_range[:start]
+      closest = specific_range if (range_in_future) && (!closest || (specific_range[:start] < closest[:start]))
     end
     closest
   end
 
   def self.each_range(range_kind, &block)
     ForwardingTimeRange.send(range_kind).all.each do |range|
-      week = Date.current.beginning_of_week.in_time_zone
+      week = Date.current.beginning_of_week.in_time_zone - 1.week
 
-      range_start = range_start_of_week(range, week)
-      range_end = range_end_of_week(range, week)
+      single_range = range_of_week(range, week)
 
-      block.call(range_start, range_end)
+      block.call(single_range)
     end
     nil
   end
 
-  def self.range_start_of_week(range, week)
-    this_week_range_end = at_week(range.end_day, range.end_time.in_time_zone, week)
+  def self.range_of_week(range, week)
     range_start = at_week(range.begin_day, range.begin_time.in_time_zone, week)
-    this_week_range_end < Time.current ? at_week(range.begin_day, range.begin_time.in_time_zone, week.next_week.in_time_zone) : range_start
-  end
-
-  def self.range_end_of_week(range, week)
-    start_time = range_start_of_week(range, week)
-    this_week_range_end = at_week(range.end_day, range.end_time.in_time_zone, week)
-    this_week_range_end < start_time ? at_week(range.end_day, range.end_time.in_time_zone, week.next_week.in_time_zone) : this_week_range_end
+    range_end = at_week(range.end_day, range.end_time.in_time_zone, week)
+    if range_start > range_end
+      range_end = at_week(range.end_day, range.end_time.in_time_zone, week.next_week.in_time_zone)
+    end
+    range_end < Time.current ? range_of_week(range, week.next_week.in_time_zone) : { start: range_start, end: range_end }
   end
 
   def self.at_week(day, time, week)
