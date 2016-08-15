@@ -64,6 +64,7 @@ class Lead < ActiveRecord::Base
   TEST_TERM   = "test"
   PROFANITY   = "Profanity block"
   IP_BLOCKED  = "IP block"
+  INVALID = 'Invalid'
 
   PRICE_PRECISION = '%.2f'
   ZERO_PRICE = '0.00'

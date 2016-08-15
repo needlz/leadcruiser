@@ -85,8 +85,9 @@ group :test do
   gem 'fork_break'
   gem 'database_cleaner'
   gem 'rspec-activejob'
-  gem 'timecop'
 end
+
+gem 'timecop'
 
 group :production do
   gem "pgbackups-archive"

@@ -54,8 +54,20 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
         end
 
         context 'when error occured during a request' do
+          let(:broken_leads_count) { 1 }
+
           before do
-            allow_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order) { raise StandardError }
+            class ForwardLeadsToBoberdooJob
+              cattr_accessor :error_counter
+            end
+            ForwardLeadsToBoberdooJob.error_counter = 0
+
+            allow_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order) do
+              if ForwardLeadsToBoberdooJob.error_counter != broken_leads_count
+                ForwardLeadsToBoberdooJob.error_counter += 1
+                raise StandardError
+              end
+            end
           end
 
           it 'reschedules itself' do
@@ -65,8 +77,12 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
           end
 
           it 'tries to send other leads' do
-            expect_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order).exactly(ForwardLeadsToBoberdooJob.leads_per_batch).times
+            expect_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order).exactly(ForwardLeadsToBoberdooJob.leads_per_batch + broken_leads_count).times
             expect { ForwardLeadsToBoberdooJob.new.perform }.to_not raise_error
+          end
+
+          it 'matches broken leads as invalid' do
+            expect { ForwardLeadsToBoberdooJob.new.perform }.to change { Lead.where(status: Lead::INVALID).count }.from(0).to(broken_leads_count)
           end
         end
       end
