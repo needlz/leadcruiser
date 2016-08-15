@@ -51,15 +51,21 @@ class ForwardLeadsToBoberdooJob < ActiveJob::Base
   def forward_lead(lead)
     begin
       perform_for_lead_and_order(lead) unless lead.responses.where(purchase_order_id: purchase_order.id).exists?
+      @processed += 1
     rescue StandardError => e
       Rollbar.error(e)
+      lead.update_attributes!(status: Lead::INVALID)
     end
   end
 
   def forward_leads
     limit = ForwardLeadsToBoberdooJob.leads_per_batch
-    leads = ForwardLeadsToBoberdooJob.not_yet_forwarded_leads.limit(limit)
-    leads.each { |lead| forward_lead(lead) }
+    @processed = 0
+    leads = ForwardLeadsToBoberdooJob.not_yet_forwarded_leads
+    leads.each do |lead|
+      forward_lead(lead)
+      break if @processed >= limit
+    end
   end
 
 end
