@@ -15,6 +15,8 @@
 
 class EditableConfiguration < ActiveRecord::Base
 
+  validates_numericality_of :forwarding_interval_minutes, greater_than: 0
+
   def self.global
     first
   end
