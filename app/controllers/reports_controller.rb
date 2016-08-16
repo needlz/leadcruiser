@@ -3,6 +3,23 @@ require 'axlsx'
 class ReportsController < ApplicationController
   http_basic_authenticate_with(name: LOGIN_NAME, password: LOGIN_PASSWORD) if Settings.use_authentication
 
+  before_filter :force_non_ssl_redirect
+
+  def force_non_ssl_redirect
+    if request.ssl?
+      options = {
+        :protocol => 'http://',
+        :host     => request.host,
+        :path     => request.fullpath,
+        :status   => :moved_permanently
+      }
+
+      non_secure_url = ActionDispatch::Http::URL.url_for(options)
+      flash.keep if respond_to?(:flash)
+      redirect_to(non_secure_url, options)
+    end
+  end
+
   def index
     respond_to do |format|
       format.any(:html, :js) do
