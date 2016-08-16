@@ -82,11 +82,11 @@ class Lead < ActiveRecord::Base
   # end
 
   def latest_response
-    Response.where('lead_id = ?', self.id).order(id: :desc).try(:first)
+    responses.order(id: :desc).try(:first)
   end
 
   def sold_responses
-    Response.where('lead_id = ? and price is not null', self.id).order(id: :desc)
+    responses.where('price is not null').order(id: :desc)
   end
 
   def client_sold_to(client_name)
@@ -105,7 +105,7 @@ class Lead < ActiveRecord::Base
   end
 
   def sold_type
-    TransactionAttempt.where('lead_id = ? and success = ?', self.id, true).try(:first)
+    transaction_attempts.where(success: true).try(:first)
   end
 
   def sold!
@@ -117,7 +117,7 @@ class Lead < ActiveRecord::Base
   end
 
   def pet_insurance?
-    Vertical.pet_insurance && vertical_id == Vertical.pet_insurance.id
+    vertical.pet_insurance?
   end
 
   def test?

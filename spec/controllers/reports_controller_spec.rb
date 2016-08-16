@@ -36,15 +36,19 @@ RSpec.describe ReportsController, :type => :controller do
     end
 
     context 'when requesting xls format' do
+      before do
+        create(:vertical, name: Vertical::PET_INSURANCE)
+      end
+
       it 'is successful' do
         get :index, format: 'xls'
         expect(response).to be_success
       end
 
       it 'returns file' do
-        expect(@controller).to receive(:send_data)
+        expect(@controller).to receive(:send_data).and_call_original
         get :index, format: 'xls'
-        expect(response.header['Content-Type']).to eq('application/xls; charset=utf-8')
+        expect(response.header['Content-Type']).to eq('application/xls')
       end
     end
 

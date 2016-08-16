@@ -45,7 +45,7 @@ module Reporting
       date_range = period(first_date, last_date)
       leads = Lead.where(created_at: date_range)
         .order(created_at: :desc)
-        .includes(:details_pets, :visitor)
+        .includes(:details_pets, :visitor, :vertical, :transaction_attempts, :site, responses: [:purchase_order, :client])
       return leads unless page
       leads.paginate(page: page, per_page: 20)
     end

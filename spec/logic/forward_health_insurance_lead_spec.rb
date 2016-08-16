@@ -7,7 +7,7 @@ RSpec.describe ForwardHealthInsuranceLead do
   let!(:non_boberdoo_client) { create(:clients_vertical, integration_name: '') }
   let!(:boberdoo_client_order) { create(:purchase_order, vertical: vertical, client_id: boberdoo_client.id) }
   let!(:non_boberdoo_client_order) { create(:purchase_order, vertical: vertical, client_id: non_boberdoo_client.id) }
-  let(:lead) { create(:lead) }
+  let(:lead) { create(:lead, vertical: vertical) }
 
   describe '#perform' do
     before do

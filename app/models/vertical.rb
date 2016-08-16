@@ -26,4 +26,8 @@ class Vertical < ActiveRecord::Base
     find_by_name(HEALTH_INSURANCE)
   end
 
+  def pet_insurance?
+    name == PET_INSURANCE
+  end
+
 end
