@@ -11,4 +11,9 @@
 
 class Site < ActiveRecord::Base
   has_many :leads
+
+  def display_name
+    host
+  end
+
 end

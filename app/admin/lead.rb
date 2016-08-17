@@ -30,10 +30,28 @@ ActiveAdmin.register Lead do
     actions
   end
 
+  csv do
+    column :id
+    column :site do |lead| lead.site.try(:display_name) end
+    column :form_id
+    column :vertical do |lead| lead.vertical.name end
+    column :visitor_ip
+    column :first_name
+    column :last_name
+    column :state
+    column :email
+    column :status
+    column :times_sold
+    column :total_sale_amount
+    column :disposition
+    column :created_at
+
+  end
+
   index do
     selectable_column
     id_column
-    column :site_id
+    column :site
     column :form_id
     column :vertical_id
     column :visitor_ip
@@ -57,8 +75,8 @@ ActiveAdmin.register Lead do
           client_list += client.id.to_s + ", "
         end
         client = ClientsVertical.where(
-            'vertical_id = ? and integration_name = ?', 
-            lead.vertical_id, 
+            'vertical_id = ? and integration_name = ?',
+            lead.vertical_id,
             lead.sold_responses[responses.length - 1].client_name
           ).try(:first)
         client_list += client.id.to_s
@@ -73,5 +91,13 @@ ActiveAdmin.register Lead do
     actions :defaults => false do |post|
       link_to "Resend", resend_lead_path(post.id), method: :post 
     end
+  end
+
+  controller do
+
+    def scoped_collection
+      super.includes(:site, :vertical)
+    end
+
   end
 end
