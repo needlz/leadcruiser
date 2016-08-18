@@ -40,15 +40,9 @@ RSpec.describe ReportsController, :type => :controller do
         create(:vertical, name: Vertical::PET_INSURANCE)
       end
 
-      it 'is successful' do
-        get :index, format: 'xls'
-        expect(response).to be_success
-      end
-
-      it 'returns file' do
-        expect(@controller).to receive(:send_data).and_call_original
-        get :index, format: 'xls'
-        expect(response.header['Content-Type']).to eq('application/xls')
+      it 'redirects to list of generated reports' do
+        expect { get :index, format: 'xls' }.to enqueue_a(ReportGenerationJob)
+        expect(response).to redirect_to(controller: 'reports', action: 'temporary_files')
       end
     end
 
@@ -68,6 +62,17 @@ RSpec.describe ReportsController, :type => :controller do
     it 'renders statistic for given date range' do
       get :refresh, firstDate: '2016-05-10', secondDate: '2016-06-10'
       expect(JSON.parse(response.body)['days']).to be_present
+    end
+  end
+
+  describe '#temporary_files' do
+    before do
+      allow(ReportsDir).to receive(:s3_objects) { [] }
+    end
+
+    it 'returns success' do
+      get :temporary_files
+      expect(response).to have_http_status(:ok)
     end
   end
 

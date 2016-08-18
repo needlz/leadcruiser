@@ -41,7 +41,7 @@ module Reporting
       result
     end
 
-    def leads(first_date, last_date, page=nil)
+    def leads(first_date, last_date, page = nil)
       date_range = period(first_date, last_date)
       leads = Lead.where(created_at: date_range)
         .order(created_at: :desc)
