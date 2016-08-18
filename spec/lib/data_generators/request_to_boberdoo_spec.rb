@@ -64,6 +64,18 @@ RSpec.describe RequestToBoberdoo, type: :request do
           end
         end
       end
+
+      it 'appends skip_dupe_check param to request' do
+        Settings.boberdoo_skip_dupe_check = true
+        health_insurance_lead
+        request = RequestToBoberdoo.new(lead)
+        params = request.generate(true)
+        expect(params[:Skip_Dupe_Check]).to eq '1'
+
+        Settings.boberdoo_skip_dupe_check = false
+        params = request.generate(true)
+        expect(params[:Skip_Dupe_Check]).to eq nil
+      end
     end
 
     context 'for MedSupp leads' do
