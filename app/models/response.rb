@@ -20,6 +20,7 @@ class Response < ActiveRecord::Base
 
 	belongs_to :lead
 	belongs_to :purchase_order
+	belongs_to :client, class_name: 'ClientsVertical', foreign_key: 'client_name', primary_key: 'integration_name'
 
 	has_many :transaction_attempts
 

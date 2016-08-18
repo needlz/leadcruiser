@@ -4,7 +4,8 @@ require 'sidekiq/testing'
 RSpec.describe ForwardLeadToClientRequest do
 
   describe '#perform' do
-    let(:lead) { create(:lead) }
+    let(:vertical) { create(:vertical, name: Vertical::HEALTH_INSURANCE) }
+    let(:lead) { create(:lead, vertical: vertical) }
     let(:client) { create(:clients_vertical, service_url: 'dummy') }
     let(:purchase_order) { create(:purchase_order, client_id: client.id) }
     let!(:request_to_dummy_client_class) {

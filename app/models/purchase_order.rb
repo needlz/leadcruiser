@@ -44,4 +44,9 @@ class PurchaseOrder < ActiveRecord::Base
   def states_array=(values)
     write_attribute(:states, values[1..-1].join(", "))
   end
+
+  def price_string
+    Lead::PRICE_PRECISION % price.to_f
+  end
+
 end

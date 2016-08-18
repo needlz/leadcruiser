@@ -1,0 +1,4 @@
+Generated reports (refresh page to update):
+- @records.each do |s3_object|
+  %li
+    = link_to(File.basename(s3_object.key), s3_object.url_for(:get, expires: 1.day, response_content_disposition: 'attachment;').to_s)

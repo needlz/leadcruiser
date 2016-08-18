@@ -8,13 +8,17 @@ Rails.application.routes.draw do
   # root 'reports#index'
   root 'visitors#home'
   
-  resources :reports, only: :index
+  resources :reports, only: [:index] do
+    collection do
+      get 'temporary_files', to: 'reports#temporary_files'
+      get 'refresh', to: 'reports#refresh'
+    end
+  end
   resources :clicks_reports, only: :index
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
 
-  get 'reports/refresh', :to => 'reports#refresh'
   get 'clicks_reports/:clients_vertical_id/by_client', :to => 'clicks_reports#by_client', :as => 'clicks_reports_by_client'
   namespace :api do
     namespace :v1 do

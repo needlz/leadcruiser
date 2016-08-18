@@ -2,3 +2,5 @@ use_authentication: <%= Rails.env.production? %>
 mandrill_api_key: <%= ENV['MANDRILL_API_KEY'] %>
 sendgrid_api_key: <%= ENV['SENDGRID_API_KEY'] %>
 boberdoo_skip_dupe_check: <%= true %>
+aws:
+  bucket_name: <%= Rails.env.production? ? 'leadcruiser' : "leadcruiser-#{ Rails.env }" %>

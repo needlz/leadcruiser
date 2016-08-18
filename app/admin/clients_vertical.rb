@@ -35,7 +35,9 @@ ActiveAdmin.register ClientsVertical do
       end
     end
     column "Logo" do |client|
-      link_to(image_tag(client.logo.url(:thumb), :height => '30'))
+      if Rails.env.production?
+        link_to(image_tag(client.logo.url(:thumb), :height => '30'))
+      end
     end
     column "created_at" do |client|
       client.created_at
