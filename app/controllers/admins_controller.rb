@@ -8,7 +8,12 @@ require 'request_to_client_generator'
 require 'workers/send_pet_data_worker.rb'
 
 class AdminsController < ApplicationController
-	
+
+  def restart_server
+    redirect_to(root_path)
+    RestartServer.perform
+  end
+
 	def resend_lead
 		lead = Lead.find(params[:format])
 		

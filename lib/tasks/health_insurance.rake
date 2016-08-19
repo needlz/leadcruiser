@@ -16,7 +16,7 @@ namespace :health_insurance do
       vertical = Vertical.find_by_name('health_insurance')
       client = ClientsVertical.find_by_integration_name(ClientsVertical::BOBERDOO)
       client = ClientsVertical.create!(vertical_id: vertical.id,
-                              integration_name: ClientsVertical::BOBEROO,
+                              integration_name: ClientsVertical::BOBERDOO,
                               active: true,
                               service_url: 'https://leads.presidiointeractive.com/genericPostlead.php',
                               request_type: '',
