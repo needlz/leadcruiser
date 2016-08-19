@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   end
 
   post '/admin/resend_lead', :to => 'admins#resend_lead', :as => 'resend_lead'
+  post '/admin/restart_server', :to => 'admins#restart_server', :as => 'restart_server'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

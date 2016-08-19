@@ -4,3 +4,6 @@ sendgrid_api_key: <%= ENV['SENDGRID_API_KEY'] %>
 boberdoo_skip_dupe_check: <%= true %>
 aws:
   bucket_name: <%= Rails.env.production? ? 'leadcruiser' : "leadcruiser-#{ Rails.env }" %>
+heroku:
+  api_key: <%= ENV['HEROKU_API_KEY'] %>
+  app_name: <%= ENV['HEROKU_APP_NAME'] %>
