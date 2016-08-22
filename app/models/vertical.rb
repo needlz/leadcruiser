@@ -30,4 +30,8 @@ class Vertical < ActiveRecord::Base
     name == PET_INSURANCE
   end
 
+  def health_insurance?
+    name == HEALTH_INSURANCE
+  end
+
 end
