@@ -71,6 +71,7 @@ group :test do
   gem 'fork_break'
   gem 'database_cleaner'
   gem 'rspec-activejob'
+  gem 'rspec-sidekiq'
 end
 
 gem 'timecop'
@@ -85,3 +86,4 @@ gem 'newrelic_rpm'
 gem 'execjs'
 gem 'therubyracer', platforms: :ruby
 gem 'platform-api'
+gem 'sidekiq-unique-jobs'

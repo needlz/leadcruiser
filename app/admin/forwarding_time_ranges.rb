@@ -71,8 +71,8 @@ ActiveAdmin.register ForwardingTimeRange do
       super
     end
 
-    def schedule_if_changed
-      ForwardLeadsToBoberdooJob.schedule if ForwardingTimeRange.closest_or_current_forwarding_range != @closest_range_before_update
+    def schedule
+      ForwardLeadsToBoberdooJob.schedule
     end
 
   end
@@ -103,11 +103,11 @@ ActiveAdmin.register ForwardingTimeRange do
   end
 
   after_create do
-    schedule_if_changed
+    schedule
   end
 
   after_update do
-    schedule_if_changed
+    schedule
   end
 
 end
