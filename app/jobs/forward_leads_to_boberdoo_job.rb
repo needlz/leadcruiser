@@ -1,5 +1,6 @@
-class ForwardLeadsToBoberdooJob < ActiveJob::Base
-  queue_as :high
+class ForwardLeadsToBoberdooJob
+  include Sidekiq::Worker
+  sidekiq_options queue: 'high', unique: :until_and_while_executing
 
   DEFAULT_INTERVAL_MINUTES = 5
 
@@ -12,7 +13,7 @@ class ForwardLeadsToBoberdooJob < ActiveJob::Base
   def self.schedule(minimal_postpone: 0)
     return unless ForwardingTimeRange.any_forwarding_range?
     now = Time.current
-    perform_in =
+    perform_time =
       if now < ForwardingTimeRange.closest_or_current_forwarding_range[:start]
         ForwardingTimeRange.closest_or_current_forwarding_range[:start]
       elsif ForwardingTimeRange.inside_forwarding_range?
@@ -20,7 +21,7 @@ class ForwardLeadsToBoberdooJob < ActiveJob::Base
       else
         ForwardingTimeRange.closest_forwarding_range[:start]
       end
-    set(wait_until: perform_in).perform_later
+    perform_at(perform_time)
   end
 
   def perform(*args)
