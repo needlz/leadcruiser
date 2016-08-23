@@ -27,7 +27,7 @@ class AdminsController < ApplicationController
 	def resend_logic(lead)
 		return false if lead.sold?
 
-    filter_txt = [lead.first_name, lead.last_name, lead.email, lead.details_pets.try(:first).pet_name].join(' ')
+    filter_txt = [lead.first_name, lead.last_name, lead.email, lead.details_pets.try(:first).try(:pet_name)].join(' ')
 
 		if LeadValidation.duplicated_lead(lead.email, lead.vertical_id, lead.site_id)
       lead.update_attributes(:status => Lead::DUPLICATED)
@@ -39,12 +39,10 @@ class AdminsController < ApplicationController
 
     elsif lead.first_name == Lead::TEST_TERM && lead.last_name == Lead::TEST_TERM
       lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::TEST_NO_SALE)
-      SendEmailWorker.perform_async(nil, lead.id)
       return false
 
     elsif Obscenity.profane?(filter_txt)
       lead.update_attributes(:status => Lead::BLOCKED, :disposition => Lead::PROFANITY)
-      SendEmailWorker.perform_async(nil, lead.id)
       return false
 
    	else
@@ -52,19 +50,14 @@ class AdminsController < ApplicationController
         lead.update_attribute(:disposition, Lead::TEST_SALE)
       end
 
-   		SendPetDataWorker.new.perform(lead.id)
+      if lead.health_insurance?
+        ForwardHealthInsuranceLead.perform(lead)
+      elsif lead.pet_insurance?
+        SendPetDataWorker.new.perform(lead.id)
+      end
 
       response_list = Response.where("lead_id = ? and rejection_reasons IS NULL", lead.id)
-      if !response_list.nil? && response_list.length != 0
-      	# Send email to administrator
-        response_id_list = []
-        for i in 0..response_list.length - 1
-          response_id_list << response_list[i].id
-        end
-        SendEmailWorker.perform_async(response_id_list, lead.id)
-
-        return true
-      end
+      return true if !response_list.nil? && response_list.length != 0
    	end
 
 		return false

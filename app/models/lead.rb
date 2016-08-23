@@ -40,6 +40,8 @@ class Lead < ActiveRecord::Base
 
   validates :site_id, :vertical_id, :first_name, :last_name, :zip, :day_phone, :email, presence: true
 
+  delegate :health_insurance?, :pet_insurance?, to: :vertical
+
   belongs_to :visitor, foreign_key: 'session_hash', primary_key: 'session_hash'
   has_many :clients_verticals, foreign_key: 'vertical_id', primary_key: 'vertical_id'
   has_one :zip_code, foreign_key: 'zip', primary_key: 'zip'
@@ -114,10 +116,6 @@ class Lead < ActiveRecord::Base
 
   def sold?
     status == SOLD
-  end
-
-  def pet_insurance?
-    vertical.pet_insurance?
   end
 
   def test?

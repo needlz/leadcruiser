@@ -42,6 +42,20 @@ ActiveAdmin.register Lead do
     column :email
     column :status
     column :times_sold
+    column :sold_to do |lead|
+      if lead.health_insurance?
+        lead.responses.map(&:client).map(&:official_name).uniq.join(', ')
+      else
+        responses_with_prices = lead.responses.select { |response| response.price }
+        if responses_with_prices.present?
+          clients = []
+          responses_with_prices.each do |response|
+            clients << response.client.official_name
+          end
+          clients.join(', ')
+        end
+      end
+    end
     column :total_sale_amount
     column :disposition
     column :created_at
@@ -67,21 +81,18 @@ ActiveAdmin.register Lead do
     column :total_sale_amount
     column :status
     column "Sold To" do |lead|
-      client_list = ""
-      responses = lead.sold_responses
-      unless responses.length == 0
-        for i in 0..responses.length - 2
-          client = ClientsVertical.where('vertical_id = ? and integration_name = ?', lead.vertical_id, responses[i].client_name).try(:first)
-          client_list += client.id.to_s + ", "
+      if lead.health_insurance?
+        lead.responses.map(&:client).map(&:official_name).uniq.join(', ')
+      else
+        responses_with_prices = lead.responses.select { |response| response.price }
+        if responses_with_prices.present?
+          clients = []
+          responses_with_prices.each do |response|
+            clients << response.client.official_name
+          end
+          clients.join(', ')
         end
-        client = ClientsVertical.where(
-            'vertical_id = ? and integration_name = ?',
-            lead.vertical_id,
-            lead.sold_responses[responses.length - 1].client_name
-          ).try(:first)
-        client_list += client.id.to_s
       end
-      client_list
     end
     column :disposition
     column "Created At" do |lead|
@@ -96,7 +107,7 @@ ActiveAdmin.register Lead do
   controller do
 
     def scoped_collection
-      super.includes(:site, :vertical)
+      super.includes(:site, :details_pets, :vertical,  responses: [:client])
     end
 
   end
