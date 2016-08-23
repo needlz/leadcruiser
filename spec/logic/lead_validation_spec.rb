@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe LeadValidation, :type => :request do
+RSpec.describe LeadValidation do
   describe '#duplicated_lead' do
     context 'if duplicated and has response' do
       let!(:lead) { create(:lead, status: 'sold') }

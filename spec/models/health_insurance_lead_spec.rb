@@ -21,4 +21,22 @@ RSpec.describe HealthInsuranceLead, type: :model do
     end
   end
 
+  describe '#lead_type' do
+    context 'when lead is medicare' do
+      let(:lead) { create(:health_insurance_lead, boberdoo_type: RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE) }
+
+      it 'returns name of medicare type' do
+        expect(lead.lead_type).to eq 'Medicare Supplement'
+      end
+    end
+
+    context 'when lead is health insurance' do
+      let(:lead) { create(:health_insurance_lead, boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE) }
+
+      it 'returns name of health insurance type' do
+        expect(lead.lead_type).to eq 'Health Insurance'
+      end
+    end
+  end
+
 end

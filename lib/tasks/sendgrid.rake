@@ -3,13 +3,12 @@ namespace :sendgrid do
   task :contacts_custom_fields => :environment do
     sg = SendGrid::API.new(api_key: Settings.sendgrid_api_key)
     fields = [
-      { name: 'zip', type: 'text' },
-      { name: 'birth_date', type: 'text' },
-      { name: 'gender', type: 'text' },
-      { name: 'boberdoo_type', type: 'text' },
-      { name: 'fpl', type: 'text' },
-      { name: 'preexisting_conditions', type: 'text' },
-      { name: 'created_at', type: 'date' },
+      { name: 'Zip', type: 'text' },
+      { name: 'Birth_Date', type: 'date' },
+      { name: 'Gender', type: 'text' },
+      { name: 'Lead_Type', type: 'text' },
+      { name: 'FPL', type: 'text' },
+      { name: 'Life_Event', type: 'text' }
     ]
     fields.each do |field|
       response = sg.client.contactdb.custom_fields.post(request_body: field)

@@ -19,7 +19,10 @@ class CreateHealthLead
 
         HealthInsuranceLead.create!(form.health_insurance_lead_attributes.merge({ lead_id: lead.id }))
 
-        ForwardHealthInsuranceLead.perform(lead) if lead.status.nil?
+        if lead_valid?(lead)
+          ForwardHealthInsuranceLead.perform(lead)
+          AddSendgridContactJob.perform_later(lead.id)
+        end
       else
         @errors = lead.error_messages
       end
@@ -49,5 +52,8 @@ class CreateHealthLead
     number_without_code.to_i
   end
 
+  def lead_valid?(lead)
+    lead.status.nil?
+  end
 
 end
