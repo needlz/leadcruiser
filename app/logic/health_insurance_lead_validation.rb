@@ -20,11 +20,13 @@ class HealthInsuranceLeadValidation
     # If it is duplicated, it would not be sold
     duplicated = Lead.where(email: lead.email,
                             vertical_id: lead.vertical_id,
-                            site_id: lead.site_id).count > 1
-
-    if duplicated
-      lead.update_attributes(status: Lead::DUPLICATED) if update_status
-      raise Error.new('The email address of this lead was duplicated')
+                            site_id: lead.site_id)
+    if duplicated.count > 1
+      first = duplicated.order(created_at: :asc).first
+      if lead != first
+        lead.update_attributes(status: Lead::DUPLICATED) if update_status
+        raise Error.new('The email address of this lead was duplicated')
+      end
     end
   end
 
