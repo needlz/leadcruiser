@@ -7,6 +7,8 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
 
   before do
     EditableConfiguration.create!(forwarding_interval_minutes: 10)
+    allow(ForwardLeadsToBoberdooJob).to receive(:scheduled_jobs) { ForwardLeadsToBoberdooJob.jobs }
+    allow(ForwardLeadsToBoberdooJob).to receive(:remove_existing_job) { ForwardLeadsToBoberdooJob.jobs.clear }
   end
 
   describe '#perform' do
@@ -52,40 +54,6 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
           allow_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order)
           expect { ForwardLeadsToBoberdooJob.new.perform }.to enqueue_a(ForwardLeadsToBoberdooJob).
             be_within(2.seconds).of(Time.current + EditableConfiguration.global.forwarding_interval_minutes.minutes)
-        end
-
-        context 'when error occured during a request' do
-          let(:broken_leads_count) { 1 }
-
-          before do
-            class ForwardLeadsToBoberdooJob
-              cattr_accessor :error_counter
-            end
-            ForwardLeadsToBoberdooJob.error_counter = 0
-
-            allow_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order) do
-              if ForwardLeadsToBoberdooJob.error_counter != broken_leads_count
-                ForwardLeadsToBoberdooJob.error_counter += 1
-                raise StandardError
-              end
-            end
-          end
-
-          it 'reschedules itself' do
-            pending
-            expect_any_instance_of(ForwardLeadToClientRequest).to_not receive(:perform)
-            ForwardLeadsToBoberdooJob.new.perform
-            expect(ForwardLeadsToBoberdooJob).to have_enqueued_sidekiq_job
-          end
-
-          it 'tries to send other leads' do
-            expect_any_instance_of(ForwardLeadsToBoberdooJob).to receive(:perform_for_lead_and_order).exactly(ForwardLeadsToBoberdooJob.leads_per_batch + broken_leads_count).times
-            expect { ForwardLeadsToBoberdooJob.new.perform }.to_not raise_error
-          end
-
-          it 'matches broken leads as invalid' do
-            expect { ForwardLeadsToBoberdooJob.new.perform }.to change { Lead.where(status: Lead::INVALID).count }.from(0).to(broken_leads_count)
-          end
         end
       end
 
@@ -203,6 +171,43 @@ RSpec.describe ForwardLeadsToBoberdooJob, type: :job do
 
       Timecop.travel(ForwardingTimeRange.closest_or_current_forwarding_range[:end] - interval_mins.minutes)
       expect(ForwardLeadsToBoberdooJob.leads_per_batch).to eq(leads_count.to_f / (5.to_f / interval_mins).ceil)
+    end
+  end
+
+  describe '#remove_old_job' do
+    context 'there is job scheduled' do
+      before do
+        ForwardingTimeRange.create!(kind: 'forwarding',
+                                    begin_day: Date::DAYNAMES[(Time.current.wday + 1) % 7],
+                                    begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 0, min: 0),
+                                    end_day: Date::DAYNAMES[(Time.current.wday + 1) % 7],
+                                    end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 2, min: 2))
+        ForwardLeadsToBoberdooJob.schedule
+        expect(ForwardLeadsToBoberdooJob.scheduled_jobs.length).to eq 1
+      end
+
+      it 'deletes scheduled job' do
+        ForwardLeadsToBoberdooJob.remove_existing_job
+        expect(ForwardLeadsToBoberdooJob.scheduled_jobs.length).to eq 0
+      end
+
+    end
+  end
+
+  describe 'uniqueness of scheduled job' do
+    before do
+      ForwardingTimeRange.create!(kind: 'forwarding',
+                                  begin_day: Date::DAYNAMES[(Time.current.wday + 1) % 7],
+                                  begin_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 0, min: 0),
+                                  end_day: Date::DAYNAMES[(Time.current.wday + 1) % 7],
+                                  end_time: ForwardingTimeRange::DEFAULT_YEAR.change(hour: 2, min: 2))
+    end
+
+    it 'can be scheduled only once' do
+      ForwardLeadsToBoberdooJob.schedule
+      expect(ForwardLeadsToBoberdooJob.scheduled_jobs.length).to eq 1
+      ForwardLeadsToBoberdooJob.schedule
+      expect(ForwardLeadsToBoberdooJob.scheduled_jobs.length).to eq 1
     end
   end
 

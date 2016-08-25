@@ -86,4 +86,3 @@ gem 'newrelic_rpm'
 gem 'execjs'
 gem 'therubyracer', platforms: :ruby
 gem 'platform-api'
-gem 'sidekiq-unique-jobs'

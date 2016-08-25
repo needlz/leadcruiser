@@ -1,6 +1,6 @@
 class ForwardLeadsToBoberdooJob
   include Sidekiq::Worker
-  sidekiq_options queue: 'high', unique: :until_and_while_executing
+  sidekiq_options queue: 'high'
 
   DEFAULT_INTERVAL_MINUTES = 5
 
@@ -21,7 +21,16 @@ class ForwardLeadsToBoberdooJob
       else
         ForwardingTimeRange.closest_forwarding_range[:start]
       end
+    remove_existing_job
     perform_at(perform_time)
+  end
+
+  def self.remove_existing_job
+    scheduled_jobs.each { |job| job.delete }
+  end
+
+  def self.scheduled_jobs
+    Sidekiq::ScheduledSet.new.select { |job| job.klass == self.name }
   end
 
   def perform(*args)
@@ -50,13 +59,8 @@ class ForwardLeadsToBoberdooJob
   end
 
   def forward_lead(lead)
-    begin
-      perform_for_lead_and_order(lead) unless lead.responses.where(purchase_order_id: purchase_order.id).exists?
-      @processed += 1
-    rescue StandardError => e
-      Rollbar.error(e)
-      lead.update_attributes!(status: Lead::INVALID)
-    end
+    perform_for_lead_and_order(lead) unless lead.responses.where(purchase_order_id: purchase_order.id).exists?
+    @processed += 1
   end
 
   def forward_leads
