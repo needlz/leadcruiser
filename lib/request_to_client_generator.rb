@@ -40,36 +40,13 @@ class RequestToClientGenerator
   def send_data(exclusive = DEFAULT_EXCLUSIVENESS)
     return if client.service_url.nil? && link.blank?
 
-    ########## For Hartville from here ##############
-    # proxy_uri = URI.parse(ENV["PROXIMO_URL"])
-    # data = HTTParty.post request_url,
-    #               :body => data_to_send,
-    #               :http_proxyaddr => proxy_uri.host,
-    #               :http_proxyport => proxy_uri.port,
-    #               :http_proxyuser => proxy_uri.user,
-    #               :http_proxypass => proxy_uri.password,
-    #               :headers => { 'Content-type' => 'application/soap+xml' }
-    # url = URI(request_url)
-    # req = Net::HTTP::Post.new(url.path)
-    # # req.content_type = 'application/x-www-form-urlencoded'
-    # req.content_type = 'application/soap+xml'
-    # req.body = data_to_send
-    # # req.content_length = data_to_send.bytesize().to_s()
-    # proxy = Net::HTTP::Proxy(proxy_uri.host, proxy_uri.port, proxy_uri.user, proxy_uri.password)
-    # response = proxy.start(url.hostname, url.port) {|http| 
-    #   http.request(req) 
-    # }
-    
-    ########## True code ##################
     response = nil
-
     begin
       @generator = generator_class.new(lead)
       response = generator.do_request(exclusive, client)
     rescue *(HANDLED_CONNECTION_ERRORS.keys) => e
       response = HANDLED_CONNECTION_ERRORS[e.class]
     end
-
     response
   end
 
