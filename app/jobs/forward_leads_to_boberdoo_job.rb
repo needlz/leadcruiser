@@ -37,7 +37,7 @@ class ForwardLeadsToBoberdooJob
     if Rails.env.development?
       logger.info(lead.id)
     else
-      ForwardLeadToClientRequest.new.perform(lead.id, purchase_order.id)
+      ForwardLeadToClientRequest.perform_async(lead.id, purchase_order.id)
     end
   end
 

@@ -1,6 +1,6 @@
 class ForwardLeadToClientRequest
   include Sidekiq::Worker
-  sidekiq_options queue: "high"
+  sidekiq_options queue: "low"
 
   def perform(lead_id, purchase_order_id)
     lead = Lead.find(lead_id)

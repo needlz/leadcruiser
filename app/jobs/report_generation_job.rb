@@ -1,5 +1,5 @@
 class ReportGenerationJob < ActiveJob::Base
-  queue_as :high
+  queue_as :low
 
   def perform(params, filename)
     sheet = Reporting::LeadRows.new(params, filename)

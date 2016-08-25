@@ -3,7 +3,7 @@ require 'capybara/dsl'
 
 class GethealthcareFormMonitor
   include Sidekiq::Worker
-  sidekiq_options queue: 'high'
+  sidekiq_options queue: 'low'
 
   PHONE_NUMBER_STATE_CODE = '787'
   TOTAL_PHONE_NUMBER_DIGITS = 10
