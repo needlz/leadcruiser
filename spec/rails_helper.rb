@@ -53,6 +53,10 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
+  RSpec::Sidekiq.configure do |config|
+    config.warn_when_jobs_not_processed_by_sidekiq = false
+  end
+
   class Fork
     def return_value
       # causes <Errno::EPIPE: Broken pipe> exception in ForkBreak process
