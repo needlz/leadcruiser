@@ -1,5 +1,16 @@
 class RequestToFive9 < RequestToClient
 
+  CAMPAIGNS = {
+    RequestToBoberdoo::HEALTH_INSURANCE_TYPE => {
+      'healthmatchup.com' => '(LC) HealthMatchup Health',
+      'gethealthcare.co' => 'LeadCruiser Proxy (GH Health)'
+    },
+    RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE => {
+      'healthmatchup.com' => '(LC) HealthMatchup MedSupp',
+      'gethealthcare.co' => 'LeadCruiser Proxy (GH MedSupp)'
+    }
+  }
+
   def generate(_); end
 
   def request_url
@@ -87,17 +98,7 @@ class RequestToFive9 < RequestToClient
   end
 
   def campaign
-    campaigns = {
-      RequestToBoberdoo::HEALTH_INSURANCE_TYPE => {
-        'healthmatchup.com' => '(LC) HealthMatchup Health',
-        'gethealthcare.co' => 'LeadCruiser Proxy (GH Health)'
-      },
-      RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE => {
-        'healthmatchup.com' => '(LC) HealthMatchup MedSupp',
-        'gethealthcare.co' => 'LeadCruiser Proxy (GH MedSupp)'
-      }
-    }
-    campaigns[lead.health_insurance_lead.boberdoo_type][lead.site.domain]
+    CAMPAIGNS[lead.health_insurance_lead.boberdoo_type][lead.site.domain]
   end
 
 end
