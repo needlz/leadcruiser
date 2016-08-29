@@ -1,31 +1,28 @@
 ## Leadcruiser
 
-At the top of the file there should be a short introduction and/ or overview that explains **what** the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
+Purpose of Leadcruiser is to store and forward [leads](https://en.wikipedia.org/wiki/Lead_generation) to client services.
 
-## Code Example
+App stores leads information, provides API for receiving leads, forwards leads to the clients APIs. Stored leads are being forwarded to api of clients (“clients verticals”). Clients pay to the owner for  received leads.
 
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
+App has only three parts with UI: admin pages, reports pages, and Sidekiq dashboard.
 
-## Motivation
+There are two “verticals” (topics) of data: pet and health insurances. Initially, app handled only pet insurances, it tracks visitors, clicks and leads for this vertical. Later health insurance vertical was added, and it tracks only leads for the vertical.
 
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
+App is configured to save db backups from Heroku platform and save them to Amazon S3.
 
 ## Installation
 
-Provide code examples and explanations of how to get the project.
+Besides database you need to install Redis server in order to start Sidekiq background worker.
 
 ## API Reference
 
-Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
+GET    /api/v1/leads api/v1/leads#index - creates health lead
+POST   /api/v1/leads api/v1/leads#create creates health or pet lead
+POST   /api/v1/visitors api/v1/visitors#create - create visitor record
+POST   /api/v1/clicks api/v1/clicks#create - create click record
+POST   /api/v1/clients api/v1/clients#create - get list of available clients
+POST   /api/v1/zipcodes api/v1/zipcodes#create - get location onfo by zipcode
 
 ## Tests
 
-Describe and show how to run the tests with code examples.
-
-## Contributors
-
-Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
-
-## License
-
-A short snippet describing the license (MIT, Apache, etc.)
+RSpec is used as tests framework. Use `rspec` to run test suite.
