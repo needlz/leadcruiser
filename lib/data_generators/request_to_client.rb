@@ -6,6 +6,10 @@ class RequestToClient
   attr_accessor :lead, :client
   attr_reader :response
 
+  def initialize(lead)
+    @lead = lead
+  end
+
   def do_request(exclusive, client)
     @client = client
     @response = perform_http_request(exclusive)

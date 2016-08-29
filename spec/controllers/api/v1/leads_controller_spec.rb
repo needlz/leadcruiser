@@ -444,21 +444,18 @@ describe API::V1::LeadsController, type: :request do
                                            active: true,
                                            exclusive: true,
                                            service_url: "http://www.vetcarehealth.com/getquote/postlead",
-                                           request_type: "GET",
                                            display: true) }
     let(:client_2) { ClientsVertical.create!(vertical_id: vertical.id,
                                            integration_name: "client 2",
                                            active: true,
                                            exclusive: true,
                                            service_url: "http://www.vetcarehealth.com/getquote/postlead",
-                                           request_type: "POST",
                                            display: true) }
     let(:client_3) { ClientsVertical.create!(vertical_id: vertical.id,
                                            integration_name: "client 3",
                                            active: true,
                                            exclusive: true,
                                            service_url: "http://www.vetcarehealth.com/getquote/postlead",
-                                           request_type: "GET",
                                            display: true) }
 
 
@@ -540,7 +537,6 @@ describe API::V1::LeadsController, type: :request do
                                               active: true,
                                               exclusive: true,
                                               service_url: "http://www.vetcarehealth.com/getquote/postlead",
-                                              request_type: "GET",
                                               display: true) }
       let(:purchase_order) { PurchaseOrder.create!(vertical_id: vertical.id,
                                                    exclusive: false,

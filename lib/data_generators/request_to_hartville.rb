@@ -4,10 +4,6 @@ class RequestToHartville < RequestToClient
 
   LINK = ""
 
-  def initialize(lead)
-    @lead = lead
-  end
-
   def generate(exclusive)
     # builder = Nokogiri::XML::Builder.new({:encoding => 'UTF-8'}) do |xml|
     #   xml.root do

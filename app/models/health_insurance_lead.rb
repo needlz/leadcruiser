@@ -73,4 +73,13 @@ class HealthInsuranceLead < ActiveRecord::Base
 
   belongs_to :lead
 
+  def lead_type
+    case boberdoo_type
+      when '21'
+        'Health Insurance'
+      when '23'
+        'Medicare Supplement'
+    end
+  end
+
 end

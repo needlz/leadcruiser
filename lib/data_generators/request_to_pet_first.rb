@@ -2,11 +2,6 @@ class RequestToPetFirst < RequestToClient
 
   LINK = ENV["PET_FIRST_LINK"]
 
-  def initialize(lead)
-    @lead = lead
-  end
-
-
   def generate(exclusive)
     # FirstName : string
     # LastName: string
