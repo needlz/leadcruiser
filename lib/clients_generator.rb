@@ -1,7 +1,5 @@
 class ClientsGenerator
 
-  ClientAssociatedRecords = Struct.new(:client, :order)
-
   def self.client
     @@client.save!
     @@client

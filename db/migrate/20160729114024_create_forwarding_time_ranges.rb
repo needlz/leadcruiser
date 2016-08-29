@@ -8,6 +8,6 @@ class CreateForwardingTimeRanges < ActiveRecord::Migration
       t.string :kind, null: false
 
       t.timestamps null: false
-    end
+    end unless table_exists? :forwarding_time_ranges
   end
 end
