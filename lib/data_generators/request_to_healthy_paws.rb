@@ -2,10 +2,6 @@ class RequestToHealthyPaws < RequestToClient
 
   LINK = ""
 
-  def initialize(lead)
-    @lead = lead
-  end
-
   def generate(exclusive)
     partner_source = "PRESIDIO"
 

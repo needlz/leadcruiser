@@ -2,10 +2,6 @@ class RequestToPetsBest < RequestToClient
 
   LINK = ""
 
-  def initialize(lead)
-    @lead = lead
-  end
-
   def generate(exclusive)
     promocode = "PIOEL"
     unless exclusive

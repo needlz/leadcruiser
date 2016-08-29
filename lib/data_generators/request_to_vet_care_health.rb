@@ -2,10 +2,6 @@ class RequestToVetCareHealth < RequestToClient
 
   LINK = ""
 
-  def initialize(lead)
-    @lead = lead
-  end
-
   def generate(exclusive)
     city = lead.city || lead.try(:zip_code).try(:primary_city) || 'X'
     state = lead.state || lead.try(:zip_code).try(:state) || 'X'

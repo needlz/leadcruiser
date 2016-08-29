@@ -5,10 +5,6 @@ class RequestToPetPremium < RequestToClient
 
   LINK = ENV["PET_PREMIUM_LINK"]
 
-  def initialize(lead)
-    @lead = lead
-  end
-
   def generate(exclusive)
     if exclusive
       builder = Nokogiri::XML::Builder.new do |xml|
