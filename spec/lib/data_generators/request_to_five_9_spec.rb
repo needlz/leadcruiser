@@ -7,8 +7,9 @@ describe RequestToFive9 do
   end
 
   let(:client) { ClientsGenerator.five9.client }
-  let!(:lead) { create(:lead) }
-  let!(:health_lead) { create(:health_insurance_lead, lead: lead) }
+  let(:domain) { RequestToFive9::CAMPAIGNS[RequestToBoberdoo::HEALTH_INSURANCE_TYPE].keys[0] }
+  let!(:lead) { create(:lead, site: create(:site, domain: domain)) }
+  let!(:health_lead) { create(:health_insurance_lead, lead: lead, boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE) }
   let(:request) { result = RequestToFive9.new(lead); result.client = client; result }
 
   describe '#succes?' do
