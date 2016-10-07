@@ -85,7 +85,10 @@ class RequestToFive9 < RequestToClient
       height_feet: lead.health_insurance_lead.height_feet,
       height_inches: lead.health_insurance_lead.height_inches,
       weight: lead.health_insurance_lead.weight,
-      Campaign: campaign
+      Campaign: campaign,
+      'Commercial Lead Type' => 'Commercial Lead Type 1',
+      Status: 'new',
+      F9CallASAP: 1
     }
   end
 
@@ -98,7 +101,8 @@ class RequestToFive9 < RequestToClient
   end
 
   def campaign
-    CAMPAIGNS[lead.health_insurance_lead.boberdoo_type][lead.site.domain]
+    # CAMPAIGNS[lead.health_insurance_lead.boberdoo_type][lead.site.domain]
+    'Commercial Lead Type 1'
   end
 
 end
