@@ -25,8 +25,6 @@ class AdminsController < ApplicationController
 	end
 
 	def resend_logic(lead)
-		return false if lead.sold?
-
     filter_txt = [lead.first_name, lead.last_name, lead.email, lead.details_pets.try(:first).try(:pet_name)].join(' ')
 
 		if LeadValidation.duplicated_lead(lead.email, lead.vertical_id, lead.site_id)
