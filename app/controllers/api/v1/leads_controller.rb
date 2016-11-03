@@ -138,14 +138,8 @@ class API::V1::LeadsController  < ActionController::API
       render json: { errors: lead_creation.errors, other_client: all_po_client_list.to_json },
              status: :unprocessable_entity
     else
-      send_thank_you_email(lead_creation.lead)
       render json: { success: true }, status: :created
     end
-  end
-
-  def send_thank_you_email(lead)
-    return unless lead
-    HealthInsuranceMailWorker.perform_async(:thank_you, lead.id)
   end
 
   def all_po_client_list

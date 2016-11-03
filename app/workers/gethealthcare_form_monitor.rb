@@ -17,7 +17,6 @@ class GethealthcareFormMonitor
       if hit
         hit.update_attributes!(last_error: e.message)
       end
-      HealthInsuranceMailer.new.notify_about_gethealthcare_errors
       if Rails.env.development?
         save_screenshot('/tmp/screens/file.png')
         p page.current_url
@@ -53,17 +52,10 @@ class GethealthcareFormMonitor
     submit_form
 
     hit.update_attributes!(finished_at: Time.now, result: result)
-    check_threshold
   end
 
   def result
     (page.current_url == 'http://gethealthcare.co/next-steps') ? 'Failed' : 'Success'
-  end
-
-  def check_threshold
-    if hit.duration > EditableConfiguration.global.gethealthcare_form_threshold_seconds
-      HealthInsuranceMailer.new.notify_about_gethealthcare_threshold
-    end
   end
 
   def submit_form

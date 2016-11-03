@@ -23,11 +23,6 @@ RSpec.describe GethealthcareFormMonitor do
           EditableConfiguration.global.gethealthcare_form_threshold_seconds + 1.second
         }
       end
-
-      it 'sends notifications' do
-        expect_any_instance_of(HealthInsuranceMailer).to receive(:notify_about_gethealthcare_threshold)
-        GethealthcareFormMonitor.new.perform
-      end
     end
 
     context 'when hit duration does not exceed threshold' do
@@ -35,11 +30,6 @@ RSpec.describe GethealthcareFormMonitor do
         allow_any_instance_of(GethealthcareHit).to receive(:duration) {
           EditableConfiguration.global.gethealthcare_form_threshold_seconds - 1.second
         }
-      end
-
-      it 'sends notifications' do
-        expect_any_instance_of(HealthInsuranceMailer).to_not receive(:notify_about_gethealthcare_threshold)
-        GethealthcareFormMonitor.new.perform
       end
     end
   end
@@ -53,11 +43,6 @@ RSpec.describe GethealthcareFormMonitor do
 
     before do
       mock_gethealthcare_form_submission_with_error
-    end
-
-    it 'sends notifications' do
-      expect_any_instance_of(HealthInsuranceMailer).to receive(:notify_about_gethealthcare_errors)
-      expect { GethealthcareFormMonitor.new.perform }.to raise_error(error)
     end
   end
 

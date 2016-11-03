@@ -357,14 +357,6 @@ describe API::V1::LeadsController, type: :request do
       expect(new_health_insurance_lead.attributes.symbolize_keys).to include (health_insurance_lead_result)
     end
 
-    it 'sends autoresponse email' do
-      expect(HealthInsuranceMailWorker).to receive(:perform_async) do |mailer_method, lead_id|
-        expect(mailer_method).to eq :thank_you
-        expect(lead_id).to eq Lead.last.id
-      end
-      api_post 'leads', params
-    end
-
     context 'when request to Boberdoo needed' do
       before do
         EditableConfiguration.create!
