@@ -237,14 +237,6 @@ describe API::V1::LeadsController, type: :request do
         end
       end
 
-      it 'grants uniqueness of lead email' do
-        expect(ForwardHealthInsuranceLead).to receive(:perform).once
-        expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
-        expect(Lead.last.status).to be_nil
-        expect{ api_post 'leads', params }.to change { Lead.count}.from(1).to(2)
-        expect(Lead.last.status).to eq (Lead::DUPLICATED)
-      end
-
       it 'grants that ip is not blocked' do
         BlockList.create(block_ip: params[:IP_Address], active: true)
         api_post 'leads', params
@@ -315,22 +307,6 @@ describe API::V1::LeadsController, type: :request do
       }
     }
 
-    context 'on concurrent creation of leads with same email' do
-      it 'marks second lead as duplicated', concurrent: true do
-        form = HealthInsuranceLeadForm.new(params)
-        lead_creation = CreateHealthLead.new(form)
-        expect(Lead.count).to eq 0
-        lead_creation.concurrent_calls([:run_validations], :perform) do |processes|
-          processes[0].run_until(:run_validations)
-          processes[1].run_until(:run_validations)
-          processes[1].finish.wait
-          processes[0].finish.wait
-        end
-        expect(Lead.count).to eq 2
-        expect(Lead.all.pluck(:status)).to match_array [nil, 'duplicated']
-      end
-    end
-
     it 'creates correct lead' do
       expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
       expect(Lead.last.attributes.symbolize_keys).to include (lead_result)
@@ -398,14 +374,6 @@ describe API::V1::LeadsController, type: :request do
                            purchase_order: purchase_order,
                            client_name: clients_vertical.integration_name)
         end
-      end
-
-      it 'grants uniqueness of lead email' do
-        expect(ForwardHealthInsuranceLead).to receive(:perform).once
-        expect{ api_post 'leads', params }.to change { Lead.count}.from(0).to(1)
-        expect(Lead.last.status).to be_nil
-        expect{ api_post 'leads', params }.to change { Lead.count}.from(1).to(2)
-        expect(Lead.last.status).to eq (Lead::DUPLICATED)
       end
 
       it 'grants that ip is not blocked' do
