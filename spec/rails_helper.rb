@@ -105,7 +105,7 @@ RSpec.configure do |config|
 
           def enqueued_at_wrong_time_message_with_within
             return if at_correct_time?
-            if @time
+            if @within_radius
               "expected to run job at #{Time.at(@time).utc}, but enqueued to " \
               "run at #{format_enqueued_times}"
             else

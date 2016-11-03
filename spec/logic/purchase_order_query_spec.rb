@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe PurchaseOrderQuery, :type => :request do
+RSpec.describe PurchaseOrderQuery do
 
   include ActionView::Helpers::NumberHelper
 
