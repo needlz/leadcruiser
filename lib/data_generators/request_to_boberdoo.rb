@@ -6,9 +6,10 @@ class RequestToBoberdoo < RequestToClient
 
   attr_reader :health_insurance_lead
 
-  def initialize(lead)
+  def initialize(lead, source = nil)
     super(lead)
     @health_insurance_lead = @lead.health_insurance_lead
+    @source = source
   end
 
   def generate(exclusive)
@@ -25,6 +26,10 @@ class RequestToBoberdoo < RequestToClient
 
   private
 
+  def source
+    @source || health_insurance_lead.src
+  end
+
   def params_for_type_21
     params = {
       TYPE: HEALTH_INSURANCE_TYPE,
@@ -32,7 +37,7 @@ class RequestToBoberdoo < RequestToClient
       Skip_XSL: health_insurance_lead.skip_xsl,
       Match_With_Partner_ID: health_insurance_lead.match_with_partner_id,
       Redirect_URL: health_insurance_lead.redirect_url,
-      SRC: health_insurance_lead.src,
+      SRC: source,
       Landing_Page: health_insurance_lead.landing_page,
       IP_Address: lead.visitor_ip,
       Sub_ID: health_insurance_lead.sub_id,

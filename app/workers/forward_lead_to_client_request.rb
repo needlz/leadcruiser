@@ -24,6 +24,17 @@ class ForwardLeadToClientRequest
     finish = Time.now
     diff = finish - start
 
+    # if request_data.generator.class == RequestToInsuranceCareDirect
+    #   boberdoo_purchase_order = PurchaseOrder.joins(:clients_vertical).where(clients_verticals: { integration_name: 'boberdoo' }).first
+    #   client = boberdoo_purchase_order.clients_vertical
+    #
+    #   if request_data.generator.response && request_data.generator.success?
+    #     ForwardLeadToClientRequest.perform_in(60.seconds, lead_id, boberdoo_purchase_order.id)
+    #   else
+    #     ForwardLeadToClientRequest.perform_in(client.lead_forwarding_delay_seconds, lead_id, boberdoo_purchase_order.id)
+    #   end
+    # end
+
     record(response, lead, request_data.generator, client, purchase_order, diff)
   end
 
