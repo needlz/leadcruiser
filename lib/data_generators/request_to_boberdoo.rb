@@ -6,10 +6,9 @@ class RequestToBoberdoo < RequestToClient
 
   attr_reader :health_insurance_lead
 
-  def initialize(lead, source = nil)
+  def initialize(lead)
     super(lead)
     @health_insurance_lead = @lead.health_insurance_lead
-    @source = source
   end
 
   def generate(exclusive)
