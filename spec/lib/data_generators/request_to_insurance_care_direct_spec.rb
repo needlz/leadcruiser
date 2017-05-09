@@ -9,7 +9,7 @@ RSpec.describe RequestToInsuranceCareDirect, type: :request do
                                                 boberdoo_type: RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE) }
   let(:health_insurance_lead_health) { create(:health_insurance_lead,
                                               lead: lead,
-                                              boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE) }
+                                              boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE, tsrc: '1') }
   let(:client) { create(:clients_vertical, service_url: 'http://myhealthlineone.com/API/LeadReceiver.api', request_type: 'XML') }
 
   let(:good_response) {
@@ -46,7 +46,7 @@ RSpec.describe RequestToInsuranceCareDirect, type: :request do
 
     before do
       stub_request(:post, "http://myhealthlineone.com/API/LeadReceiver.api").
-        with(:body => "SourceID=481&SourceCode=RickTest&Passphrase=fcunytv51l30v1pujdkog6u3e&FirstName=John&LastName=Doe&Address=&City=&State=&Zip=10001&Email=test%40example.com&DayPhone=2-12-22&EveningPhone=&DateOfBirth=&Address2=&IPAddress=127.1.1.1&Source=source&LandingPage=http%3A%2F%2Fgethealthcare.co&ExistingConditions=&Gender=&HeightFT=&HeightIN=&Weight=&Smoker=",
+        with(:body => "LeadId=1&SourceID=481&SourceCode=RickTest&Passphrase=fcunytv51l30v1pujdkog6u3e&FirstName=John&LastName=Doe&Address=&City=&State=&Zip=10001&Email=test%40example.com&DayPhone=2-12-22&EveningPhone=&DateOfBirth=&Address2=&IPAddress=127.1.1.1&Source=source&LandingPage=http%3A%2F%2Fgethealthcare.co&ExistingConditions=&Gender=&HeightFT=&HeightIN=&Weight=&Smoker=",
              :headers => {'Content-Type'=>'application/xml'}).
         to_return(:status => 200, :body => response, :headers => {'Content-Type'=>'application/xml'})
     end

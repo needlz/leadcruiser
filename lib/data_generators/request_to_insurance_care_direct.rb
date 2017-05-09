@@ -23,6 +23,7 @@ class RequestToInsuranceCareDirect < RequestToClient
 
   def generate(exclusive)
     {
+      LeadId: health_insurance_lead.tsrc,
       SourceID: source_id,
       SourceCode: source_code,
       Passphrase: passphrase,

@@ -57,6 +57,7 @@ class ClientsVertical < ActiveRecord::Base
   VET_CARE_HEALTH = "vet_care_health"
 
   BOBERDOO = 'boberdoo'
+  ICD = 'insurance_care_direct'
   
   def refresh_queue
     self.vertical.update_attributes(next_client: nil)

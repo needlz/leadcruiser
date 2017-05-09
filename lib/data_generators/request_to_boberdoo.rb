@@ -27,7 +27,17 @@ class RequestToBoberdoo < RequestToClient
   private
 
   def source
-    @source || health_insurance_lead.src
+    if successful_response_from_ICD?
+      health_insurance_lead.src == 'HealthMatchup' ? 'HealthMatchup2' : health_insurance_lead.src
+    else
+      health_insurance_lead.src
+    end
+  end
+
+  def successful_response_from_ICD?
+    icd = ClientsVertical.find_by_integration_name(ClientsVertical::ICD)
+    return false unless icd
+    lead.responses.where(client_name: icd.integration_name).successful.exists?
   end
 
   def params_for_type_21
