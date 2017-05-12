@@ -16,7 +16,7 @@ class RequestToBoberdoo < RequestToClient
   end
 
   def success?
-    response['response']['status'] == "UNMATCHED" || response['response']['status'] == "MATCHED"
+    ["UNMATCHED", "MATCHED", "Matched", "Unmatched"].include?(response['response']['status'])
   end
 
   def rejection_reason
@@ -36,7 +36,7 @@ class RequestToBoberdoo < RequestToClient
   def successful_response_from_ICD?
     icd = ClientsVertical.find_by_integration_name(ClientsVertical::ICD)
     return false unless icd
-    lead.responses.where(client_name: icd.integration_name).successful.exists?
+    lead.transaction_attempts.where(client_id: icd.id).successful.exists?
   end
 
   def params_for_type_21

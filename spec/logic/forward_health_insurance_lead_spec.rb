@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe ForwardHealthInsuranceLead do
-  let!(:vertical) { create(:vertical, name: Vertical::HEALTH_INSURANCE) }
-  let!(:boberdoo_client) { create(:clients_vertical, integration_name: ClientsVertical::BOBERDOO) }
-  let!(:icd_client) { create(:clients_vertical, integration_name: 'insurance_care_direct') }
-  let!(:boberdoo_client_order) { create(:purchase_order, vertical: vertical, client_id: boberdoo_client.id) }
-  let!(:icd_purchase_order) { create(:purchase_order, vertical: vertical, client_id: icd_client.id) }
-  let(:lead) { create(:lead, vertical: vertical) }
-  let(:health_insurance_lead_med_supp) { create(:health_insurance_lead,
+  let!(:vertical) { FactoryGirl.create(:vertical, name: Vertical::HEALTH_INSURANCE) }
+  let!(:boberdoo_client) { FactoryGirl.create(:clients_vertical, integration_name: ClientsVertical::BOBERDOO) }
+  let!(:icd_client) { FactoryGirl.create(:clients_vertical, integration_name: 'insurance_care_direct') }
+  let!(:boberdoo_purchase_order) { FactoryGirl.create(:purchase_order, vertical: vertical, client_id: boberdoo_client.id) }
+  let!(:icd_purchase_order) { FactoryGirl.create(:purchase_order, vertical: vertical, client_id: icd_client.id) }
+  let(:lead) { FactoryGirl.create(:lead, vertical: vertical) }
+  let(:health_insurance_lead_med_supp) { FactoryGirl.create(:health_insurance_lead,
                                                 lead: lead,
                                                 boberdoo_type: RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE) }
-  let(:health_insurance_lead_health) { create(:health_insurance_lead,
+  let(:health_insurance_lead_health) { FactoryGirl.create(:health_insurance_lead,
                                               lead: lead,
                                               boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE) }
 
@@ -82,4 +82,57 @@ RSpec.describe ForwardHealthInsuranceLead do
     end # when lead comes from HMU
   end # #perform
 
+  describe 'filters' do
+    before do
+      health_insurance_lead_med_supp
+    end
+
+    context 'when there is purchase order with daily leads limit' do
+      before do
+        boberdoo_purchase_order.update_attributes!(leads_daily_limit: 3)
+      end
+
+      context 'leads daily count had reached daily limit' do
+        before do
+          boberdoo_purchase_order.update_attributes!(daily_leads_count: 3)
+        end
+
+        it 'does not send lead to client' do
+          expect_any_instance_of(RequestToBoberdoo).to_not receive(:do_request).and_call_original
+          ForwardHealthInsuranceLead.perform(lead)
+        end
+      end # leads daily count had reached daily limit
+
+      context 'leads daily count had not reached daily limit' do
+        it 'sends lead to client' do
+          expect_any_instance_of(RequestToBoberdoo).to receive(:do_request).and_call_original
+          ForwardHealthInsuranceLead.perform(lead)
+        end
+      end # leads daily count had not reached daily limit
+    end # when there is purchase order with daily leads limit
+
+    context 'when there is purchase order with total leads limit' do
+      before do
+        boberdoo_purchase_order.update_attributes!(leads_max_limit: 3)
+      end
+
+      context 'leads total count had reached daily limit' do
+        before do
+          boberdoo_purchase_order.update_attributes!(leads_count_sold: 3)
+        end
+
+        it 'does not send lead to client' do
+          expect_any_instance_of(RequestToBoberdoo).to_not receive(:do_request).and_call_original
+          ForwardHealthInsuranceLead.perform(lead)
+        end
+      end
+
+      context 'leads daily count had not reached daily limit' do
+        it 'sends lead to client' do
+          expect_any_instance_of(RequestToBoberdoo).to receive(:do_request).and_call_original
+          ForwardHealthInsuranceLead.perform(lead)
+        end
+      end
+    end # when there is purchase order with total leads limit
+  end # filters
 end

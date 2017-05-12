@@ -50,7 +50,31 @@ class ForwardHealthInsuranceLead
       end
 
       next if boolean?(purchase_order.preexisting_conditions) &&
-        purchase_order.preexisting_conditions != (lead.health_insurance_lead.preexisting_conditions == 'yes')
+          purchase_order.preexisting_conditions != (lead.health_insurance_lead.preexisting_conditions == 'yes')
+
+      # Check Maximum leads limit
+      if purchase_order.leads_max_limit.present? &&
+          purchase_order.leads_count_sold.present? &&
+          purchase_order.leads_count_sold >= purchase_order.leads_max_limit
+        next
+      end
+
+      # Check Daily leads limit
+      if purchase_order.leads_daily_limit.present? &&
+          purchase_order.daily_leads_count.present? &&
+          purchase_order.daily_leads_count >= purchase_order.leads_daily_limit
+        next
+      end
+
+      # Check Date
+      # if !po.start_date.nil? and po.start_date > Date.today
+      #   next
+      # end
+
+      # if !po.end_date.nil? and po.end_date < Date.today
+      #   next
+      # end
+
       true
     end
   end

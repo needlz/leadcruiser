@@ -136,9 +136,7 @@ RSpec.describe RequestToBoberdoo, type: :request do
   end # generate
 
   describe '#source' do
-    before do
-      FactoryGirl.create(:clients_vertical, integration_name: ClientsVertical::ICD)
-    end
+    let(:icd){ FactoryGirl.create(:clients_vertical, integration_name: ClientsVertical::ICD) }
 
     context 'SRC is HealthMatchup' do
       let!(:health_insurance_lead) { FactoryGirl.create(:health_insurance_lead,
@@ -147,9 +145,8 @@ RSpec.describe RequestToBoberdoo, type: :request do
                                            age: 55, src: 'HealthMatchup') }
 
       context 'there was successful response from ICD' do
-        let!(:response_fomr_iCD) { FactoryGirl.create(:response,
-                                                      client_name: ClientsVertical::ICD,
-                                                      rejection_reasons: nil,
+        let!(:response_fomr_iCD) { FactoryGirl.create(:transaction_attempt,
+                                                      client_id: icd.id,
                                                       lead_id: lead.id) }
 
         it 'returns HealthMatchup2' do

@@ -49,4 +49,8 @@ class PurchaseOrder < ActiveRecord::Base
     Lead::PRICE_PRECISION % price.to_f
   end
 
+  def successful_responses_by_day(date)
+    transaction_attempts.where(created_at: date.beginning_of_day..date.end_of_day).successful
+  end
+
 end

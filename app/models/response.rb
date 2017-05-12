@@ -24,6 +24,4 @@ class Response < ActiveRecord::Base
 
 	has_many :transaction_attempts
 
-	scope :successful, -> { where(rejection_reasons: nil) }
-
 end
