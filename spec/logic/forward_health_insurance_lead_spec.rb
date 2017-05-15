@@ -134,5 +134,49 @@ RSpec.describe ForwardHealthInsuranceLead do
         end
       end
     end # when there is purchase order with total leads limit
+
+    describe 'time filter' do
+      it 'calls filter' do
+        expect_any_instance_of(PurchaseOrderTimeFilter).to receive(:allow?).and_return(false)
+        ForwardHealthInsuranceLead.perform(lead)
+      end
+
+      context 'when filters are not set' do
+        it 'allows forwarding' do
+          expect_any_instance_of(RequestToBoberdoo).to receive(:do_request).and_call_original
+          ForwardHealthInsuranceLead.perform(lead)
+        end
+      end # when filters are not set
+
+      context 'when filters are set' do
+        context 'when time within selected range' do
+          before do
+            today_name = Time.current.strftime("%A").downcase
+            boberdoo_purchase_order.update_attributes!("#{ today_name }_filter_enabled" => true,
+                                                       "#{ today_name }_begin_time" => Time.current.beginning_of_day,
+                                                       "#{ today_name }_end_time" => Time.current.end_of_day)
+          end
+
+          it 'allows forwarding' do
+            expect_any_instance_of(RequestToBoberdoo).to receive(:do_request).and_call_original
+            ForwardHealthInsuranceLead.perform(lead)
+          end
+        end # when time within selected range
+
+        context 'when time out of selected range' do
+          before do
+            today_name = Time.current.strftime("%A").downcase
+            boberdoo_purchase_order.update_attributes!("#{ today_name }_filter_enabled" => true,
+                                                       "#{ today_name }_begin_time" => Time.current.end_of_day,
+                                                       "#{ today_name }_end_time" => Time.current.beginning_of_day)
+          end
+
+          it 'allows forwarding' do
+            expect_any_instance_of(RequestToBoberdoo).to_not receive(:do_request).and_call_original
+            ForwardHealthInsuranceLead.perform(lead)
+          end
+        end # when time out of selected range
+      end # when filters are set
+    end # time filter
   end # filters
 end

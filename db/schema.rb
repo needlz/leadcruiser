@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170512120848) do
+ActiveRecord::Schema.define(version: 20170515092425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -274,20 +274,41 @@ ActiveRecord::Schema.define(version: 20170512120848) do
     t.integer  "vertical_id"
     t.float    "weight"
     t.boolean  "exclusive"
-    t.string   "states",                 limit: 255
+    t.string   "states",                   limit: 255
     t.boolean  "preexisting_conditions"
     t.float    "price"
-    t.string   "status",                 limit: 255
+    t.string   "status",                   limit: 255
     t.boolean  "active"
     t.integer  "leads_max_limit"
     t.integer  "leads_daily_limit"
-    t.integer  "leads_count_sold",                   default: 0
-    t.integer  "daily_leads_count",                  default: 0
+    t.integer  "leads_count_sold",                     default: 0
+    t.integer  "daily_leads_count",                    default: 0
     t.date     "start_date"
     t.date     "end_date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "client_id"
+    t.boolean  "sunday_filter_enabled"
+    t.time     "sunday_begin_time"
+    t.time     "sunday_end_time"
+    t.boolean  "monday_filter_enabled"
+    t.time     "monday_begin_time"
+    t.time     "monday_end_time"
+    t.boolean  "tuesday_filter_enabled"
+    t.time     "tuesday_begin_time"
+    t.time     "tuesday_end_time"
+    t.boolean  "wednesday_filter_enabled"
+    t.time     "wednesday_begin_time"
+    t.time     "wednesday_end_time"
+    t.boolean  "thursday_filter_enabled"
+    t.time     "thursday_begin_time"
+    t.time     "thursday_end_time"
+    t.boolean  "friday_filter_enabled"
+    t.time     "friday_begin_time"
+    t.time     "friday_end_time"
+    t.boolean  "saturday_filter_enabled"
+    t.time     "saturday_begin_time"
+    t.time     "saturday_end_time"
   end
 
   create_table "responses", force: :cascade do |t|

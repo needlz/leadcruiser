@@ -66,14 +66,20 @@ class ForwardHealthInsuranceLead
         next
       end
 
-      # Check Date
-      # if !po.start_date.nil? and po.start_date > Date.today
-      #   next
-      # end
+      # Check day and time
+      time_filter = PurchaseOrderTimeFilter.new(purchase_order, Time.current)
+      unless time_filter.allow?
+        next
+      end
 
-      # if !po.end_date.nil? and po.end_date < Date.today
-      #   next
-      # end
+      # Check Date
+      if purchase_order.start_date.present? and purchase_order.start_date > Date.today
+        next
+      end
+
+      if purchase_order.end_date.present? and purchase_order.end_date < Date.today
+        next
+      end
 
       true
     end

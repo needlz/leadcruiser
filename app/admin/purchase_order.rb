@@ -2,8 +2,16 @@ ActiveAdmin.register PurchaseOrder do
 
   menu priority: 3
 
-  permit_params :vertical_id, :client_id, :weight, :exclusive, :states, :preexisting_conditions, :price, 
-                :status, :active, :leads_max_limit, :leads_daily_limit, :start_date, :end_date, :states_array => []
+  permitted_paramters = [:vertical_id, :client_id, :weight, :exclusive, :states, :preexisting_conditions, :price,
+                         :status, :active, :leads_max_limit, :leads_daily_limit, :start_date, :end_date, :states_array => []]
+  days = Date::DAYNAMES.each do |day_name|
+    day = day_name.downcase
+    permitted_paramters << "#{ day }_filter_enabled"
+    permitted_paramters << "#{ day }_begin_time"
+    permitted_paramters << "#{ day }_end_time"
+  end
+
+  permit_params *permitted_paramters
 
   filter :vertical
   filter :clients_vertical
@@ -13,6 +21,37 @@ ActiveAdmin.register PurchaseOrder do
   filter :active
   filter :start_date
   filter :end_date
+
+  show do
+    attributes_table do
+      row :id
+      row :vertical_id
+      row :weight
+      row :exclusive
+      row :states
+      row :preexisting_conditions
+      row :price
+      row :status
+      row :active
+      row :leads_max_limit
+      row :leads_daily_limit
+      row :leads_count_sold
+      row :daily_leads_count
+      row :start_date
+      row :end_date
+      row :created_at
+      row :updated_at
+      row :client_id
+
+      Date::DAYNAMES.map(&:downcase).each do |day|
+        [:begin_time, :end_time].each do |attribute|
+          row "#{ day }_#{ attribute }" do |r|
+            FormatTime.for(r.send("#{ day }_#{ attribute }").try(:in_time_zone))
+          end
+        end
+      end
+    end
+  end
 
   index do
     selectable_column
@@ -64,7 +103,6 @@ ActiveAdmin.register PurchaseOrder do
               :collection => ClientsVertical.select(:integration_name, :id).uniq.pluck(:integration_name, :id)
       f.input :weight
       f.input :exclusive
-      # f.input :states
       f.input :states_array,
               :as => :check_boxes,
               :collection => State.select(:name, :code).uniq.pluck(:name, :code)
@@ -76,15 +114,80 @@ ActiveAdmin.register PurchaseOrder do
       f.input :leads_daily_limit
       f.input :start_date
       f.input :end_date
+
+
+      inputs name: 'Day filters', class: 'time-filters' do
+        li 'Day filters'
+        days = Date::DAYNAMES.map(&:downcase).each do |day_name|
+          # li day_name
+          f.input "#{ day_name }_filter_enabled", as: :boolean, label: day_name.capitalize
+          begin_time_method = "#{ day_name }_begin_time"
+          f.input begin_time_method,
+                  label: 'From time',
+                  as: :time_select,
+                  input_html: { value: Time.zone.local_to_utc(f.object.send(begin_time_method).try(:in_time_zone, ForwardingTimeRange::TIME_ZONE)) }
+          end_time_method = "#{ day_name }_end_time"
+          f.input end_time_method,
+                  label: 'to',
+                  as: :time_select,
+                  input_html: { value: Time.zone.local_to_utc(f.object.send(end_time_method).try(:in_time_zone, ForwardingTimeRange::TIME_ZONE)) }
+        end
+      end
     end
 
     f.actions
   end
 
-  # controller do
-  #   def create
-  #     super
-  #   end
-  # end
+  controller do
+    def edit
+      super do |format|
+        Date::DAYNAMES.map(&:downcase).each do |day|
+          [:begin_time, :end_time].each do |attribute|
+            @purchase_order.send("#{ day }_#{ attribute }=",
+                                 @purchase_order.send("#{ day }_#{ attribute }").try(:in_time_zone, ForwardingTimeRange::TIME_ZONE)
+            )
+          end
+        end
+      end
+    end
+  end
+
+  before_create do |range|
+    Date::DAYNAMES.map(&:downcase).each do |day|
+      [:begin_time, :end_time].each do |attribute|
+        value = range.send("#{ day }_#{ attribute }")
+        if value
+          range.send("#{ day }_#{ attribute }=",
+                     value.in_time_zone(ForwardingTimeRange::TIME_ZONE).
+                       change(year: ForwardingTimeRange::DEFAULT_YEAR.year,
+                              month: ForwardingTimeRange::DEFAULT_YEAR.month,
+                              day: ForwardingTimeRange::DEFAULT_YEAR.day,
+                              hour: params['purchase_order']["#{ day }_#{ attribute }(4i)"],
+                              min: params['purchase_order']["#{ day }_#{ attribute }(5i)"]
+                       )
+          )
+        end
+      end
+    end
+  end
+
+  before_update do |range|
+    Date::DAYNAMES.map(&:downcase).each do |day|
+      [:begin_time, :end_time].each do |attribute|
+        value = range.send("#{ day }_#{ attribute }")
+        if value && params['purchase_order']["#{ day }_#{ attribute }(4i)"].present?
+          range.send("#{ day }_#{ attribute }=", value.in_time_zone(ForwardingTimeRange::TIME_ZONE).
+              change(year: ForwardingTimeRange::DEFAULT_YEAR.year,
+                     month: ForwardingTimeRange::DEFAULT_YEAR.month,
+                     day: ForwardingTimeRange::DEFAULT_YEAR.day,
+                     hour: params['purchase_order']["#{ day }_#{ attribute }(4i)"],
+                     min: params['purchase_order']["#{ day }_#{ attribute }(5i)"])
+          )
+        else
+          range.send("#{ day }_#{ attribute }=", nil)
+        end
+      end
+    end
+  end
 
 end
