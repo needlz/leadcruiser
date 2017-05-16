@@ -20,3 +20,27 @@
   width: 25%;
   float: left;
 }
+
+//*[@id="purchase_order_sunday_begin_time_input"]/fieldset/ol
+
+.purchase_order {
+  .time-filters {
+    .boolean.input.optional{
+      margin-top: 20px
+    }
+
+    ol li.boolean label {
+      padding-left: 7%
+    }
+
+    legend {
+      label {
+        width: 7%
+      }
+    }
+
+    ol.fragments-group {
+      padding-left: 7%
+    }
+  }
+}
