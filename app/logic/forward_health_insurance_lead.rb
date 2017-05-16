@@ -60,6 +60,9 @@ class ForwardHealthInsuranceLead
       end
 
       # Check Daily leads limit
+      if purchase_order.daily_limit_date.nil? || Time.current.to_date != purchase_order.daily_limit_date.to_date
+        purchase_order.update_attributes!(daily_limit_date: Time.current.to_date, daily_leads_count: 0)
+      end
       if purchase_order.leads_daily_limit.present? &&
           purchase_order.daily_leads_count.present? &&
           purchase_order.daily_leads_count >= purchase_order.leads_daily_limit

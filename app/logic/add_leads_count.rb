@@ -26,11 +26,7 @@ class AddLeadsCount
 
   def update_daily_leads_count
     current_count = purchase_order.daily_leads_count || 0
-    if responses_from_today_present?
-      purchase_order_attributes[:daily_leads_count] = current_count + 1
-    else
-      purchase_order_attributes[:daily_leads_count] = 1
-    end
+    purchase_order_attributes[:daily_leads_count] = current_count + 1
   end
 
   def save
