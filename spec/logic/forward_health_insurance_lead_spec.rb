@@ -94,7 +94,7 @@ RSpec.describe ForwardHealthInsuranceLead do
 
       context 'leads daily count had reached daily limit' do
         before do
-          boberdoo_purchase_order.update_attributes!(daily_leads_count: 3)
+          boberdoo_purchase_order.update_attributes!(daily_leads_count: 3, daily_limit_date: Date.today)
         end
 
         it 'does not send lead to client' do
