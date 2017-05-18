@@ -1,5 +1,11 @@
 ActiveAdmin.register TransactionAttempt do
 
+  controller do
+    def scoped_collection
+      TransactionAttempt.all.includes(:lead, :clients_vertical)
+    end
+  end
+
   menu priority: 4
 
   if ActiveRecord::Base.connection.table_exists?('leads')
@@ -37,4 +43,25 @@ ActiveAdmin.register TransactionAttempt do
       response.created_at
     end
   end
+
+  csv do
+    column :lead_id
+    column "Client Name" do |tr|
+      tr.clients_vertical.try(:integration_name)
+    end
+    column :purchase_order_id
+    column :price
+    column :weight
+    column :success
+    column :exclusive_selling
+    column :reason
+    column :response_id
+    column "Created At" do |response|
+      response.created_at
+    end
+    column :email do |transaction_attempt|
+      transaction_attempt.lead.email
+    end
+  end
+
 end
