@@ -37,7 +37,8 @@ module Reporting
         lead.visitor.nil? ? '' : lead.visitor.session_hash,
         lead.visitor.nil? ? '' : lead.visitor.referring_url,
         lead.visitor.nil? ? '' : lead.visitor.landing_page,
-        lead.visitor.nil? ? '' : lead.visitor.keywords
+        lead.visitor.nil? ? '' : lead.visitor.keywords,
+        lead.health_insurance_lead.try(:ref)
       ]
     end
   end

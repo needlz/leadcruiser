@@ -129,4 +129,5 @@ en:
         referring_url: 'Referring URL'
         landing_page: 'Landing Page'
         keyword: 'Keywords'
+        ref: Ref
       no_available_leads: 'There are no available leads for this period. Please, try to choose other dates.'

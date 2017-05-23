@@ -113,7 +113,8 @@ module Reporting
                             en_titles[:session_hash],
                             en_titles[:referring_url],
                             en_titles[:landing_page],
-                            en_titles[:keyword]
+                            en_titles[:keyword],
+                            en_titles[:ref]
                           ], :style => title_bg_style
             rows.each do |row|
               sheet.add_row(row)
