@@ -57,12 +57,6 @@ RSpec.describe ForwardHealthInsuranceLead do
           expect_any_instance_of(RequestToInsuranceCareDirect).to receive(:do_request).and_call_original
           ForwardHealthInsuranceLead.perform(lead)
         end
-
-        it 'forwards lead to Boberdoo with source attribute "HealthMatchup2"' do
-          pending
-          expect_any_instance_of(RequestToBoberdoo).to receive(:do_request).and_call_original
-          ForwardHealthInsuranceLead.perform(lead)
-        end
       end # when lead is healthcare
 
       context 'when lead is medicare' do
@@ -70,12 +64,6 @@ RSpec.describe ForwardHealthInsuranceLead do
 
         it 'does not forward lead to ICD' do
           expect_any_instance_of(RequestToInsuranceCareDirect).to_not receive(:do_request).and_call_original
-          ForwardHealthInsuranceLead.perform(lead)
-        end
-
-        it 'forwards lead to Boberdoo with default source attribute' do
-          pending
-          expect_any_instance_of(RequestToBoberdoo).to receive(:do_request).and_call_original
           ForwardHealthInsuranceLead.perform(lead)
         end
       end # when lead is medicare

@@ -15,10 +15,6 @@ describe API::V1::ClicksController, type: :request do
     }
 
     context 'when visitor_ip and clients_vertical_id present' do
-      context 'when page_id present' do
-        pending
-      end
-
       context 'when page_id missing' do
         let(:click_params) { full_click_params.deep_merge(click: { page_id: nil }) }
 
