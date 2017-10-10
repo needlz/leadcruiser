@@ -205,7 +205,8 @@ RSpec.configure do |config|
       Child_4_Height_Inches: '15',
       Child_4_Weight: '7',
       Child_4_Tobacco_Use: 'Yes',
-      Child_4_Preexisting_Conditions:'Yes'
+      Child_4_Preexisting_Conditions:'Yes',
+      eHealth_url: 'http://www.ehealthinsurance.com/111'
     }.merge(hash)
   end
 
