@@ -55,7 +55,6 @@ ActiveAdmin.register ClicksPurchaseOrder do
       f.input :weight
       f.input :active
       f.input :total_limit
-      f.input :daily_limit
       f.input :start_date
       f.input :end_date
     end
