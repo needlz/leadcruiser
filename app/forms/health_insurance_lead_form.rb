@@ -49,6 +49,7 @@ class HealthInsuranceLeadForm
       fpl: params[:FPL],
       age: params[:Age],
       ehealth_url: params[:eHealth_url],
+      leadid_token: params[:leadid_token],
       height_feet: params[:Height_Feet],
       height_inches: params[:Height_Inches],
       weight: params[:Weight],
