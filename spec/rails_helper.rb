@@ -242,6 +242,7 @@ RSpec.configure do |config|
       Bday: '12/23/1980',
       Gender: 'Male',
       Age: '5',
+      eHealth_url: "http://fq.ehealthinsurance.com/?allid=pre319000&type=IFP&gd1=F&bdate1=01/01/1995"
     }.merge(hash)
   end
 end

@@ -11,18 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171010195551) do
+ActiveRecord::Schema.define(version: 20180319202818) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "active_admin_comments", force: :cascade do |t|
-    t.string   "namespace",     limit: 255
+    t.string   "namespace"
     t.text     "body"
-    t.string   "resource_id",   limit: 255, null: false
-    t.string   "resource_type", limit: 255, null: false
+    t.string   "resource_id",   null: false
+    t.string   "resource_type", null: false
     t.integer  "author_id"
-    t.string   "author_type",   limit: 255
+    t.string   "author_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -32,12 +32,12 @@ ActiveRecord::Schema.define(version: 20171010195551) do
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id", using: :btree
 
   create_table "admin_users", force: :cascade do |t|
-    t.string   "email",                  limit: 255, default: "", null: false
-    t.string   "encrypted_password",     limit: 255, default: "", null: false
-    t.string   "reset_password_token",   limit: 255
+    t.string   "email",                  default: "", null: false
+    t.string   "encrypted_password",     default: "", null: false
+    t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                      default: 0,  null: false
+    t.integer  "sign_in_count",          default: 0,  null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.inet     "current_sign_in_ip"
@@ -50,7 +50,7 @@ ActiveRecord::Schema.define(version: 20171010195551) do
   add_index "admin_users", ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true, using: :btree
 
   create_table "block_lists", force: :cascade do |t|
-    t.string   "block_ip",    limit: 255
+    t.string   "block_ip"
     t.boolean  "active"
     t.text     "description"
     t.datetime "created_at"
@@ -58,19 +58,19 @@ ActiveRecord::Schema.define(version: 20171010195551) do
   end
 
   create_table "cat_breeds", force: :cascade do |t|
-    t.string   "name",       limit: 255
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "clicks", force: :cascade do |t|
-    t.string   "visitor_ip",               limit: 255
+    t.string   "visitor_ip"
     t.integer  "clients_vertical_id"
     t.integer  "page_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "clicks_purchase_order_id"
-    t.string   "status",                   limit: 255
+    t.string   "status"
   end
 
   create_table "clicks_purchase_orders", force: :cascade do |t|
@@ -89,8 +89,8 @@ ActiveRecord::Schema.define(version: 20171010195551) do
 
   create_table "client_cat_breed_mappings", force: :cascade do |t|
     t.integer  "breed_id"
-    t.string   "integration_name", limit: 255
-    t.string   "name",             limit: 255
+    t.string   "integration_name"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "client_breed_id"
@@ -98,8 +98,8 @@ ActiveRecord::Schema.define(version: 20171010195551) do
 
   create_table "client_dog_breed_mappings", force: :cascade do |t|
     t.integer  "breed_id"
-    t.string   "integration_name", limit: 255
-    t.string   "name",             limit: 255
+    t.string   "integration_name"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "client_breed_id"
@@ -107,39 +107,39 @@ ActiveRecord::Schema.define(version: 20171010195551) do
 
   create_table "clients_verticals", force: :cascade do |t|
     t.integer  "vertical_id"
-    t.string   "integration_name",              limit: 255
+    t.string   "integration_name"
     t.boolean  "active"
     t.integer  "weight"
     t.boolean  "exclusive"
     t.float    "fixed_price"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "service_url",                   limit: 255
-    t.string   "request_type",                  limit: 255
-    t.string   "logo_file_name",                limit: 255
-    t.string   "logo_content_type",             limit: 255
+    t.string   "service_url"
+    t.string   "request_type"
+    t.string   "logo_file_name"
+    t.string   "logo_content_type"
     t.integer  "logo_file_size"
     t.datetime "logo_updated_at"
-    t.string   "email",                         limit: 255
-    t.string   "phone_number",                  limit: 255
-    t.string   "website_url",                   limit: 255
-    t.string   "official_name",                 limit: 255
+    t.string   "email"
+    t.string   "phone_number"
+    t.string   "website_url"
+    t.string   "official_name"
     t.text     "description"
     t.integer  "sort_order"
-    t.boolean  "display",                                   default: true
-    t.integer  "timeout",                                   default: 20
-    t.integer  "lead_forwarding_delay_seconds",             default: 0
+    t.boolean  "display",                       default: true
+    t.integer  "timeout",                       default: 20
+    t.integer  "lead_forwarding_delay_seconds", default: 0
   end
 
   create_table "details_pets", force: :cascade do |t|
-    t.string   "species",            limit: 255
+    t.string   "species"
     t.boolean  "spayed_or_neutered"
-    t.string   "pet_name",           limit: 255
-    t.string   "breed",              limit: 255
-    t.integer  "birth_day",                      default: 1
+    t.string   "pet_name"
+    t.string   "breed"
+    t.integer  "birth_day",          default: 1
     t.integer  "birth_month"
     t.integer  "birth_year"
-    t.string   "gender",             limit: 255
+    t.string   "gender"
     t.boolean  "conditions"
     t.integer  "lead_id"
     t.datetime "created_at"
@@ -147,7 +147,7 @@ ActiveRecord::Schema.define(version: 20171010195551) do
   end
 
   create_table "dog_breeds", force: :cascade do |t|
-    t.string   "name",       limit: 255
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -245,45 +245,45 @@ ActiveRecord::Schema.define(version: 20171010195551) do
   end
 
   create_table "leads", force: :cascade do |t|
-    t.string   "session_hash",      limit: 255
+    t.string   "session_hash"
     t.integer  "site_id"
-    t.integer  "form_id",                       default: 1
-    t.string   "first_name",        limit: 255
-    t.string   "last_name",         limit: 255
-    t.string   "address_1",         limit: 255
-    t.string   "address_2",         limit: 255
-    t.string   "city",              limit: 255
-    t.string   "state",             limit: 255
-    t.string   "zip",               limit: 255
-    t.string   "day_phone",         limit: 255
-    t.string   "evening_phone",     limit: 255
-    t.string   "email",             limit: 255
-    t.string   "best_time_to_call", limit: 255
+    t.integer  "form_id",           default: 1
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "address_1"
+    t.string   "address_2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zip"
+    t.string   "day_phone"
+    t.string   "evening_phone"
+    t.string   "email"
+    t.string   "best_time_to_call"
     t.datetime "birth_date"
-    t.string   "gender",            limit: 255
+    t.string   "gender"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "times_sold"
     t.float    "total_sale_amount"
     t.integer  "vertical_id"
-    t.string   "visitor_ip",        limit: 255, default: "127.1.1.1"
-    t.string   "status",            limit: 255
-    t.string   "disposition",       limit: 255
+    t.string   "visitor_ip",        default: "127.1.1.1"
+    t.string   "status"
+    t.string   "disposition"
   end
 
   create_table "purchase_orders", force: :cascade do |t|
     t.integer  "vertical_id"
     t.float    "weight"
     t.boolean  "exclusive"
-    t.string   "states",                   limit: 255
+    t.string   "states"
     t.boolean  "preexisting_conditions"
     t.float    "price"
-    t.string   "status",                   limit: 255
+    t.string   "status"
     t.boolean  "active"
     t.integer  "leads_max_limit"
     t.integer  "leads_daily_limit"
-    t.integer  "leads_count_sold",                     default: 0
-    t.integer  "daily_leads_count",                    default: 0
+    t.integer  "leads_count_sold",         default: 0
+    t.integer  "daily_leads_count",        default: 0
     t.date     "start_date"
     t.date     "end_date"
     t.datetime "created_at"
@@ -319,26 +319,26 @@ ActiveRecord::Schema.define(version: 20171010195551) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "lead_id"
-    t.string   "client_name",       limit: 255
+    t.string   "client_name"
     t.float    "price"
     t.integer  "purchase_order_id"
     t.float    "response_time"
   end
 
   create_table "sites", force: :cascade do |t|
-    t.string   "domain",     limit: 255
-    t.string   "host",       limit: 255
+    t.string   "domain"
+    t.string   "host"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "states", force: :cascade do |t|
-    t.string "name", limit: 255
-    t.string "code", limit: 255
+    t.string "name"
+    t.string "code"
   end
 
   create_table "tracking_pages", force: :cascade do |t|
-    t.string   "link",                limit: 255
+    t.string   "link"
     t.integer  "display_order"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -360,38 +360,38 @@ ActiveRecord::Schema.define(version: 20171010195551) do
   end
 
   create_table "verticals", force: :cascade do |t|
-    t.string   "name",        limit: 255
-    t.string   "next_client", limit: 255
+    t.string   "name"
+    t.string   "next_client"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "times_sold"
   end
 
   create_table "visitors", force: :cascade do |t|
-    t.string   "session_hash",     limit: 255
+    t.string   "session_hash"
     t.integer  "site_id"
-    t.string   "visitor_ip",       limit: 255
+    t.string   "visitor_ip"
     t.text     "referring_url"
-    t.string   "referring_domain", limit: 255
-    t.string   "landing_page",     limit: 255
-    t.string   "keywords",         limit: 255
-    t.string   "utm_medium",       limit: 255
-    t.string   "utm_source",       limit: 255
-    t.string   "utm_campaign",     limit: 255
-    t.string   "utm_term",         limit: 255
-    t.string   "utm_content",      limit: 255
-    t.string   "location",         limit: 255
-    t.string   "browser",          limit: 255
-    t.string   "os",               limit: 255
+    t.string   "referring_domain"
+    t.string   "landing_page"
+    t.string   "keywords"
+    t.string   "utm_medium"
+    t.string   "utm_source"
+    t.string   "utm_campaign"
+    t.string   "utm_term"
+    t.string   "utm_content"
+    t.string   "location"
+    t.string   "browser"
+    t.string   "os"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "zip_codes", force: :cascade do |t|
     t.integer  "zip"
-    t.string   "primary_city", limit: 255
-    t.string   "state",        limit: 255
-    t.string   "timezone",     limit: 255
+    t.string   "primary_city"
+    t.string   "state"
+    t.string   "timezone"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

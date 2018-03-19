@@ -125,7 +125,8 @@ class RequestToBoberdoo < RequestToClient
       Email_Address: lead.email,
       Bday: birth_date,
       Gender: lead.gender,
-      Age: health_insurance_lead.age
+      Age: health_insurance_lead.age,
+      eHealth_url: health_insurance_lead.ehealth_url
     }
     append_skip_dupe_check(params)
     params
