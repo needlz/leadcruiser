@@ -1,16 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe ForwardHealthInsuranceLead do
-  let!(:vertical) { FactoryGirl.create(:vertical, name: Vertical::HEALTH_INSURANCE) }
-  let!(:boberdoo_client) { FactoryGirl.create(:clients_vertical, integration_name: ClientsVertical::BOBERDOO) }
-  let!(:icd_client) { FactoryGirl.create(:clients_vertical, integration_name: 'insurance_care_direct') }
-  let!(:boberdoo_purchase_order) { FactoryGirl.create(:purchase_order, vertical: vertical, client_id: boberdoo_client.id) }
-  let!(:icd_purchase_order) { FactoryGirl.create(:purchase_order, vertical: vertical, client_id: icd_client.id) }
-  let(:lead) { FactoryGirl.create(:lead, vertical: vertical) }
-  let(:health_insurance_lead_med_supp) { FactoryGirl.create(:health_insurance_lead,
+  let!(:vertical) { FactoryBot.create(:vertical, name: Vertical::HEALTH_INSURANCE) }
+  let!(:boberdoo_client) { FactoryBot.create(:clients_vertical, integration_name: ClientsVertical::BOBERDOO) }
+  let!(:icd_client) { FactoryBot.create(:clients_vertical, integration_name: 'insurance_care_direct') }
+  let!(:boberdoo_purchase_order) { FactoryBot.create(:purchase_order, vertical: vertical, client_id: boberdoo_client.id) }
+  let!(:icd_purchase_order) { FactoryBot.create(:purchase_order, vertical: vertical, client_id: icd_client.id) }
+  let(:lead) { FactoryBot.create(:lead, vertical: vertical) }
+  let(:health_insurance_lead_med_supp) { FactoryBot.create(:health_insurance_lead,
                                                 lead: lead,
                                                 boberdoo_type: RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE) }
-  let(:health_insurance_lead_health) { FactoryGirl.create(:health_insurance_lead,
+  let(:health_insurance_lead_health) { FactoryBot.create(:health_insurance_lead,
                                               lead: lead,
                                               boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE) }
 

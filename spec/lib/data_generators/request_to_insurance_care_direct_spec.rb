@@ -2,20 +2,20 @@ require 'rails_helper'
 require 'data_generators/request_to_insurance_care_direct'
 
 RSpec.describe RequestToInsuranceCareDirect, type: :request do
-  let(:health_match_up) { FactoryGirl.create(:site, domain: 'healthmatchup.com') }
-  let(:get_health) { FactoryGirl.create(:site, domain: 'gethealthcare.co') }
+  let(:health_match_up) { FactoryBot.create(:site, domain: 'healthmatchup.com') }
+  let(:get_health) { FactoryBot.create(:site, domain: 'gethealthcare.co') }
   let(:health_insurance_lead_med_supp) {
-    FactoryGirl.create(:health_insurance_lead,
+    FactoryBot.create(:health_insurance_lead,
                        lead: lead,
                        boberdoo_type: RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE)
   }
   let(:health_insurance_lead_health) {
-    FactoryGirl.create(:health_insurance_lead,
+    FactoryBot.create(:health_insurance_lead,
                        lead: lead,
                        boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE,
                        tsrc: '1')
   }
-  let(:client) { FactoryGirl.create(:clients_vertical,
+  let(:client) { FactoryBot.create(:clients_vertical,
                                     service_url: 'http://myhealthlineone.com/API/LeadReceiver.api',
                                     request_type: 'XML') }
 
@@ -49,7 +49,7 @@ RSpec.describe RequestToInsuranceCareDirect, type: :request do
 
   describe '#success?' do
     let(:exclusive) { true }
-    let(:lead) { FactoryGirl.create(:lead, site: health_match_up) }
+    let(:lead) { FactoryBot.create(:lead, site: health_match_up) }
 
     before do
       stub_request(:post, "http://myhealthlineone.com/API/LeadReceiver.api").

@@ -1,5 +1,5 @@
 module FactoryHelper
-  FactoryGirl.define do
+  FactoryBot.define do
   factory :forwarding_range do
     begin_at "2016-07-29 14:40:24"
     end_at "2016-07-29 14:40:24"
