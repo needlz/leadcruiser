@@ -169,6 +169,7 @@ describe API::V1::LeadsController, type: :request do
         spouse_weight: 11,
         spouse_tobacco_use: "Yes",
         spouse_preexisting_conditions: "Yes",
+        ehealth_url: 'http://www.ehealthinsurance.com/111',
         child_1_gender: "Male",
         child_1_age: 6,
         child_1_height_feet: 10,

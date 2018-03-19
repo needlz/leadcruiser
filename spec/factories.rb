@@ -47,6 +47,7 @@ module FactoryHelper
       src 'source'
       landing_page 'http://gethealthcare.co'
       age 25
+      ehealth_url 'http://www.ehealthinsurance.com/1'
     end
 
     factory :client_dog_breed_mapping, class: 'ClientDogBreedMapping' do

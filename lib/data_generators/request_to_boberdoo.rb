@@ -91,6 +91,7 @@ class RequestToBoberdoo < RequestToClient
       Child_1_Weight: health_insurance_lead.child_1_weight,
       Child_1_Tobacco_Use: health_insurance_lead.child_1_tobacco_use,
       Child_1_Preexisting_Conditions: health_insurance_lead.child_1_preexisting_conditions,
+      eHealth_url: health_insurance_lead.ehealth_url
     }
     append_skip_dupe_check(params)
     params

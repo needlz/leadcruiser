@@ -17,12 +17,6 @@ describe API::V1::ZipcodesController, type: :request do
         expect(result['errors']).not_to be_present
         expect(result['response']).to be_present
       end
-
-      pending 'returns expected status' do
-        api_post 'zipcodes', zipcode: { zip: correct_zip }
-
-        expect(response).to have_http_status(:created)
-      end
     end
 
     describe 'if not valid zipcode' do

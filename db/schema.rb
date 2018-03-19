@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170516111601) do
+ActiveRecord::Schema.define(version: 20171010195551) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -241,6 +241,7 @@ ActiveRecord::Schema.define(version: 20170516111601) do
     t.string   "child_4_preexisting_conditions"
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.text     "ehealth_url"
   end
 
   create_table "leads", force: :cascade do |t|

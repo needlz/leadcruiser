@@ -59,13 +59,6 @@ RSpec.describe Admin::ForwardingTimeRangesController, type: :controller do
         expect(time.hour).to eq begin_hour
         expect(time.min).to eq 30
       end
-
-      context 'when creating forwarding range' do
-        it 'schedules forwarding job' do
-          pending
-          expect { post :create, forwarding_params }.to enqueue_a(ForwardLeadsToBoberdooJob)
-        end
-      end
     end
 
     context 'during standard time' do
