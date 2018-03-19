@@ -46,6 +46,7 @@ RSpec.describe RequestToBoberdoo, type: :request do
         expect(boberdoo_params[:SRC]).to eq health_insurance_lead.src
         expect(boberdoo_params[:Landing_Page]).to eq health_insurance_lead.landing_page
         expect(boberdoo_params[:Age]).to eq health_insurance_lead.age
+        expect(boberdoo_params[:eHealth_url]).to eq health_insurance_lead.ehealth_url
       end
 
       context 'birth date is nil' do

@@ -53,6 +53,7 @@ class HealthInsuranceLeadForm
       weight: params[:Weight],
       tobacco_use: params[:Tobacco_Use],
       preexisting_conditions: params[:Preexisting_Conditions],
+      ehealth_url: params[:eHealth_url],
 
       household_income: params[:Household_Income],
       household_size: params[:Household_Size],
