@@ -244,6 +244,7 @@ RSpec.configure do |config|
       Gender: 'Male',
       Age: '5',
       eHealth_url: "http://www.ehealthinsurance.com/111",
+      leadid_token: '52EC333B-0A42-562D-EF4A-23FDFC76B2FF'
     }.merge(hash)
   end
 end
