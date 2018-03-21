@@ -49,6 +49,7 @@ module FactoryHelper
       age 25
       ehealth_url 'http://www.ehealthinsurance.com/1'
       leadid_token 'HEX123'
+      visitor_id 'HEX234'
     end
 
     factory :client_dog_breed_mapping, class: 'ClientDogBreedMapping' do
