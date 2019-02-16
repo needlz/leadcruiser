@@ -1,23 +1,23 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-ruby '2.3.1'
-gem 'rails', '4.2.7'
+ruby '2.5.0'
+gem 'rails', '4.2.10'
 gem "rspec-rails", group: [:development, :test]
-gem 'pg'
+gem 'pg', '0.21'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0.0'
+gem 'sass-rails'
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier'
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.0'
+gem 'jbuilder'
 # bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0',          group: :doc
+gem 'sdoc'
 gem 'rails-api'
 gem 'mandrill-rails'
 gem 'mandrill-api'
@@ -30,7 +30,7 @@ gem 'thin'
 gem 'redis'
 gem "redis-store"
 gem 'redis-rails'
-gem 'factory_girl_rails', group: [:development, :test]
+gem 'factory_bot_rails', group: [:development, :test]
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
 gem 'spring',        group: :development
 gem "haml-rails"

@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'data_generators/request_to_boberdoo'
 
 RSpec.describe RequestToBoberdoo, type: :request do
-  let(:lead) { FactoryGirl.create(:lead,
+  let(:lead) { FactoryBot.create(:lead,
                       :from_boberdoo,
                       gender: 'Female') }
 
@@ -13,7 +13,7 @@ RSpec.describe RequestToBoberdoo, type: :request do
 
   describe '#generate' do
     context 'for health leads' do
-      let(:health_insurance_lead) { FactoryGirl.create(:health_insurance_lead,
+      let(:health_insurance_lead) { FactoryBot.create(:health_insurance_lead,
                                            lead: lead,
                                            boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE,
                                            age: 55) }
@@ -46,7 +46,10 @@ RSpec.describe RequestToBoberdoo, type: :request do
         expect(boberdoo_params[:SRC]).to eq health_insurance_lead.src
         expect(boberdoo_params[:Landing_Page]).to eq health_insurance_lead.landing_page
         expect(boberdoo_params[:Age]).to eq health_insurance_lead.age
+        expect(boberdoo_params[:leadid_token]).to eq health_insurance_lead.leadid_token
         expect(boberdoo_params[:eHealth_url]).to eq health_insurance_lead.ehealth_url
+        expect(boberdoo_params[:leadid_token]).to eq health_insurance_lead.leadid_token
+        expect(boberdoo_params[:visitor_id]).to eq health_insurance_lead.visitor_id
       end
 
       context 'birth date is nil' do
@@ -80,7 +83,7 @@ RSpec.describe RequestToBoberdoo, type: :request do
     end
 
     context 'for MedSupp leads' do
-      let(:health_insurance_lead) { FactoryGirl.create(:health_insurance_lead,
+      let(:health_insurance_lead) { FactoryBot.create(:health_insurance_lead,
                                            lead: lead,
                                            boberdoo_type: RequestToBoberdoo::MEDICARE_SUPPLEMENT_INSURANCE_TYPE,
                                            age: 55) }
@@ -114,6 +117,9 @@ RSpec.describe RequestToBoberdoo, type: :request do
         expect(boberdoo_params[:SRC]).to eq health_insurance_lead.src
         expect(boberdoo_params[:Landing_Page]).to eq health_insurance_lead.landing_page
         expect(boberdoo_params[:Age]).to eq health_insurance_lead.age
+        expect(boberdoo_params[:eHealth_url]).to eq health_insurance_lead.ehealth_url
+        expect(boberdoo_params[:leadid_token]).to eq health_insurance_lead.leadid_token
+        expect(boberdoo_params[:visitor_id]).to eq health_insurance_lead.visitor_id
       end
 
       context 'birth date is nil' do
@@ -137,16 +143,16 @@ RSpec.describe RequestToBoberdoo, type: :request do
   end # generate
 
   describe '#source' do
-    let(:icd){ FactoryGirl.create(:clients_vertical, integration_name: ClientsVertical::ICD) }
+    let(:icd){ FactoryBot.create(:clients_vertical, integration_name: ClientsVertical::ICD) }
 
     context 'SRC is HealthMatchup' do
-      let!(:health_insurance_lead) { FactoryGirl.create(:health_insurance_lead,
+      let!(:health_insurance_lead) { FactoryBot.create(:health_insurance_lead,
                                            lead: lead,
                                            boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE,
                                            age: 55, src: 'HealthMatchup') }
 
       context 'there was successful response from ICD' do
-        let!(:response_fomr_iCD) { FactoryGirl.create(:transaction_attempt,
+        let!(:response_fomr_iCD) { FactoryBot.create(:transaction_attempt,
                                                       client_id: icd.id,
                                                       lead_id: lead.id) }
 
@@ -158,7 +164,7 @@ RSpec.describe RequestToBoberdoo, type: :request do
       end
 
       context 'there was no successful response from ICD' do
-        let!(:response_fomr_iCD) { FactoryGirl.create(:response,
+        let!(:response_fomr_iCD) { FactoryBot.create(:response,
                                                       client_name: ClientsVertical::ICD,
                                                       rejection_reasons: 'reasons',
                                                       lead_id: lead.id) }
@@ -172,7 +178,7 @@ RSpec.describe RequestToBoberdoo, type: :request do
     end
 
     context 'SRC is not HealthMatchup' do
-      let!(:health_insurance_lead) { FactoryGirl.create(:health_insurance_lead,
+      let!(:health_insurance_lead) { FactoryBot.create(:health_insurance_lead,
                                             lead: lead,
                                             boberdoo_type: RequestToBoberdoo::HEALTH_INSURANCE_TYPE,
                                             age: 55, src: 'gethealthcare') }

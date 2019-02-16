@@ -48,9 +48,9 @@ class HealthInsuranceMailer
   def thank_you(lead_id)
     lead = Lead.find(lead_id)
     mail = prepare_email do |personalization|
-      personalization.to = Email.new(email: lead.email, name: lead.name)
-      personalization.substitutions = Substitution.new(key: '&lt;%FirstName%&gt;', value: lead.first_name)
-      personalization.substitutions = Substitution.new(key: '&lt;%PersonalizedQuotesUrl%&gt;', value: personalized_quotes_url(lead))
+      personalization.add_to(Email.new(email: lead.email, name: lead.name))
+      personalization.add_substitution Substitution.new(key: '&lt;%FirstName%&gt;', value: lead.first_name)
+      personalization.add_substitution Substitution.new(key: '&lt;%PersonalizedQuotesUrl%&gt;', value: personalized_quotes_url(lead))
     end
     mail.from = Email.new(email: from_address(lead), name: AUTORESPONDER_FROM_NAME)
     mail.template_id = autoresponder_template_id(lead)
@@ -63,7 +63,7 @@ class HealthInsuranceMailer
 
   def notify_about_gethealthcare_threshold
     mail = prepare_email do |personalization|
-      owners.each { |owner_email| personalization.to = Email.new(email: owner_email) }
+      owners.each { |owner_email| personalization.add_to(Email.new(email: owner_email)) }
     end
     mail.from = Email.new(email: "#{ Rails.env }@leadcruiser.com")
     mail.template_id = sendgrid_template_id(:notify_about_gethealthcare_threshold)
@@ -72,7 +72,7 @@ class HealthInsuranceMailer
 
   def notify_about_gethealthcare_errors
     mail = prepare_email do |personalization|
-      owners.each { |owner_email| personalization.to = Email.new(email: owner_email) }
+      owners.each { |owner_email| personalization.add_to(Email.new(email: owner_email)) }
     end
     mail.from = Email.new(email: "#{ Rails.env }@leadcruiser.com")
     mail.template_id = sendgrid_template_id(:notify_about_gethealthcare_errors)
@@ -90,10 +90,10 @@ class HealthInsuranceMailer
 
   def prepare_email(&personalization_block)
     mail = Mail.new
-    mail.contents = Content.new(type: 'text/html', value: '?')
+    mail.add_content(Content.new(type: 'text/html', value: '?'))
     personalization = Personalization.new
     personalization_block.call(personalization)
-    mail.personalizations = personalization
+    mail.add_personalization(personalization)
     mail
   end
 
@@ -106,7 +106,7 @@ class HealthInsuranceMailer
   end
 
   def api
-    SendGrid::API.new(api_key: Settings.sendgrid_api_key)
+    SendGrid::API.new(api_key: ::Settings.sendgrid_api_key)
   end
 
   def renderer

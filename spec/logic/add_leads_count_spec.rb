@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe AddLeadsCount do
 
   describe '#perform' do
-    let(:clients_vertical) { FactoryGirl.create(:clients_vertical, integration_name: integration_name) }
+    let(:clients_vertical) { FactoryBot.create(:clients_vertical, integration_name: integration_name) }
     let(:integration_name) { 'integration_name' }
-    let(:purchase_order) { FactoryGirl.create(:purchase_order,
+    let(:purchase_order) { FactoryBot.create(:purchase_order,
                                               client_id: clients_vertical.id,
                                               daily_leads_count: initial_daily_count,
                                               leads_count_sold: initial_total_count) }
@@ -15,7 +15,7 @@ RSpec.describe AddLeadsCount do
     #   let(:initial_daily_count) { 1 }
     #   before do
     #     purchase_order
-    #     FactoryGirl.create(:transaction_attempt,
+    #     FactoryBot.create(:transaction_attempt,
     #                        client_id: clients_vertical.id,
     #                        success: true,
     #                        purchase_order_id: purchase_order.id)

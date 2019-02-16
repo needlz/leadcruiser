@@ -91,7 +91,9 @@ class RequestToBoberdoo < RequestToClient
       Child_1_Weight: health_insurance_lead.child_1_weight,
       Child_1_Tobacco_Use: health_insurance_lead.child_1_tobacco_use,
       Child_1_Preexisting_Conditions: health_insurance_lead.child_1_preexisting_conditions,
-      eHealth_url: health_insurance_lead.ehealth_url
+      eHealth_url: health_insurance_lead.ehealth_url,
+      leadid_token: health_insurance_lead.leadid_token,
+      visitor_id: health_insurance_lead.visitor_id,
     }
     append_skip_dupe_check(params)
     params
@@ -125,7 +127,10 @@ class RequestToBoberdoo < RequestToClient
       Email_Address: lead.email,
       Bday: birth_date,
       Gender: lead.gender,
-      Age: health_insurance_lead.age
+      Age: health_insurance_lead.age,
+      eHealth_url: health_insurance_lead.ehealth_url,
+      leadid_token: health_insurance_lead.leadid_token,
+      visitor_id: health_insurance_lead.visitor_id,
     }
     append_skip_dupe_check(params)
     params

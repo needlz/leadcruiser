@@ -48,12 +48,13 @@ class HealthInsuranceLeadForm
 
       fpl: params[:FPL],
       age: params[:Age],
+      ehealth_url: params[:eHealth_url],
+      leadid_token: params[:leadid_token],
       height_feet: params[:Height_Feet],
       height_inches: params[:Height_Inches],
       weight: params[:Weight],
       tobacco_use: params[:Tobacco_Use],
       preexisting_conditions: params[:Preexisting_Conditions],
-      ehealth_url: params[:eHealth_url],
 
       household_income: params[:Household_Income],
       household_size: params[:Household_Size],
@@ -97,6 +98,8 @@ class HealthInsuranceLeadForm
       child_4_weight: params[:Child_4_Weight],
       child_4_tobacco_use: params[:Child_4_Tobacco_Use],
       child_4_preexisting_conditions: params[:Child_4_Preexisting_Conditions],
+
+      visitor_id: params[:visitor_id],
     }
   end
 

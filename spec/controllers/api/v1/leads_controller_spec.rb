@@ -197,7 +197,10 @@ describe API::V1::LeadsController, type: :request do
         child_4_height_inches: 15,
         child_4_weight: 7,
         child_4_tobacco_use: "Yes",
-        child_4_preexisting_conditions: "Yes"
+        child_4_preexisting_conditions: "Yes",
+        ehealth_url: "http://www.ehealthinsurance.com/111",
+        leadid_token: '52EC333B-0A42-562D-EF4A-23FDFC76B2FF',
+        visitor_id: '2cp3tbc41v6b8g8ccdi86nbq85'
       }
     }
 
@@ -305,6 +308,8 @@ describe API::V1::LeadsController, type: :request do
         tsrc: "tsrc",
         landing_page: "landing",
         age: 5,
+        ehealth_url: "http://www.ehealthinsurance.com/111",
+        visitor_id: '2cp3tbc41v6b8g8ccdi86nbq85'
       }
     }
 

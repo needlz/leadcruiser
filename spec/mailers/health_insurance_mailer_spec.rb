@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe HealthInsuranceMailer do
-
   before do
     Settings.sendgrid_api_key = ''
   end
@@ -14,14 +13,24 @@ RSpec.describe HealthInsuranceMailer do
     let(:name) { lead.name }
     let(:email) { lead.email }
 
-    it 'creates valid email' do
-      template_id = HealthInsuranceMailer::SENDGRID_TEMPLATE_IDS[RequestToBoberdoo::HEALTH_INSURANCE_TYPE][site_domain]
+    let(:template_id) { HealthInsuranceMailer::SENDGRID_TEMPLATE_IDS[RequestToBoberdoo::HEALTH_INSURANCE_TYPE][site_domain] }
+
+    before do
       stub_request(:post, "https://api.sendgrid.com/v3/mail/send").
         with(:body => "{\"from\":{\"email\":\"justin@healthmatchup.com\",\"name\":\"#{ HealthInsuranceMailer::AUTORESPONDER_FROM_NAME }\"},\"personalizations\":[{\"to\":[{\"email\":\"#{ email }\",\"name\":\"#{ name }\"}],\"substitutions\":{\"\\u0026lt;%FirstName%\\u0026gt;\":\"#{ lead.first_name }\",\"\\u0026lt;%PersonalizedQuotesUrl%\\u0026gt;\":\"http://healthmatchup.com/results/?zip=#{ lead.zip }\"}}],\"content\":[{\"type\":\"text/html\",\"value\":\"?\"}],\"template_id\":\"#{ template_id }\"}",
-             :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>"Bearer #{ Settings.sendgrid_api_key }", 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby'}).
+             headers: {
+               'Accept'=>'application/json',
+               'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+               'Authorization'=>'Bearer ',
+               'Content-Type'=>'application/json',
+               'User-Agent'=>'sendgrid/5.2.0;ruby'
+             }).
         to_return(:status => 200, :body => '', :headers => {})
+    end
 
+    it 'creates valid email' do
       expect { HealthInsuranceMailer.new.thank_you(lead.id) }.to_not raise_error
+      # HealthInsuranceMailer.new.thank_you(lead.id)
     end
   end
 
@@ -31,15 +40,21 @@ RSpec.describe HealthInsuranceMailer do
 
     before do
       EditableConfiguration.create!(gethealthcare_notified_recipients_comma_separated: owner_emails_string)
-    end
 
-    it 'creates valid email' do
       emails_json = owner_emails.map { |email| { email: email } }.to_json
       stub_request(:post, "https://api.sendgrid.com/v3/mail/send").
         with(:body => "{\"from\":{\"email\":\"test@leadcruiser.com\"},\"personalizations\":[{\"to\":#{ emails_json }}],\"content\":[{\"type\":\"text/html\",\"value\":\"?\"}],\"template_id\":\"da47c791-c268-4ab6-a03d-6dbe98732a79\"}",
-             :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>"Bearer #{ Settings.sendgrid_api_key }", 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby'}).
+             headers: {
+               'Accept'=>'application/json',
+               'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+               'Authorization'=>'Bearer ',
+               'Content-Type'=>'application/json',
+               'User-Agent'=>'sendgrid/5.2.0;ruby'
+             }).
         to_return(:status => 200, :body => "", :headers => {}).to_return(:status => 200, :body => "", :headers => {})
+    end
 
+    it 'creates valid email' do
       expect { HealthInsuranceMailer.new.notify_about_gethealthcare_threshold }.to_not raise_error
     end
   end
@@ -50,17 +65,22 @@ RSpec.describe HealthInsuranceMailer do
 
     before do
       EditableConfiguration.create!(gethealthcare_notified_recipients_comma_separated: owner_emails_string)
-    end
 
-    it 'creates valid email' do
       emails_json = owner_emails.map { |email| { email: email } }.to_json
       stub_request(:post, "https://api.sendgrid.com/v3/mail/send").
         with(:body => "{\"from\":{\"email\":\"test@leadcruiser.com\"},\"personalizations\":[{\"to\":#{ emails_json }}],\"content\":[{\"type\":\"text/html\",\"value\":\"?\"}],\"template_id\":\"a787181a-b883-48b5-9fda-dc335d8349b1\"}",
-             :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Authorization'=>"Bearer #{ Settings.sendgrid_api_key }", 'Content-Type'=>'application/json', 'User-Agent'=>'Ruby'}).
+             headers: {
+               'Accept'=>'application/json',
+               'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+               'Authorization'=>'Bearer ',
+               'Content-Type'=>'application/json',
+               'User-Agent'=>'sendgrid/5.2.0;ruby'
+             }).
         to_return(:status => 200, :body => "", :headers => {}).to_return(:status => 200, :body => "", :headers => {})
+    end
 
+    it 'creates valid email' do
       expect { HealthInsuranceMailer.new.notify_about_gethealthcare_errors }.to_not raise_error
     end
   end
-
 end

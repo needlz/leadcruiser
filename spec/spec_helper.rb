@@ -14,7 +14,7 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
-require 'factory_girl_rails'
+require 'factory_bot_rails'
 require 'webmock/rspec'
 require 'rspec/active_job'
 
@@ -30,7 +30,7 @@ RSpec.configure do |config|
     #   # => "be bigger than 2 and smaller than 4"
     # ...rather than:
     #   # => "be bigger than 2"
-    config.include FactoryGirl::Syntax::Methods
+    config.include FactoryBot::Syntax::Methods
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 

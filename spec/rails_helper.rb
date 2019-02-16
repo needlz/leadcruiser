@@ -206,7 +206,9 @@ RSpec.configure do |config|
       Child_4_Weight: '7',
       Child_4_Tobacco_Use: 'Yes',
       Child_4_Preexisting_Conditions:'Yes',
-      eHealth_url: 'http://www.ehealthinsurance.com/111'
+      eHealth_url: 'http://www.ehealthinsurance.com/111',
+      leadid_token: '52EC333B-0A42-562D-EF4A-23FDFC76B2FF',
+      visitor_id: '2cp3tbc41v6b8g8ccdi86nbq85',
     }.merge(hash)
   end
 
@@ -242,6 +244,9 @@ RSpec.configure do |config|
       Bday: '12/23/1980',
       Gender: 'Male',
       Age: '5',
+      eHealth_url: "http://www.ehealthinsurance.com/111",
+      leadid_token: '52EC333B-0A42-562D-EF4A-23FDFC76B2FF',
+      visitor_id: '2cp3tbc41v6b8g8ccdi86nbq85',
     }.merge(hash)
   end
 end

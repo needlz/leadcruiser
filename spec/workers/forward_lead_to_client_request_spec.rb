@@ -4,10 +4,10 @@ require 'sidekiq/testing'
 RSpec.describe ForwardLeadToClientRequest do
 
   describe '#perform' do
-    let(:vertical) { FactoryGirl.create(:vertical, name: Vertical::HEALTH_INSURANCE) }
-    let(:lead) { FactoryGirl.create(:lead, vertical: vertical) }
-    let(:client) { FactoryGirl.create(:clients_vertical, service_url: 'dummy') }
-    let(:purchase_order) { FactoryGirl.create(:purchase_order, client_id: client.id) }
+    let(:vertical) { FactoryBot.create(:vertical, name: Vertical::HEALTH_INSURANCE) }
+    let(:lead) { FactoryBot.create(:lead, vertical: vertical) }
+    let(:client) { FactoryBot.create(:clients_vertical, service_url: 'dummy') }
+    let(:purchase_order) { FactoryBot.create(:purchase_order, client_id: client.id) }
     let!(:request_to_dummy_client_class) {
       Object.const_set("RequestTo#{ client.integration_name.camelize }",
         Class.new do
