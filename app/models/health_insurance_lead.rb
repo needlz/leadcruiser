@@ -65,6 +65,10 @@
 #  child_4_preexisting_conditions :string
 #  created_at                     :datetime         not null
 #  updated_at                     :datetime         not null
+#  ehealth_url                    :text
+#  leadid_token                   :string
+#  visitor_id                     :string
+#  trusted_form_cert_url          :text
 #
 
 class HealthInsuranceLead < ActiveRecord::Base
