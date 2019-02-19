@@ -94,6 +94,7 @@ class RequestToBoberdoo < RequestToClient
       eHealth_url: health_insurance_lead.ehealth_url,
       leadid_token: health_insurance_lead.leadid_token,
       visitor_id: health_insurance_lead.visitor_id,
+      TrustedForm_cert_url: health_insurance_lead.trusted_form_cert_url,
     }
     append_skip_dupe_check(params)
     params
@@ -131,6 +132,7 @@ class RequestToBoberdoo < RequestToClient
       eHealth_url: health_insurance_lead.ehealth_url,
       leadid_token: health_insurance_lead.leadid_token,
       visitor_id: health_insurance_lead.visitor_id,
+      TrustedForm_cert_url: health_insurance_lead.trusted_form_cert_url,
     }
     append_skip_dupe_check(params)
     params

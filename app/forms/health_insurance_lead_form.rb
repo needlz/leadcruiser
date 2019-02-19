@@ -100,6 +100,7 @@ class HealthInsuranceLeadForm
       child_4_preexisting_conditions: params[:Child_4_Preexisting_Conditions],
 
       visitor_id: params[:visitor_id],
+      trusted_form_cert_url: params[:TrustedForm_cert_url],
     }
   end
 

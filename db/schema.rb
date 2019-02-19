@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180321215050) do
+ActiveRecord::Schema.define(version: 20190219165959) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -244,6 +244,7 @@ ActiveRecord::Schema.define(version: 20180321215050) do
     t.text     "ehealth_url"
     t.string   "leadid_token"
     t.string   "visitor_id"
+    t.text     "trusted_form_cert_url"
   end
 
   create_table "leads", force: :cascade do |t|
