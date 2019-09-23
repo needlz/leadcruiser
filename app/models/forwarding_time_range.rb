@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: forwarding_time_ranges
+#
+#  id         :integer          not null, primary key
+#  begin_day  :string           not null
+#  begin_time :time             not null
+#  end_day    :string           not null
+#  end_time   :time             not null
+#  kind       :string           not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class ForwardingTimeRange < ActiveRecord::Base
 
   FORWARDING = 'forwarding'

@@ -246,6 +246,7 @@ ActiveRecord::Schema.define(version: 20190923211225) do
     t.string   "visitor_id"
     t.text     "tcpa_consent"
     t.text     "tcpa_language"
+    t.text     "trusted_form_cert_url"
   end
 
   create_table "leads", force: :cascade do |t|

@@ -102,6 +102,7 @@ class HealthInsuranceLeadForm
       visitor_id: params[:visitor_id],
       tcpa_consent: params[:TCPA_Consent],
       tcpa_language: params[:TCPA_Language],
+      trusted_form_cert_url: params[:TrustedForm_cert_url],
     }
   end
 
