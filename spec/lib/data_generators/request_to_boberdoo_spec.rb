@@ -50,6 +50,8 @@ RSpec.describe RequestToBoberdoo, type: :request do
         expect(boberdoo_params[:eHealth_url]).to eq health_insurance_lead.ehealth_url
         expect(boberdoo_params[:leadid_token]).to eq health_insurance_lead.leadid_token
         expect(boberdoo_params[:visitor_id]).to eq health_insurance_lead.visitor_id
+        expect(boberdoo_params[:TCPA_Consent]).to eq health_insurance_lead.tcpa_consent
+        expect(boberdoo_params[:TCPA_Language]).to eq health_insurance_lead.tcpa_language
       end
 
       context 'birth date is nil' do
@@ -120,6 +122,8 @@ RSpec.describe RequestToBoberdoo, type: :request do
         expect(boberdoo_params[:eHealth_url]).to eq health_insurance_lead.ehealth_url
         expect(boberdoo_params[:leadid_token]).to eq health_insurance_lead.leadid_token
         expect(boberdoo_params[:visitor_id]).to eq health_insurance_lead.visitor_id
+        expect(boberdoo_params[:TCPA_Consent]).to eq health_insurance_lead.tcpa_consent
+        expect(boberdoo_params[:TCPA_Language]).to eq health_insurance_lead.tcpa_language
       end
 
       context 'birth date is nil' do

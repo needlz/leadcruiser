@@ -100,6 +100,8 @@ class HealthInsuranceLeadForm
       child_4_preexisting_conditions: params[:Child_4_Preexisting_Conditions],
 
       visitor_id: params[:visitor_id],
+      tcpa_consent: params[:TCPA_Consent],
+      tcpa_language: params[:TCPA_Language],
     }
   end
 

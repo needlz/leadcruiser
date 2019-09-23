@@ -209,6 +209,8 @@ RSpec.configure do |config|
       eHealth_url: 'http://www.ehealthinsurance.com/111',
       leadid_token: '52EC333B-0A42-562D-EF4A-23FDFC76B2FF',
       visitor_id: '2cp3tbc41v6b8g8ccdi86nbq85',
+      TCPA_Consent: 'Consent',
+      TCPA_Language: 'Language'
     }.merge(hash)
   end
 
@@ -247,6 +249,8 @@ RSpec.configure do |config|
       eHealth_url: "http://www.ehealthinsurance.com/111",
       leadid_token: '52EC333B-0A42-562D-EF4A-23FDFC76B2FF',
       visitor_id: '2cp3tbc41v6b8g8ccdi86nbq85',
+      TCPA_Consent: 'Consent',
+      TCPA_Language: 'Language'
     }.merge(hash)
   end
 end

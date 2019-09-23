@@ -50,6 +50,8 @@ module FactoryHelper
       ehealth_url 'http://www.ehealthinsurance.com/1'
       leadid_token 'HEX123'
       visitor_id 'HEX234'
+      tcpa_language 'language'
+      tcpa_consent 'consent'
     end
 
     factory :client_dog_breed_mapping, class: 'ClientDogBreedMapping' do
